@@ -1,0 +1,8 @@
+{
+  "name": "TimeRoster",
+  "short_name": "TimeRoster",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#3b82f6"
+}

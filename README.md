@@ -27,3 +27,9 @@ cd android
 ```
 
 Das APK liegt anschließend unter `android/app/build/outputs/apk/debug/`.
+
+Windows:
+```bash
+cd android
+gradlew.bat assembleDebug
+```
