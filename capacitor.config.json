@@ -1,0 +1,6 @@
+{
+  "appId": "com.timeroster.app",
+  "appName": "TimeRoster",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}
