@@ -473,6 +473,7 @@ function connectDB(uid){
   unsub=()=>ref.off('value',h);
 }
 function save(){if(!dbRef)return;return dbRef.set({orgName:S.orgName,sectors:S.sectors,users:S.users,messages:S.messages||[],deleteRequests:(S.deleteRequests||[]).filter(Boolean)});}
+function saveLocal(){return save();}
 function refreshUI(){
   const cur=document.querySelector('.view.active')?.id;
   if(cur==='dashV')rDash();if(cur==='secV')rSec();if(cur==='invV')rInv();if(cur==='adminV')rAdmin();if(cur==='msgV')rMsg();
@@ -501,7 +502,19 @@ function rDash(){
 function getSecs(){if(isOwner||!appUsr)return S.sectors.map((s,i)=>[s,i]);const al=(appUsr.allowedSectors||[]).map(x=>x.toLowerCase());if(!al.length)return S.sectors.map((s,i)=>[s,i]);return S.sectors.map((s,i)=>[s,i]).filter(([s])=>al.includes(s.name.toLowerCase()));}
 
 /* ===== SECTOR OPEN ===== */
-function openSec(i){curSec=i;const s=S.sectors[i];if(!s)return;if(s.type==='rechnungen'){curMonth=curMonth||getCurMonthKey();show('inv');}else show('sec');}
+function openSec(i){
+  curSec=i;
+  const s=S.sectors[i];
+  if(!s) return;
+  if(s.type==='rechnungen'){
+    const months=invMonthsForSector(s);
+    // Do NOT auto-add current month. Only show months that exist.
+    if(!months.includes(curMonth)) curMonth = months[0] || '';
+    show('inv');
+  } else {
+    show('sec');
+  }
+}
 
 /* ===== STANDARD SECTOR ===== */
 function rSec(){
@@ -557,11 +570,11 @@ function rInv(){
 
   // Month tabs
   const sorted=invMonthsForSector(s);
-  if(!sorted.includes(curMonth)) sorted.unshift(curMonth);
-  $('invMonthTabs').innerHTML=sorted.map(m=>{
+  if(!curMonth || !sorted.includes(curMonth)) curMonth = sorted[0] || '';
+  $('invMonthTabs').innerHTML = sorted.length ? sorted.map(m=>{
     const [y,mo]=m.split('-');const label=MONTHS[parseInt(mo)-1]+' '+y;
     return `<button class="mtab${m===curMonth?' on':''}" onclick="ST.setMonth('${m}')">${label}</button>`;
-  }).join('');
+  }).join('') : `<div class="hint" style="color:var(--tx2);padding:.35rem .25rem">Keine Monate angelegt. Tippe <b>+ Monat</b>.</div>`;
 
   // Filtered rows
   const filtered=allRows.filter(r=>(r.datum||'').startsWith(curMonth));
@@ -599,7 +612,7 @@ function addInvMonth(){
   if(!s.invMonths) s.invMonths=[];
   if(!s.invMonths.includes(mm)) s.invMonths.push(mm);
   curMonth=mm;
-  saveLocal();
+  save();
   rInv();
   toast('Monat hinzugefügt', 'success');
 }
@@ -628,7 +641,12 @@ function fillQrMonthSel(){
   if(!monSel) return;
   const idx = secSel ? parseInt(secSel.value,10) : curSec;
   const sec = S.sectors[idx];
-  const months = sec && sec.type==='rechnungen' ? invMonthsForSector(sec) : [curMonth];
+  const months = sec && sec.type==='rechnungen' ? invMonthsForSector(sec) : (curMonth ? [curMonth] : []);
+  if(!months.length){
+    monSel.innerHTML = `<option value="">— Monat anlegen —</option>`;
+    monSel.value='';
+    return;
+  }
   monSel.innerHTML = months.map(m=>{const [y,mo]=m.split('-');const label=MONTHS[parseInt(mo,10)-1]+' '+y;return `<option value="${m}">${label}</option>`;}).join('');
   // default to current selected month if possible
   if(months.includes(curMonth)) monSel.value=curMonth;
