@@ -2,12 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#0ea5e9">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-<title>Sektor Tracker</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>Sektor Tracker</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='10' y='10' width='35' height='35' rx='6' fill='%230ea5e9'/><rect x='55' y='10' width='35' height='35' rx='6' fill='%2338bdf8'/><rect x='10' y='55' width='35' height='35' rx='6' fill='%2338bdf8'/><rect x='55' y='55' width='35' height='35' rx='6' fill='%230ea5e9'/></svg>">
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -133,14 +128,7 @@ header{padding-top:env(safe-area-inset-top)}
 
 </style>
 
-<!-- PWA -->
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Sektor Tracker">
-<link rel="apple-touch-icon" href="icon-192.png">
-
-</head>
+<!-- PWA --></head>
 <body>
 
 <!-- AUTH -->
@@ -219,7 +207,7 @@ header{padding-top:env(safe-area-inset-top)}
 <div id="invV" class="view">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.7rem">
 <div><button class="btn bgh bs" onclick="ST.show('dash')">← Zurück</button><h2 style="font-size:1.15rem;font-weight:800;margin-top:.4rem" id="invT">Rechnungen</h2></div>
-<div style="display:flex;gap:6px"><button class="btn bg" onclick="ST.openScanner()">📷 QR scannen</button><button class="btn bp" onclick="ST.addInv()">+ Manuell</button><button class="btn bs" onclick="ST.csvInv()">📥</button></div>
+<div style="display:flex;gap:6px"><button class="btn bg" onclick="ST.openScanner()">📷 QR scannen</button><button class="btn bp" onclick="ST.addInv()">+ Manuell</button><button class="btn bs" onclick="ST.addInvMonth()">+ Monat</button><button class="btn bs" onclick="ST.csvInv()">📥</button></div>
 </div>
 <div id="invTotalCard" class="card" style="display:none"></div>
 <div id="invMonthTabs" class="mtabs"></div>
@@ -277,11 +265,28 @@ header{padding-top:env(safe-area-inset-top)}
 <div class="mft"><button class="btn bs" onclick="ST.closeModal('secCfg')">Abbrechen</button><button class="btn bp bs" onclick="ST.saveCfg()">Speichern</button></div></div></div>
 
 <div class="mo" id="scanModal"><div class="modal"><h3>📷 QR-Code scannen</h3>
+<div class="fr" style="margin-top:.25rem;margin-bottom:.65rem">
+  <div>
+    <label>Sektor</label>
+    <select id="qrSecSel"></select>
+  </div>
+  <div>
+    <label>Monat</label>
+    <select id="qrMonthSel"></select>
+  </div>
+  <div style="align-self:end">
+    <button class="btn bs" onclick="ST.qrAddSector()">+ Weitere</button>
+  </div>
+</div>
 <div id="qrReader"></div>
 <div id="qrResult" style="display:none;margin-top:.75rem">
 <div class="fr">
 <div><label>Betrag</label><input type="number" id="qrAmt" step="0.01"></div>
 <div><label>Beschreibung</label><input id="qrDesc"></div>
+</div>
+<div class="fg" style="margin-top:.5rem">
+  <label>Ausgelesene QR-Daten</label>
+  <textarea id="qrDetails" readonly style="min-height:120px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"></textarea>
 </div>
 <button class="btn bp bs" onclick="ST.addScanned()" style="margin-top:.5rem">Hinzufügen</button>
 </div>
@@ -297,6 +302,10 @@ header{padding-top:env(safe-area-inset-top)}
   <div class="fg">
     <label>QR-Inhalt (optional)</label>
     <textarea id="qrRawTxt" readonly style="min-height:90px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"></textarea>
+    <details style="margin-top:.55rem">
+      <summary style="cursor:pointer;color:var(--tx2)">Ausgelesene Daten anzeigen</summary>
+      <pre id="qrMetaTxt" style="white-space:pre-wrap;font-size:.82rem;line-height:1.25;margin:.5rem 0 0;color:var(--tx2)"></pre>
+    </details>
     <button class="btn bs" style="margin-top:.45rem" onclick="ST.copyQrRaw()">📋 Kopieren</button>
   </div>
   <div class="mft"><button class="btn bs" onclick="ST.closeModal('qrShow')">Schliessen</button></div>
@@ -528,6 +537,15 @@ document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const el=e.tar
 
 /* ===== RECHNUNGEN SECTOR ===== */
 function getCurMonthKey(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
+function invMonthsForSector(sec){
+  const months=new Set();
+  const rows=(sec&&sec.rows)||[];
+  rows.forEach(r=>{if(r && r.datum) months.add(String(r.datum).slice(0,7));});
+  (sec && Array.isArray(sec.invMonths) ? sec.invMonths : []).forEach(m=>{ if(m) months.add(m); });
+  // always ensure current month exists for convenience
+  months.add(curMonth);
+  return [...months].filter(m=>/^\d{4}-\d{2}$/.test(m)).sort().reverse();
+}
 function rInv(){
   const s=S.sectors[curSec];if(!s)return;
   $('invT').textContent=s.name;
@@ -538,9 +556,8 @@ function rInv(){
   tc.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem"><div><div style="font-size:.78rem;color:var(--tx2);font-weight:600;text-transform:uppercase">Gesamttotal</div><div style="font-size:2rem;font-weight:800;color:var(--ok)">CHF ${fmtN(totalAll)}</div></div><div style="font-size:.88rem;color:var(--tx2)">${allRows.length} Rechnungen</div></div>`;
 
   // Month tabs
-  const months=new Set();allRows.forEach(r=>{if(r.datum)months.add(r.datum.slice(0,7));});
-  if(!months.has(curMonth))months.add(curMonth);
-  const sorted=[...months].sort().reverse();
+  const sorted=invMonthsForSector(s);
+  if(!sorted.includes(curMonth)) sorted.unshift(curMonth);
   $('invMonthTabs').innerHTML=sorted.map(m=>{
     const [y,mo]=m.split('-');const label=MONTHS[parseInt(mo)-1]+' '+y;
     return `<button class="mtab${m===curMonth?' on':''}" onclick="ST.setMonth('${m}')">${label}</button>`;
@@ -573,15 +590,192 @@ function rInv(){
 }
 
 function setMonth(m){curMonth=m;rInv();}
-function addInv(){const s=S.sectors[curSec];if(!s)return;if(!s.rows)s.rows=[];s.rows.push({id:cid(),datum:today(),ersteller:uName(),desc:'',ref:'',amount:'',_ed:true});save();rInv();}
+function addInvMonth(){
+  const s=S.sectors[curSec];if(!s)return;
+  const m=prompt('Monat hinzufügen (YYYY-MM)', curMonth);
+  if(!m) return;
+  const mm=String(m).trim();
+  if(!/^\d{4}-\d{2}$/.test(mm)){toast('Ungültiges Format. Nutze YYYY-MM', 'error');return;}
+  if(!s.invMonths) s.invMonths=[];
+  if(!s.invMonths.includes(mm)) s.invMonths.push(mm);
+  curMonth=mm;
+  saveLocal();
+  rInv();
+  toast('Monat hinzugefügt', 'success');
+}
+function addInv(){const s=S.sectors[curSec];if(!s)return;if(!s.rows)s.rows=[];s.rows.push({id:cid(),datum:(()=>{const t=today(); if(curMonth!==t.slice(0,7)) return curMonth+'-01'; return t;})(),ersteller:uName(),desc:'',ref:'',amount:'',_ed:true});save();rInv();}
 function editInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;s.rows[i]._ed=true;rInv();}
 function cancelInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;const r=s.rows[i];if(!r.desc&&!r.ref&&!r.amount)s.rows.splice(i,1);else delete r._ed;save();rInv();}
 function saveInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;document.querySelectorAll(`#iTb input[data-ri="${i}"]`).forEach(inp=>{const f=inp.dataset.f;if(f)s.rows[i][f]=inp.value;});delete s.rows[i]._ed;save();toast('Gespeichert','success');}
 function delInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i]||!confirm('Löschen?'))return;s.rows.splice(i,1);save();toast('Gelöscht','success');}
 
+
+function invoiceSectorIdxs(){
+  return (S.sectors||[]).map((s,idx)=>({s,idx})).filter(x=>x.s?.type==='rechnungen');
+}
+function fillQrSecSel(){
+  const sel=$('qrSecSel'); if(!sel) return;
+  const invSecs=invoiceSectorIdxs();
+  sel.innerHTML = invSecs.map(x=>`<option value="${x.idx}">${esc(x.s.name||'Sektor')}</option>`).join('') || `<option value="-1">Keine Rechnungs-Sektoren</option>`;
+  // default to current sector if it's a invoices sector
+  if(curSec>=0 && S.sectors[curSec]?.type==='rechnungen') sel.value=String(curSec);
+}
+  // refresh month dropdown
+  fillQrMonthSel();
+  sel.onchange = ()=>{ fillQrMonthSel(); };
+function fillQrMonthSel(){
+  const secSel=$('qrSecSel'), monSel=$('qrMonthSel');
+  if(!monSel) return;
+  const idx = secSel ? parseInt(secSel.value,10) : curSec;
+  const sec = S.sectors[idx];
+  const months = sec && sec.type==='rechnungen' ? invMonthsForSector(sec) : [curMonth];
+  monSel.innerHTML = months.map(m=>{const [y,mo]=m.split('-');const label=MONTHS[parseInt(mo,10)-1]+' '+y;return `<option value="${m}">${label}</option>`;}).join('');
+  // default to current selected month if possible
+  if(months.includes(curMonth)) monSel.value=curMonth;
+  else if(months.length) monSel.value=months[0];
+}
+function qrAddSector(){
+  const name = prompt('Neuer Rechnungs-Sektor (Name):','');
+  if(!name) return;
+  const n=name.trim(); if(!n){toast('Name eingeben','warning');return;}
+  const sec={id:cid(),name:n,type:'rechnungen',rows:[],fieldConfig:{}};
+  S.sectors.push(sec);
+  curSec=S.sectors.length-1;
+  save();
+  toast('Sektor erstellt','success');
+  fillQrSecSel();
+  // keep scanner open; selection will jump to new sector
+  const sel=$('qrSecSel'); if(sel) sel.value=String(curSec);
+}
+
 /* ===== QR SCANNER ===== */
+function parseSwissQr(raw){
+  const lines = String(raw||'').replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n');
+  if(lines[0] !== 'SPC') return null;
+  // Swiss QR Code elements are line-based and fixed-order (SIX IG QR-bill v2.x)
+  // We parse defensively (some optional tail elements may be missing).
+  const get = (i)=> (lines[i]??'').trim();
+  const obj = {
+    kind:'swissqr',
+    qrType:get(0),
+    version:get(1),
+    coding:get(2),
+    iban:get(3),
+    creditor:{
+      adrType:get(4),
+      name:get(5),
+      line1:get(6),
+      line2:get(7),
+      postal:get(8),
+      city:get(9),
+      country:get(10)
+    },
+    ultimateCreditor:{
+      adrType:get(11),
+      name:get(12),
+      line1:get(13),
+      line2:get(14),
+      postal:get(15),
+      city:get(16),
+      country:get(17)
+    },
+    amount:get(18),
+    currency:get(19),
+    debtor:{
+      adrType:get(20),
+      name:get(21),
+      line1:get(22),
+      line2:get(23),
+      postal:get(24),
+      city:get(25),
+      country:get(26)
+    },
+    refType:get(27),
+    ref:get(28),
+    unstructuredMsg:get(29),
+    trailer:get(30),
+    billInfo:get(31),
+    altScheme: lines.slice(32).map(s=>String(s||'').trim()).filter(Boolean)
+  };
+  // numeric amount (best-effort)
+  if(obj.amount){
+    const a = obj.amount.replace(',','.');
+    const n = Number(a);
+    if(!Number.isNaN(n)) obj.amountValue = n;
+  }
+  return obj;
+}
+
+function parseEpcQr(raw){
+  const lines = String(raw||'').replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').map(s=>String(s||'').trim());
+  if(lines[0] !== 'BCD') return null;
+  // EPC069-12 (EPC QR for SCT) is line-based; fields may vary by version.
+  const get=(i)=> (lines[i]??'').trim();
+  const obj = {
+    kind:'epc',
+    serviceTag:get(0),
+    version:get(1),
+    charset:get(2),
+    identification:get(3), // usually SCT
+    bic:get(4),
+    name:get(5),
+    iban:get(6),
+    amount:get(7), // e.g. EUR12.34
+    purpose:get(8),
+    remittanceRef:get(9),
+    remittanceText:get(10),
+    information:get(11),
+    rawLines: lines
+  };
+  // extract numeric from amount like "EUR12.34"
+  const m = obj.amount.match(/([A-Z]{3})(\d+(?:[.,]\d{2})?)/);
+  if(m){
+    obj.currency = m[1];
+    const n = Number(m[2].replace(',','.'));
+    if(!Number.isNaN(n)) obj.amountValue = n;
+  }
+  return obj;
+}
+
+function formatQrMeta(meta){
+  if(!meta) return '';
+  if(meta.kind==='swissqr'){
+    const c=meta.creditor||{};
+    const d=meta.debtor||{};
+    const parts=[
+      `Typ: Swiss QR-Rechnung (SPC)`,
+      `IBAN/QR-IBAN: ${meta.iban||''}`,
+      `Empfänger: ${c.name||''}`,
+      `Empfänger Ort: ${(c.postal||'')} ${(c.city||'')}`.trim(),
+      `Betrag: ${(meta.amount||'')} ${(meta.currency||'')}`.trim(),
+      `Referenz-Typ: ${meta.refType||''}`,
+      `Referenz: ${meta.ref||''}`,
+      meta.unstructuredMsg ? `Mitteilung: ${meta.unstructuredMsg}` : '',
+      meta.billInfo ? `Rechnungsinfo: ${meta.billInfo}` : '',
+      d.name ? `Zahler: ${d.name}` : ''
+    ].filter(Boolean);
+    return parts.join('\n');
+  }
+  if(meta.kind==='epc'){
+    const parts=[
+      `Typ: EPC / SEPA SCT`,
+      `IBAN: ${meta.iban||''}`,
+      `Empfänger: ${meta.name||''}`,
+      meta.bic ? `BIC: ${meta.bic}` : '',
+      meta.amount ? `Betrag: ${meta.amount}` : '',
+      meta.remittanceRef ? `Referenz: ${meta.remittanceRef}` : '',
+      meta.remittanceText ? `Text: ${meta.remittanceText}` : ''
+    ].filter(Boolean);
+    return parts.join('\n');
+  }
+  if(meta.kind==='generic'){
+    return `Typ: Unbekannt/Generic\n${meta.preview||''}`.trim();
+  }
+  return `Typ: Unbekannt`;
+}
+
 function openScanner(){
-  openModal('scan');$('qrResult').style.display='none';$('qrAmt').value='';$('qrDesc').value='';
+  openModal('scan');fillQrSecSel();fillQrMonthSel();$('qrResult').style.display='none';$('qrAmt').value='';$('qrDesc').value='';const det=$('qrDetails'); if(det) det.value='';
   setTimeout(()=>{
     if(qrScanner){try{qrScanner.clear();}catch(_){}}
     qrScanner=new Html5Qrcode("qrReader");
@@ -598,39 +792,51 @@ function openScanner(){
 function closeScanner(){if(qrScanner){try{qrScanner.stop();}catch(_){}}closeModal('scan');}
 function onQrScanned(txt){
   try{qrScanner.stop();}catch(_){}
-  lastQrRaw = txt;
-  lastQrMeta = {kind:'unknown'};
-  // Parse Swiss QR-Rechnung
-  const lines=txt.split('\n');
-  let amt='',desc='';
-  if(lines[0]==='SPC'&&lines.length>20){
-    // Swiss QR bill format
-    amt=lines[18]||'';desc=(lines[24]||'').trim();
-    if(!desc)desc=(lines[9]||'').trim(); // creditor name
-    lastQrMeta = {
-      kind:'swissqr',
-      currency:(lines[19]||'').trim(),
-      iban:(lines[3]||'').trim(),
-      refType:(lines[25]||'').trim(),
-      ref:(lines[26]||'').trim()
-    };
+  lastQrRaw = String(txt||'');
+  // Parse (Swiss QR / EPC / generic)
+  const swiss = parseSwissQr(lastQrRaw);
+  const epc = swiss ? null : parseEpcQr(lastQrRaw);
+  if(swiss){
+    lastQrMeta = swiss;
+  } else if(epc){
+    lastQrMeta = epc;
   } else {
-    lastQrMeta = {kind:'generic'};
-    // Try to find amount pattern
-    const amtMatch=txt.match(/(\d+[\.,]\d{2})/);
-    if(amtMatch)amt=amtMatch[1].replace(',','.');
-    desc=txt.substring(0,60);
+    lastQrMeta = {kind:'generic', preview:lastQrRaw.slice(0,180)};
   }
-  $('qrAmt').value=amt;$('qrDesc').value=desc;$('qrResult').style.display='block';
+
+  // Prefill amount/desc (best-effort)
+  let amt='';
+  let desc='';
+  if(lastQrMeta.kind==='swissqr'){
+    amt = (lastQrMeta.amountValue!=null) ? String(lastQrMeta.amountValue.toFixed(2)) : (lastQrMeta.amount||'');
+    desc = (lastQrMeta.unstructuredMsg||lastQrMeta.billInfo||'').trim();
+    if(!desc) desc = (lastQrMeta.creditor?.name||'').trim();
+  } else if(lastQrMeta.kind==='epc'){
+    amt = (lastQrMeta.amountValue!=null) ? String(lastQrMeta.amountValue.toFixed(2)) : (lastQrMeta.amount||'').replace(/^EUR/i,'');
+    desc = (lastQrMeta.remittanceText||lastQrMeta.remittanceRef||lastQrMeta.name||'').trim();
+  } else {
+    const amtMatch=lastQrRaw.match(/(\d+[\.,]\d{2})/);
+    if(amtMatch) amt=amtMatch[1].replace(',','.');
+    desc=lastQrRaw.substring(0,60);
+  }
+
+  $('qrAmt').value=amt;
+  $('qrDesc').value=desc;
+  const det=$('qrDetails'); if(det) det.value = formatQrMeta(lastQrMeta);
+  $('qrResult').style.display='block';
 }
 function addScanned(){
   const amt=$('qrAmt').value,desc=$('qrDesc').value;
   if(!amt){toast('Betrag eingeben','warning');return;}
-  const s=S.sectors[curSec];if(!s)return;if(!s.rows)s.rows=[];
+  const sel=$('qrSecSel');
+  const tIdx = sel ? parseInt(sel.value,10) : curSec;
+  const s=S.sectors[tIdx];
+  if(!s || s.type!=='rechnungen'){toast('Bitte einen Rechnungs-Sektor wählen','warning');return;}
+  if(!s.rows) s.rows=[];
   const ref = (lastQrMeta?.kind==='swissqr' && lastQrMeta?.ref) ? lastQrMeta.ref : 'QR';
   s.rows.push({
     id:cid(),
-    datum:today(),
+    datum:(()=>{const ms=$('qrMonthSel');const t=today();const m=ms?String(ms.value||'').trim():'';if(/^\d{4}-\d{2}$/.test(m) && m!==t.slice(0,7)) return m+'-01';return t;})(),
     ersteller:uName(),
     desc,
     ref,
@@ -638,8 +844,19 @@ function addScanned(){
     qrRaw:lastQrRaw||'',
     qrMeta:lastQrMeta||{kind:'unknown'}
   });
+  // switch current sector to the target so the new invoice is visible immediately
+  const mSel=$('qrMonthSel'); const mKey=mSel?String(mSel.value||'').trim():'';
+  if(/^\d{4}-\d{2}$/.test(mKey)){
+    if(!s.invMonths) s.invMonths=[];
+    if(!s.invMonths.includes(mKey)) s.invMonths.push(mKey);
+    curMonth=mKey;
+  }
+  curSec=tIdx;
   lastQrRaw=null;lastQrMeta=null;
-  save();closeScanner();toast('Rechnung hinzugefügt','success');
+  save();
+  closeScanner();
+  rInv();
+  toast('Rechnung hinzugefügt','success');
 }
 
 
@@ -648,6 +865,11 @@ async function showInvQR(i){
   const s=S.sectors[curSec];const r=s?.rows?.[i];
   if(!r||!r.qrRaw){toast('Kein QR für diese Rechnung gespeichert','warning');return;}
   $('qrRawTxt').value=r.qrRaw;
+  const metaEl=$('qrMetaTxt');
+  if(metaEl){
+    const meta = r.qrMeta && typeof r.qrMeta==='object' ? r.qrMeta : (parseSwissQr(r.qrRaw)||parseEpcQr(r.qrRaw)||{kind:'generic',preview:String(r.qrRaw||'').slice(0,180)});
+    metaEl.textContent = formatQrMeta(meta);
+  }
   openModal('qrShow');
   // Render QR into canvas
   const c=$('qrCanvas');
@@ -757,19 +979,12 @@ return{authTab,login,register,resetPw,logout,show,openModal,closeModal,
 openPwModal,changePw,
 appLogin,appLogout,openSec,
 addRow,editRow,saveRow,cancelRow,delRow,
-setMonth,addInv,editInvRow,saveInvRow,cancelInvRow,delInvRow,
-openScanner,closeScanner,addScanned,showInvQR,copyQrRaw,
+setMonth,addInvMonth,addInv,editInvRow,saveInvRow,cancelInvRow,delInvRow,
+openScanner,qrAddSector,closeScanner,addScanned,showInvQR,copyQrRaw,
 rMsg,sendMsg,
 saveOrg,admAddSec,openRen,renameSec,delSec,openCfg,saveCfg,
 admAddUsr,delUsr,csvSec,csvInv,csvAll,jsonExport};
 })();
-
-// ===== PWA Service Worker =====
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
-  });
-}
 
 </script>
 </body>
