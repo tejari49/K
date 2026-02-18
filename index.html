@@ -619,10 +619,10 @@ function fillQrSecSel(){
   sel.innerHTML = invSecs.map(x=>`<option value="${x.idx}">${esc(x.s.name||'Sektor')}</option>`).join('') || `<option value="-1">Keine Rechnungs-Sektoren</option>`;
   // default to current sector if it's a invoices sector
   if(curSec>=0 && S.sectors[curSec]?.type==='rechnungen') sel.value=String(curSec);
-}
-  // refresh month dropdown
+  // refresh month dropdown + hook change
   fillQrMonthSel();
   sel.onchange = ()=>{ fillQrMonthSel(); };
+}
 function fillQrMonthSel(){
   const secSel=$('qrSecSel'), monSel=$('qrMonthSel');
   if(!monSel) return;
