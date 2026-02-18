@@ -282,7 +282,8 @@ header{padding-top:env(safe-area-inset-top)}
 <div id="qrResult" style="display:none;margin-top:.75rem">
 <div class="fr">
 <div><label>Betrag</label><input type="number" id="qrAmt" step="0.01"></div>
-<div><label>Beschreibung</label><input id="qrDesc"></div>
+<div><label>Empfänger</label><input id="qrPayee" placeholder="wird aus QR übernommen"></div>
+<input id="qrDesc" type="hidden">
 </div>
 <div class="fg" style="margin-top:.5rem">
   <label>Ausgelesene QR-Daten</label>
@@ -297,7 +298,7 @@ header{padding-top:env(safe-area-inset-top)}
   <h3>🔳 QR-Code anzeigen</h3>
   <p style="font-size:.82rem;color:var(--tx2);margin-bottom:.75rem">Zeigt den gespeicherten QR-Code der Rechnung (z.B. Swiss QR-Rechnung) wieder an.</p>
   <div style="display:flex;justify-content:center;margin:.4rem 0 .9rem">
-    <canvas id="qrCanvas" style="max-width:100%;border:1px solid var(--brd);border-radius:12px;padding:10px;background:#fff"></canvas>
+    <canvas id="qrCanvas" width="320" height="320" style="display:block;max-width:100%;border:1px solid var(--brd);border-radius:12px;padding:10px;background:#fff"></canvas>
   </div>
   <div class="fg">
     <label>QR-Inhalt (optional)</label>
@@ -580,26 +581,26 @@ function rInv(){
   const filtered=allRows.filter(r=>(r.datum||'').startsWith(curMonth));
   const monthTotal=filtered.reduce((a,r)=>a+(Number(r.amount)||0),0);
 
-  $('iTh').innerHTML='<th>#</th><th>Datum</th><th>Beschreibung</th><th>Referenz</th><th style="text-align:right">Betrag</th><th style="width:80px">Aktion</th>';
+  $('iTh').innerHTML='<th>#</th><th>Datum</th><th>Empfänger</th><th style="text-align:right">Betrag</th><th style="width:160px">Aktion</th>';
   const tb=$('iTb');tb.innerHTML='';
-  if(!filtered.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--tx2);padding:2rem">Keine Rechnungen in diesem Monat</td></tr>';$('invMonthSum').style.display='none';return;}
+  if(!filtered.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--tx2);padding:2rem">Keine Rechnungen in diesem Monat</td></tr>';$('invMonthSum').style.display='none';return;}
 
   filtered.forEach((r,fi)=>{
     const ri=allRows.indexOf(r);
     const tr=document.createElement('tr');
     if(r._ed){
-      tr.innerHTML=`<td>${fi+1}</td><td><input type="date" value="${r.datum||''}" data-ri="${ri}" data-f="datum" data-enter="1"></td><td><input value="${esc(r.desc||'')}" data-ri="${ri}" data-f="desc" data-enter="2" placeholder="Beschreibung"></td><td><input value="${esc(r.ref||'')}" data-ri="${ri}" data-f="ref" data-enter="3" placeholder="Referenz"></td><td><input type="number" step="0.01" value="${r.amount||''}" data-ri="${ri}" data-f="amount" data-enter="4" style="text-align:right"></td><td><button class="btn bg bs" data-enter="5" onclick="ST.saveInvRow(${ri})">✓</button> <button class="btn bd bs" onclick="ST.cancelInvRow(${ri})">✗</button></td>`;
+      tr.innerHTML=`<td>${fi+1}</td><td><input type="date" value="${r.datum||''}" data-ri="${ri}" data-f="datum" data-enter="1"></td><td><input value="${esc(r.payee||'')}" data-ri="${ri}" data-f="payee" data-enter="2" placeholder="Empfänger"></td><td><input type="number" step="0.01" value="${r.amount||''}" data-ri="${ri}" data-f="amount" data-enter="3" style="text-align:right"></td><td><button class="btn bg bs" data-enter="4" onclick="ST.saveInvRow(${ri})" title="Speichern">✓</button> <button class="btn bd bs" onclick="ST.cancelInvRow(${ri})" title="Abbrechen">✗</button></td>`;
       tr.style.background='#f0fdf4';
     } else {
       const mine=r.ersteller===uName()||canAdm();
-      tr.innerHTML=`<td style="color:var(--tx3);font-size:.78rem">${fi+1}</td><td>${esc(fmtD(r.datum))}</td><td>${esc(r.desc||'')}</td><td style="font-size:.8rem;color:var(--tx2)">${esc(r.ref||'')}${r.qrRaw?` <button class="btn bs" onclick="ST.showInvQR(${ri})" title="QR anzeigen">🔳</button>`:''}</td><td style="text-align:right;font-weight:700">${fmtN(r.amount)}</td><td style="white-space:nowrap">${mine?`<button class="btn bs" onclick="ST.editInvRow(${ri})">✏️</button> <button class="btn bd bs" onclick="ST.delInvRow(${ri})">🗑</button>`:''}</td>`;
+      tr.innerHTML=`<td style="color:var(--tx3);font-size:.78rem">${fi+1}</td><td>${esc(fmtD(r.datum))}</td><td>${esc(r.payee||'')}</td><td style="text-align:right;font-weight:700">${fmtN(r.amount)}</td><td style="white-space:nowrap"><button class="btn bs" onclick="ST.showInvDetails(${ri})" title="Details">🧾</button> ${r.qrRaw?`<button class="btn bs" onclick="ST.showInvQR(${ri})" title="QR anzeigen">🔳</button> `:''}${r.qrRaw?`<button class="btn bs" onclick="ST.exportInvPdf(${ri})" title="PDF Export">📄</button> `:''}${mine?`<button class="btn bs" onclick="ST.editInvRow(${ri})" title="Bearbeiten">✏️</button> <button class="btn bd bs" onclick="ST.delInvRow(${ri})" title="Löschen">🗑</button>`:''}</td>`;
     }
     tb.appendChild(tr);
   });
 
   const ms=$('invMonthSum');ms.style.display='block';
   const [y,mo]=curMonth.split('-');
-  ms.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:.78rem;color:var(--tx2);font-weight:600;text-transform:uppercase">${MONTHS[parseInt(mo)-1]} ${y}</div><div style="font-size:1.5rem;font-weight:800;color:var(--ok)">CHF ${fmtN(monthTotal)}</div></div><div style="color:var(--tx2)">${filtered.length} Rechnungen</div></div>`;
+  ms.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap"><div><div style="font-size:.78rem;color:var(--tx2);font-weight:600;text-transform:uppercase">${MONTHS[parseInt(mo)-1]} ${y}</div><div style="font-size:1.5rem;font-weight:800;color:var(--ok)">CHF ${fmtN(monthTotal)}</div></div><div style="display:flex;align-items:center;gap:.6rem;color:var(--tx2)"><span>${filtered.length} Rechnungen</span><button class="btn bs" onclick="ST.exportMonthPdf()" title="Monat als PDF">📄 Monat</button></div></div>`;
 }
 
 function setMonth(m){curMonth=m;rInv();}
@@ -616,9 +617,9 @@ function addInvMonth(){
   rInv();
   toast('Monat hinzugefügt', 'success');
 }
-function addInv(){const s=S.sectors[curSec];if(!s)return;if(!s.rows)s.rows=[];s.rows.push({id:cid(),datum:(()=>{const t=today(); if(curMonth!==t.slice(0,7)) return curMonth+'-01'; return t;})(),ersteller:uName(),desc:'',ref:'',amount:'',_ed:true});save();rInv();}
+function addInv(){const s=S.sectors[curSec];if(!s)return;if(!s.rows)s.rows=[];s.rows.push({id:cid(),datum:(()=>{const t=today(); if(curMonth!==t.slice(0,7)) return curMonth+'-01'; return t;})(),ersteller:uName(),payee:'',desc:'',ref:'',amount:'',_ed:true});save();rInv();}
 function editInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;s.rows[i]._ed=true;rInv();}
-function cancelInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;const r=s.rows[i];if(!r.desc&&!r.ref&&!r.amount)s.rows.splice(i,1);else delete r._ed;save();rInv();}
+function cancelInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;const r=s.rows[i];if(!r.payee&&!r.desc&&!r.ref&&!r.amount)s.rows.splice(i,1);else delete r._ed;save();rInv();}
 function saveInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;document.querySelectorAll(`#iTb input[data-ri="${i}"]`).forEach(inp=>{const f=inp.dataset.f;if(f)s.rows[i][f]=inp.value;});delete s.rows[i]._ed;save();toast('Gespeichert','success');}
 function delInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i]||!confirm('Löschen?'))return;s.rows.splice(i,1);save();toast('Gelöscht','success');}
 
@@ -793,7 +794,7 @@ function formatQrMeta(meta){
 }
 
 function openScanner(){
-  openModal('scan');fillQrSecSel();fillQrMonthSel();$('qrResult').style.display='none';$('qrAmt').value='';$('qrDesc').value='';const det=$('qrDetails'); if(det) det.value='';
+  openModal('scan');fillQrSecSel();fillQrMonthSel();$('qrResult').style.display='none';$('qrAmt').value='';$('qrPayee').value='';$('qrDesc').value='';const det=$('qrDetails'); if(det) det.value='';
   setTimeout(()=>{
     if(qrScanner){try{qrScanner.clear();}catch(_){}}
     qrScanner=new Html5Qrcode("qrReader");
@@ -839,12 +840,19 @@ function onQrScanned(txt){
   }
 
   $('qrAmt').value=amt;
+  // payee / beneficiary
+  let payee='';
+  if(lastQrMeta.kind==='swissqr') payee=(lastQrMeta.creditor?.name||'').trim();
+  else if(lastQrMeta.kind==='epc') payee=(lastQrMeta.name||'').trim();
+  if(!payee) payee=desc;
+  $('qrPayee').value=payee;
+  // keep a hidden description/info field for storage (not shown in list)
   $('qrDesc').value=desc;
   const det=$('qrDetails'); if(det) det.value = formatQrMeta(lastQrMeta);
   $('qrResult').style.display='block';
 }
 function addScanned(){
-  const amt=$('qrAmt').value,desc=$('qrDesc').value;
+  const amt=$('qrAmt').value, payee=$('qrPayee').value, desc=$('qrDesc').value;
   if(!amt){toast('Betrag eingeben','warning');return;}
   const sel=$('qrSecSel');
   const tIdx = sel ? parseInt(sel.value,10) : curSec;
@@ -856,7 +864,8 @@ function addScanned(){
     id:cid(),
     datum:(()=>{const ms=$('qrMonthSel');const t=today();const m=ms?String(ms.value||'').trim():'';if(/^\d{4}-\d{2}$/.test(m) && m!==t.slice(0,7)) return m+'-01';return t;})(),
     ersteller:uName(),
-    desc,
+    payee: (payee||'').trim(),
+    desc, // stored but not shown in list
     ref,
     amount:amt,
     qrRaw:lastQrRaw||'',
@@ -910,6 +919,125 @@ async function copyQrRaw(){
     const ta=$('qrRawTxt');ta.focus();ta.select();
     try{document.execCommand('copy');toast('In Zwischenablage kopiert','success');}catch(e){toast('Kopieren nicht möglich','error');}
   }
+}
+
+
+
+/* ===== PDF EXPORT ===== */
+function _printHtml(title, html){
+  const w=window.open('','_blank');
+  if(!w){toast('Popup blockiert – bitte Popups erlauben','error');return;}
+  w.document.open();
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>${esc(title)}</title>
+  <style>
+    :root{font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Inter,Arial,sans-serif;}
+    body{padding:24px; color:#111;}
+    h1{margin:0 0 6px; font-size:20px;}
+    h2{margin:18px 0 8px; font-size:16px;}
+    .sub{color:#444; font-size:12px; margin-bottom:14px;}
+    .card{border:1px solid #ddd; border-radius:12px; padding:14px; margin:12px 0;}
+    .row{display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+    .k{color:#555; font-size:11px; text-transform:uppercase; letter-spacing:.02em;}
+    .v{font-size:14px; font-weight:600;}
+    table{width:100%; border-collapse:collapse; margin-top:10px;}
+    th,td{border-bottom:1px solid #eee; padding:10px 6px; text-align:left; font-size:12px;}
+    th{text-transform:uppercase; letter-spacing:.02em; color:#555; font-size:11px;}
+    .amt{text-align:right; font-weight:700;}
+    img.qr{width:220px; height:220px; image-rendering:pixelated; border:1px solid #ddd; border-radius:12px; padding:10px; background:#fff;}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:10px; white-space:pre-wrap; color:#333;}
+    @media print{button{display:none} body{padding:0} .card{break-inside:avoid}}
+  </style></head><body>${html}</body></html>`);
+  w.document.close();
+  w.focus();
+  setTimeout(()=>{w.print();}, 250);
+}
+
+async function _qrDataUrl(raw){
+  if(!raw) return '';
+  try{
+    if(QRCode?.toDataURL){
+      return await QRCode.toDataURL(raw, {errorCorrectionLevel:'M', margin:1, width:320});
+    }
+    // fallback: render to temp canvas
+    const c=document.createElement('canvas');
+    await QRCode.toCanvas(c, raw, {errorCorrectionLevel:'M', margin:1, width:320});
+    return c.toDataURL('image/png');
+  }catch(e){
+    console.error(e);
+    return '';
+  }
+}
+
+async function exportInvPdf(i){
+  const s=S.sectors[curSec];const r=s?.rows?.[i];
+  if(!r){toast('Rechnung nicht gefunden','error');return;}
+  if(!r.qrRaw){toast('Kein QR gespeichert – PDF ohne QR nicht möglich','warning');return;}
+  const meta = r.qrMeta && typeof r.qrMeta==='object' ? r.qrMeta : (parseSwissQr(r.qrRaw)||parseEpcQr(r.qrRaw)||{kind:'generic',preview:String(r.qrRaw||'').slice(0,180)});
+  const qrUrl = await _qrDataUrl(r.qrRaw);
+  const title = `${(S.orgName||'Organisator')} – Rechnung`;
+  const html = `
+    <h1>${esc(S.orgName||'Organisator')}</h1>
+    <div class="sub">${esc(s?.name||'Rechnungen')} • ${esc(fmtD(r.datum||''))}</div>
+    <div class="card">
+      <div class="row">
+        <div><div class="k">Empfänger</div><div class="v">${esc(r.payee||meta?.creditor?.name||meta?.name||'')}</div></div>
+        <div><div class="k">Betrag</div><div class="v">CHF ${esc(fmtN(r.amount))}</div></div>
+      </div>
+    </div>
+    <div class="card" style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
+      ${qrUrl?`<img class="qr" src="${qrUrl}" alt="QR Code">`:''}
+      <div style="flex:1;min-width:240px">
+        <h2>Details</h2>
+        <div class="mono">${esc(formatQrMeta(meta))}</div>
+      </div>
+    </div>
+  `;
+  toast('PDF Druckdialog geöffnet','success');
+  _printHtml(title, html);
+}
+
+async function exportMonthPdf(){
+  const s=S.sectors[curSec];if(!s){toast('Kein Sektor','error');return;}
+  const allRows=s.rows||[];
+  const rows=curMonth?allRows.filter(r=>(r.datum||'').startsWith(curMonth)):allRows.slice();
+  if(!rows.length){toast('Keine Rechnungen in diesem Monat','warning');return;}
+  const total=rows.reduce((a,r)=>a+(Number(r.amount)||0),0);
+  const [y,mo]=(curMonth||'').split('-');
+  const monthLabel = (curMonth && mo)? `${MONTHS[parseInt(mo,10)-1]} ${y}` : 'Alle';
+  // build table rows with optional small QR
+  const qrUrls = await Promise.all(rows.map(r=>r.qrRaw?_qrDataUrl(r.qrRaw):Promise.resolve('')));
+  const tbl = rows.map((r,idx)=>{
+    const q=qrUrls[idx];
+    return `<tr>
+      <td>${idx+1}</td>
+      <td>${esc(fmtD(r.datum||''))}</td>
+      <td>${esc(r.payee||'')}</td>
+      <td class="amt">CHF ${esc(fmtN(r.amount))}</td>
+      <td>${q?`<img class="qr" src="${q}" alt="QR" style="width:120px;height:120px;padding:6px;border-radius:10px">`:''}</td>
+    </tr>`;
+  }).join('');
+  const html = `
+    <h1>${esc(S.orgName||'Organisator')}</h1>
+    <div class="sub">${esc(s.name||'Rechnungen')} • ${esc(monthLabel)}</div>
+    <div class="card">
+      <div class="row">
+        <div><div class="k">Rechnungen</div><div class="v">${rows.length}</div></div>
+        <div><div class="k">Total</div><div class="v">CHF ${esc(fmtN(total))}</div></div>
+      </div>
+      <table>
+        <thead><tr><th>#</th><th>Datum</th><th>Empfänger</th><th class="amt">Betrag</th><th>QR</th></tr></thead>
+        <tbody>${tbl}</tbody>
+      </table>
+    </div>
+  `;
+  toast('Monats-PDF Druckdialog geöffnet','success');
+  _printHtml(`${S.orgName||'Organisator'} – ${s.name||'Rechnungen'} – ${monthLabel}`, html);
+}
+
+async function showInvDetails(i){
+  await showInvQR(i);
+  toast('Details geöffnet','info');
 }
 
 
@@ -984,7 +1112,7 @@ function delUsr(i){if(!confirm(`"${S.users[i]?.name}" löschen?`))return;S.users
 
 /* ===== CSV ===== */
 function csvSec(){const s=S.sectors[curSec];if(!s)return;const vf=vF(s);const hdr=['#','Datum','Ersteller',...vf.map(f=>fL(s,f.key))];const rows=s.rows.map((r,i)=>[i+1,r.datum||'',r.ersteller||'',...vf.map(f=>r[f.key]??'')]);dlCSV(s.name+'.csv',[hdr,...rows]);}
-function csvInv(){const s=S.sectors[curSec];if(!s)return;const hdr=['#','Datum','Beschreibung','Referenz','Betrag'];const rows=(s.rows||[]).map((r,i)=>[i+1,r.datum||'',r.desc||'',r.ref||'',r.amount||'']);dlCSV(s.name+'_Rechnungen.csv',[hdr,...rows]);}
+function csvInv(){const s=S.sectors[curSec];if(!s)return;const hdr=['#','Datum','Empfänger','Betrag','Referenz','QR'];const rows=(s.rows||[]).map((r,i)=>[i+1,r.datum||'',r.payee||'',r.amount||'',r.ref||'',r.qrRaw||'']);dlCSV(s.name+'_Rechnungen.csv',[hdr,...rows]);}
 function csvAll(){const rows=[['Sektor','Typ','Datum','Ersteller','F1','F2','F3','F4','F5','F6','F7','F8']];S.sectors.forEach(s=>{(s.rows||[]).forEach(r=>{if(s.type==='rechnungen')rows.push([s.name,'Rechnung',r.datum||'',r.ersteller||'',r.desc||'',r.ref||'','','',r.amount||'','','','']);else rows.push([s.name,'Standard',r.datum||'',r.ersteller||'',...FIELDS.map(f=>r[f.key]??'')]);});});dlCSV('SektorTracker_Export.csv',rows);}
 function dlCSV(name,data){const csv=data.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(';')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download=name;a.click();toast('CSV exportiert','success');}
 function jsonExport(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:'application/json'}));a.download='SektorTracker_Backup.json';a.click();toast('JSON exportiert','success');}
@@ -998,7 +1126,7 @@ openPwModal,changePw,
 appLogin,appLogout,openSec,
 addRow,editRow,saveRow,cancelRow,delRow,
 setMonth,addInvMonth,addInv,editInvRow,saveInvRow,cancelInvRow,delInvRow,
-openScanner,qrAddSector,closeScanner,addScanned,showInvQR,copyQrRaw,
+openScanner,qrAddSector,closeScanner,addScanned,showInvDetails,showInvQR,copyQrRaw,exportInvPdf,exportMonthPdf,
 rMsg,sendMsg,
 saveOrg,admAddSec,openRen,renameSec,delSec,openCfg,saveCfg,
 admAddUsr,delUsr,csvSec,csvInv,csvAll,jsonExport};
