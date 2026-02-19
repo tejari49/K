@@ -135,7 +135,7 @@ header{padding-top:env(safe-area-inset-top)}
 </style>
 
 <!-- PWA -->
-<link rel="manifest" href="/manifest_trackerrai_v10.webmanifest">
+<link rel="manifest" href="/manifest_trackerrai_v11.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Sektor Tracker">
@@ -176,7 +176,7 @@ header{padding-top:env(safe-area-inset-top)}
 <div class="hdr">
 <div class="brand"><div class="brand-icon">ST</div><div><h1>Sektor Tracker</h1><small id="orgLbl" style="text-transform:uppercase;font-weight:900;letter-spacing:.04em">Organisation</small></div></div>
 <div class="ha">
-<span class="uchip" id="uChip" onclick="ST.openPwModal()" title="Passwort ändern">—</span>
+<span class="uchip" id="uChip" onclick="ST.openPwModal()" title="Passwort ändern">-</span>
 <button class="hb" id="navMsg" style="display:none;position:relative" onclick="ST.show('msg')">MSG <span id="msgBadge" class="badge" style="display:none">0</span></button>
 <button class="hb" id="navAdm" style="display:none" onclick="ST.show('admin')"> Admin</button>
 <button class="hb" onclick="ST.show('dash')">Start</button>
@@ -209,7 +209,7 @@ header{padding-top:env(safe-area-inset-top)}
 <!-- SECTOR VIEW (Standard) -->
 <div id="secV" class="view">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.7rem">
-<div><button class="btn bgh bs" onclick="ST.show('dash')">← Zurück</button><h2 style="font-size:1.15rem;font-weight:800;margin-top:.4rem" id="secT">Sektor</h2></div>
+<div><button class="btn bgh bs" onclick="ST.show('dash')">< Zurück</button><h2 style="font-size:1.15rem;font-weight:800;margin-top:.4rem" id="secT">Sektor</h2></div>
 <div style="display:flex;gap:6px"><button class="btn bp" onclick="ST.addRow()">+ Eintrag</button><button class="btn bs" onclick="ST.csvSec()">CSV CSV</button></div>
 </div>
 <div class="card" style="padding:.65rem"><div class="tw"><table><thead><tr id="sTh"></tr></thead><tbody id="sTb"></tbody></table></div></div>
@@ -219,7 +219,7 @@ header{padding-top:env(safe-area-inset-top)}
 <!-- RECHNUNGEN VIEW -->
 <div id="invV" class="view">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.7rem">
-<div><button class="btn bgh bs" onclick="ST.show('dash')">← Zurück</button><h2 style="font-size:1.15rem;font-weight:800;margin-top:.4rem" id="invT">Rechnungen</h2></div>
+<div><button class="btn bgh bs" onclick="ST.show('dash')">< Zurück</button><h2 style="font-size:1.15rem;font-weight:800;margin-top:.4rem" id="invT">Rechnungen</h2></div>
 <div style="display:flex;gap:6px"><button class="btn bg" onclick="ST.openScanner()"> QR scannen</button><button class="btn bp" onclick="ST.addInv()">+ Manuell</button><button class="btn bs" onclick="ST.csvInv()">CSV</button></div>
 </div>
 <div id="invTotalCard" class="card" style="display:none"></div>
@@ -260,7 +260,7 @@ header{padding-top:env(safe-area-inset-top)}
 <div class="fr"><div><label>Empfänger</label><select id="msgTo"></select></div></div>
 <div class="fg"><label>Nachricht</label><textarea id="msgTxt" placeholder="Nachricht eingeben..."></textarea></div>
 <button class="btn bp bs" onclick="ST.sendMsg()">Senden</button></div>
-<div class="card" style="border-color:#fecaca"><h3 style="color:var(--err)">⚠️ Gefahrenzone</h3><button class="btn bd bs" onclick="ST.jsonExport()"> JSON-Backup</button></div>
+<div class="card" style="border-color:#fecaca"><h3 style="color:var(--err)">! Gefahrenzone</h3><button class="btn bd bs" onclick="ST.jsonExport()"> JSON-Backup</button></div>
 </div>
 </main>
 
@@ -272,7 +272,7 @@ header{padding-top:env(safe-area-inset-top)}
 <div id="pwErr" class="auth-err"></div>
 <div class="mft"><button class="btn bs" onclick="ST.closeModal('pw')">Abbrechen</button><button class="btn bp bs" onclick="ST.changePw()">Ändern</button></div></div></div>
 
-<div class="mo" id="secCfgModal"><div class="modal"><h3>️ Spalten für <span id="cfgSecName"></span></h3>
+<div class="mo" id="secCfgModal"><div class="modal"><h3> Spalten für <span id="cfgSecName"></span></h3>
 <p style="font-size:.8rem;color:var(--tx2);margin-bottom:.6rem">Leer = ausgeblendet</p>
 <div id="cfgFields" class="fr"></div>
 <div class="mft"><button class="btn bs" onclick="ST.closeModal('secCfg')">Abbrechen</button><button class="btn bp bs" onclick="ST.saveCfg()">Speichern</button></div></div></div>
@@ -294,6 +294,7 @@ header{padding-top:env(safe-area-inset-top)}
   <p style="font-size:.82rem;color:var(--tx2);margin-bottom:.75rem">Zeigt den gespeicherten QR-Code der Rechnung (z.B. Swiss QR-Rechnung) wieder an.</p>
   <div style="display:flex;justify-content:center;margin:.4rem 0 .9rem">
     <canvas id="qrCanvas" style="max-width:100%;border:1px solid var(--brd);border-radius:12px;padding:10px;background:#fff"></canvas>
+    <img id="qrImg" alt="QR" style="display:none;max-width:100%;border:1px solid var(--brd);border-radius:12px;padding:10px;background:#fff" />
   </div>
   <div class="fg">
     <label>QR-Inhalt (optional)</label>
@@ -382,12 +383,12 @@ async function initFirebase(){
       auth=firebase.auth();db=firebase.database();
       // Test connection
       await db.ref('.info/connected').once('value');
-      connSt(true,'✓ Verbunden');
+      connSt(true,'OK Verbunden');
       setupAuth();
       return;
     }catch(e){console.warn('DB URL failed:',url,e);}
   }
-  connSt(false,'✗ DB nicht erreichbar – prüfe Firebase Realtime Database');
+  connSt(false,'X DB nicht erreichbar - prüfe Firebase Realtime Database');
   // Still set up auth with last tried
   auth=firebase.auth();db=firebase.database();
   setupAuth();
@@ -473,7 +474,7 @@ function refreshUI(){
 }
 
 /* ===== APP USER ===== */
-function appLogin(){const n=$('auN').value.trim(),p=$('auP').value;if(!n){toast('Name eingeben','warning');return;}const u=S.users.find(x=>x.name.toLowerCase()===n.toLowerCase()&&x.pw===p);if(!u){toast('Ungültige Daten','error');return;}appUsr=u;isOwner=false;$('auN').style.display='none';$('auP').style.display='none';$('auLB').style.display='none';$('auLbl').style.display='inline';$('auLbl').textContent='✅ '+u.name;$('auOB').style.display='inline-flex';$('uChip').textContent=u.name;$('navAdm').style.display=u.isAdmin?'inline-flex':'none';$('navMsg').style.display='inline-flex';toast('Eingeloggt als '+u.name,'success');show('dash');}
+function appLogin(){const n=$('auN').value.trim(),p=$('auP').value;if(!n){toast('Name eingeben','warning');return;}const u=S.users.find(x=>x.name.toLowerCase()===n.toLowerCase()&&x.pw===p);if(!u){toast('Ungültige Daten','error');return;}appUsr=u;isOwner=false;$('auN').style.display='none';$('auP').style.display='none';$('auLB').style.display='none';$('auLbl').style.display='inline';$('auLbl').textContent=' '+u.name;$('auOB').style.display='inline-flex';$('uChip').textContent=u.name;$('navAdm').style.display=u.isAdmin?'inline-flex':'none';$('navMsg').style.display='inline-flex';toast('Eingeloggt als '+u.name,'success');show('dash');}
 function appLogout(){appUsr=null;isOwner=true;$('auN').style.display='';$('auP').style.display='';$('auLB').style.display='';$('auLbl').style.display='none';$('auOB').style.display='none';$('auN').value='';$('auP').value='';$('uChip').textContent=fbUser?.displayName||fbUser?.email||'';$('navAdm').style.display='inline-flex';toast('Abgemeldet','info');show('dash');}
 
 /* ===== DASHBOARD ===== */
@@ -505,8 +506,8 @@ function rSec(){
   if(!s.rows?.length){tb.innerHTML=`<tr><td colspan="${vf.length+4}" style="text-align:center;color:var(--tx2);padding:2rem">Keine Einträge</td></tr>`;$('secSm').style.display='none';return;}
   s.rows.forEach((r,i)=>{
     const tr=document.createElement('tr');
-    if(r._ed){let ei=0,c=`<td style="color:var(--tx3)">${i+1}</td><td><input type="date" value="${r.datum||''}" data-i="${i}" data-f="datum" data-enter="${++ei}"></td><td><input value="${esc(r.ersteller||'')}" disabled style="min-width:60px"></td>`;vf.forEach(f=>{c+=`<td><input type="${fT(f.key)==='number'?'number':'text'}" value="${esc(r[f.key]??'')}" data-i="${i}" data-f="${f.key}" data-enter="${++ei}" step="any" placeholder="${esc(fL(s,f.key))}"></td>`;});c+=`<td style="white-space:nowrap"><button class="btn bg bs" data-enter="${++ei}" onclick="ST.saveRow(${i})">✓</button> <button class="btn bd bs" onclick="ST.cancelRow(${i})">✗</button></td>`;tr.innerHTML=c;tr.style.background='#f0f9ff';}
-    else{let c=`<td style="color:var(--tx3);font-size:.78rem">${i+1}</td><td>${esc(fmtD(r.datum))}</td><td>${esc(r.ersteller||'')}</td>`;vf.forEach(f=>{let v=r[f.key];if(v!=null&&v!==''){if(fT(f.key)==='number')v=Number(v).toLocaleString('de-CH');}else v='';c+=`<td>${esc(String(v))}</td>`;});const mine=r.ersteller===uName()||canAdm();c+=`<td style="white-space:nowrap">${mine?`<button class="btn bs" onclick="ST.editRow(${i})">✏️</button> <button class="btn bd bs" onclick="ST.delRow(${i})"></button>`:''}</td>`;tr.innerHTML=c;}
+    if(r._ed){let ei=0,c=`<td style="color:var(--tx3)">${i+1}</td><td><input type="date" value="${r.datum||''}" data-i="${i}" data-f="datum" data-enter="${++ei}"></td><td><input value="${esc(r.ersteller||'')}" disabled style="min-width:60px"></td>`;vf.forEach(f=>{c+=`<td><input type="${fT(f.key)==='number'?'number':'text'}" value="${esc(r[f.key]??'')}" data-i="${i}" data-f="${f.key}" data-enter="${++ei}" step="any" placeholder="${esc(fL(s,f.key))}"></td>`;});c+=`<td style="white-space:nowrap"><button class="btn bg bs" data-enter="${++ei}" onclick="ST.saveRow(${i})">OK</button> <button class="btn bd bs" onclick="ST.cancelRow(${i})">X</button></td>`;tr.innerHTML=c;tr.style.background='#f0f9ff';}
+    else{let c=`<td style="color:var(--tx3);font-size:.78rem">${i+1}</td><td>${esc(fmtD(r.datum))}</td><td>${esc(r.ersteller||'')}</td>`;vf.forEach(f=>{let v=r[f.key];if(v!=null&&v!==''){if(fT(f.key)==='number')v=Number(v).toLocaleString('de-CH');}else v='';c+=`<td>${esc(String(v))}</td>`;});const mine=r.ersteller===uName()||canAdm();c+=`<td style="white-space:nowrap">${mine?`<button class="btn bs" onclick="ST.editRow(${i})"></button> <button class="btn bd bs" onclick="ST.delRow(${i})"></button>`:''}</td>`;tr.innerHTML=c;}
     tb.appendChild(tr);
   });
   // Summary
@@ -559,11 +560,11 @@ function rInv(){
     const ri=allRows.indexOf(r);
     const tr=document.createElement('tr');
     if(r._ed){
-      tr.innerHTML=`<td>${fi+1}</td><td><input type="date" value="${r.datum||''}" data-ri="${ri}" data-f="datum" data-enter="1"></td><td><input value="${esc(r.desc||'')}" data-ri="${ri}" data-f="desc" data-enter="2" placeholder="Beschreibung"></td><td><input value="${esc(r.ref||'')}" data-ri="${ri}" data-f="ref" data-enter="3" placeholder="Referenz"></td><td><input type="number" step="0.01" value="${r.amount||''}" data-ri="${ri}" data-f="amount" data-enter="4" style="text-align:right"></td><td><button class="btn bg bs" data-enter="5" onclick="ST.saveInvRow(${ri})">✓</button> <button class="btn bd bs" onclick="ST.cancelInvRow(${ri})">✗</button></td>`;
+      tr.innerHTML=`<td>${fi+1}</td><td><input type="date" value="${r.datum||''}" data-ri="${ri}" data-f="datum" data-enter="1"></td><td><input value="${esc(r.desc||'')}" data-ri="${ri}" data-f="desc" data-enter="2" placeholder="Beschreibung"></td><td><input value="${esc(r.ref||'')}" data-ri="${ri}" data-f="ref" data-enter="3" placeholder="Referenz"></td><td><input type="number" step="0.01" value="${r.amount||''}" data-ri="${ri}" data-f="amount" data-enter="4" style="text-align:right"></td><td><button class="btn bg bs" data-enter="5" onclick="ST.saveInvRow(${ri})">OK</button> <button class="btn bd bs" onclick="ST.cancelInvRow(${ri})">X</button></td>`;
       tr.style.background='#f0fdf4';
     } else {
       const mine=r.ersteller===uName()||canAdm();
-      tr.innerHTML=`<td style="color:var(--tx3);font-size:.78rem">${fi+1}</td><td>${esc(fmtD(r.datum))}</td><td>${esc(r.desc||'')}</td><td style="font-size:.8rem;color:var(--tx2)">${esc(r.ref||'')}${r.qrRaw?` <button class="btn bs" onclick="ST.showInvQR(${ri})" title="QR anzeigen">QR</button>`:''}</td><td style="text-align:right;font-weight:700">${fmtN(r.amount)}</td><td style="white-space:nowrap">${mine?`<button class="btn bs" onclick="ST.editInvRow(${ri})">✏️</button> <button class="btn bd bs" onclick="ST.delInvRow(${ri})"></button>`:''}</td>`;
+      tr.innerHTML=`<td style="color:var(--tx3);font-size:.78rem">${fi+1}</td><td>${esc(fmtD(r.datum))}</td><td>${esc(r.desc||'')}</td><td style="font-size:.8rem;color:var(--tx2)">${esc(r.ref||'')}${r.qrRaw?` <button class="btn bs" onclick="ST.showInvQR(${ri})" title="QR anzeigen">QR</button>`:''}</td><td style="text-align:right;font-weight:700">${fmtN(r.amount)}</td><td style="white-space:nowrap">${mine?`<button class="btn bs" onclick="ST.editInvRow(${ri})"></button> <button class="btn bd bs" onclick="ST.delInvRow(${ri})"></button>`:''}</td>`;
     }
     tb.appendChild(tr);
   });
@@ -673,27 +674,46 @@ async function ensureQrLib(){
 
 /* ===== QR DISPLAY (for stored invoices) ===== */
 async function showInvQR(i){
-  const s=S.sectors[curSec];const r=s?.rows?.[i];
-  if(!r||!r.qrRaw){toast('Kein QR für diese Rechnung gespeichert','warning');return;}
+  const s=S.sectors[curSec];
+  const r=s?.rows?.[i];
+  if(!r||!r.qrRaw){toast('Kein QR fuer diese Rechnung gespeichert','warning');return;}
   $('qrRawTxt').value=r.qrRaw;
   openModal('qrShow');
-  const okLib = await ensureQrLib();
-  if(!okLib){toast('QR-Bibliothek konnte nicht geladen werden','error');return;}
 
-  // Render QR into canvas
   const c=$('qrCanvas');
-  // Ensure visible size in standalone PWA (some devices report 0x0 until sized)
+  const img=$('qrImg');
+
+  // Ensure visible size in standalone PWA
   const px = Math.min(320, Math.floor((window.innerWidth||360)*0.78));
   c.width = px; c.height = px;
 
+  // Try local JS QR lib first; if not available, fall back to remote image.
+  const okLib = await ensureQrLib();
+  if(okLib){
+    img.style.display='none';
+    c.style.display='block';
+    try{
+      await QRCode.toCanvas(c, r.qrRaw, {errorCorrectionLevel:'M', margin:1, width:px});
+      return;
+    }catch(e){
+      console.warn('toCanvas failed, fallback to image', e);
+    }
+  }
+
+  // Fallback: render via remote QR image service (requires internet)
   try{
-    // High error correction for better scanning off-screen
-    await QRCode.toCanvas(c, r.qrRaw, {errorCorrectionLevel:'M', margin:1, width:280});
+    const data=encodeURIComponent(r.qrRaw);
+    const url='https://api.qrserver.com/v1/create-qr-code/?size='+px+'x'+px+'&margin=10&data='+data;
+    img.src=url;
+    img.style.display='block';
+    c.style.display='none';
+    toast('QR als Bild geladen (Internet erforderlich)','info');
   }catch(e){
     console.error(e);
-    toast('QR konnte nicht gerendert werden','error');
+    toast('QR konnte nicht angezeigt werden','error');
   }
 }
+
 async function copyQrRaw(){
   const t=$('qrRawTxt').value||'';
   if(!t){toast('Nichts zu kopieren','warning');return;}
@@ -746,7 +766,7 @@ function saveOrg(){S.orgName=$('aOrg').value.trim()||'';save();$('orgLbl').textC
 function rAdmSec(){
   const l=$('aSecL');
   if(!S.sectors.length){l.innerHTML='<p style="color:var(--tx2);font-size:.85rem">Keine Sektoren.</p>';return;}
-  l.innerHTML=S.sectors.map((s,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--brd)"><span style="font-weight:600">${esc(s.name)} <span class="pill ${s.type==='rechnungen'?'pw':'pi'}">${s.type==='rechnungen'?'Rechnungen':'Standard'}</span> <span class="pill pi">${(s.rows||[]).length}</span></span><div style="display:flex;gap:4px">${s.type!=='rechnungen'?`<button class="btn bs" onclick="ST.openCfg(${i})" title="Spalten">️</button>`:''}<button class="btn bs" onclick="ST.openRen(${i})">✏️</button><button class="btn bd bs" onclick="ST.delSec(${i})"></button></div></div>`).join('');
+  l.innerHTML=S.sectors.map((s,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--brd)"><span style="font-weight:600">${esc(s.name)} <span class="pill ${s.type==='rechnungen'?'pw':'pi'}">${s.type==='rechnungen'?'Rechnungen':'Standard'}</span> <span class="pill pi">${(s.rows||[]).length}</span></span><div style="display:flex;gap:4px">${s.type!=='rechnungen'?`<button class="btn bs" onclick="ST.openCfg(${i})" title="Spalten"></button>`:''}<button class="btn bs" onclick="ST.openRen(${i})"></button><button class="btn bd bs" onclick="ST.delSec(${i})"></button></div></div>`).join('');
 }
 function admAddSec(){const n=$('aNS').value.trim(),t=$('aNT').value;if(!n){toast('Name eingeben','warning');return;}S.sectors.push({id:cid(),name:n,type:t,rows:[],fieldConfig:{}});$('aNS').value='';save();toast('Erstellt','success');}
 function openRen(i){renIdx=i;$('mSR').value=S.sectors[i]?.name||'';openModal('ren');}
@@ -772,7 +792,7 @@ function rAdmUsr(){
   const l=$('aUsrL'),sc=$('nuS');
   sc.innerHTML=S.sectors.map(s=>`<label style="display:flex;align-items:center;gap:4px;font-size:.82rem;background:#f8fafc;padding:3px 9px;border-radius:6px;border:1px solid var(--brd)"><input type="checkbox" class="nu-s" value="${esc(s.name)}"> ${esc(s.name)}</label>`).join('')||'<span style="color:var(--tx2);font-size:.82rem">Zuerst Sektoren erstellen</span>';
   if(!S.users.length){l.innerHTML='<p style="color:var(--tx2);font-size:.85rem">Keine Benutzer.</p>';return;}
-  l.innerHTML='<div class="tw"><table><thead><tr><th>Name</th><th>Admin</th><th>Sektoren</th><th>Aktion</th></tr></thead><tbody>'+S.users.map((u,i)=>{const ss=(u.allowedSectors||[]).join(', ')||'<span style="color:var(--tx3)">Alle</span>';return `<tr><td><strong>${esc(u.name)}</strong></td><td>${u.isAdmin?'<span class="pill pw">Admin</span>':'—'}</td><td style="font-size:.8rem">${ss}</td><td><button class="btn bd bs" onclick="ST.delUsr(${i})"></button></td></tr>`;}).join('')+'</tbody></table></div>';
+  l.innerHTML='<div class="tw"><table><thead><tr><th>Name</th><th>Admin</th><th>Sektoren</th><th>Aktion</th></tr></thead><tbody>'+S.users.map((u,i)=>{const ss=(u.allowedSectors||[]).join(', ')||'<span style="color:var(--tx3)">Alle</span>';return `<tr><td><strong>${esc(u.name)}</strong></td><td>${u.isAdmin?'<span class="pill pw">Admin</span>':'-'}</td><td style="font-size:.8rem">${ss}</td><td><button class="btn bd bs" onclick="ST.delUsr(${i})"></button></td></tr>`;}).join('')+'</tbody></table></div>';
 }
 function admAddUsr(){const nm=$('nuN').value.trim(),pw=$('nuP').value.trim();if(!nm||!pw){toast('Name + Passwort nötig','warning');return;}if(S.users.some(u=>u.name.toLowerCase()===nm.toLowerCase())){toast('Name existiert','warning');return;}const ss=Array.from(document.querySelectorAll('.nu-s:checked')).map(c=>c.value);S.users.push({name:nm,pw,isAdmin:$('nuA').checked,allowedSectors:ss});$('nuN').value='';$('nuP').value='';$('nuA').checked=false;save();toast('Angelegt','success');}
 function delUsr(i){if(!confirm(`"${S.users[i]?.name}" löschen?`))return;S.users.splice(i,1);save();toast('Gelöscht','success');}
@@ -802,7 +822,7 @@ admAddUsr,delUsr,csvSec,csvInv,csvAll,jsonExport};
 // ===== PWA Service Worker =====
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw_trackerrai_v10.js').catch(() => {});
+    navigator.serviceWorker.register('/sw_trackerrai_v11.js').catch(() => {});
   });
 }
 
