@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#0ea5e9">
-<link rel="manifest" href="/manifest_trackerrai.webmanifest">
-<link rel="apple-touch-icon" href="/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default"><title>TRACKERRAI tracker</title>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<title>Sektor Tracker</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='10' y='10' width='35' height='35' rx='6' fill='%230ea5e9'/><rect x='55' y='10' width='35' height='35' rx='6' fill='%2338bdf8'/><rect x='10' y='55' width='35' height='35' rx='6' fill='%2338bdf8'/><rect x='55' y='55' width='35' height='35' rx='6' fill='%230ea5e9'/></svg>">
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -133,13 +133,20 @@ header{padding-top:env(safe-area-inset-top)}
 
 </style>
 
-<!-- PWA --></head>
+<!-- PWA -->
+<link rel="manifest" href="manifest_trackerrai_v9.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sektor Tracker">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+</head>
 <body>
 
 <!-- AUTH -->
 <div id="authOv" class="auth-ov">
 <div class="auth-box">
-<h2>馃摝 Sektor Tracker</h2>
+<h2>ðŸ“¦ Sektor Tracker</h2>
 <p class="sub">Anmelden oder Konto erstellen</p>
 <div class="auth-tabs">
 <button class="auth-tab on" onclick="ST.authTab('login')">Anmelden</button>
@@ -147,7 +154,7 @@ header{padding-top:env(safe-area-inset-top)}
 </div>
 <div id="authLogin">
 <div class="fg"><label>E-Mail</label><input type="email" id="liEm" placeholder="name@firma.ch"></div>
-<div class="fg"><label>Passwort</label><input type="password" id="liPw" placeholder="********"></div>
+<div class="fg"><label>Passwort</label><input type="password" id="liPw" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"></div>
 <button class="btn bp bb" id="liBtn" onclick="ST.login()">Anmelden</button>
 <div id="liErr" class="auth-err"></div>
 <span class="auth-link" onclick="ST.resetPw()">Passwort vergessen?</span>
@@ -155,46 +162,24 @@ header{padding-top:env(safe-area-inset-top)}
 <div id="authReg" style="display:none">
 <div class="fg"><label>E-Mail</label><input type="email" id="rgEm" placeholder="name@firma.ch"></div>
 <div class="fg"><label>Anzeigename</label><input type="text" id="rgNm" placeholder="Vor- / Nachname"></div>
-<div class="fg"><label>Passwort (min. 6)</label><input type="password" id="rgPw" placeholder="********"></div>
-<div class="fg"><label>Passwort best盲tigen</label><input type="password" id="rgPw2" placeholder="********"></div>
+<div class="fg"><label>Passwort (min. 6)</label><input type="password" id="rgPw" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"></div>
+<div class="fg"><label>Passwort bestÃ¤tigen</label><input type="password" id="rgPw2" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"></div>
 <button class="btn bp bb" id="rgBtn" onclick="ST.register()">Konto erstellen</button>
 <div id="rgErr" class="auth-err"></div>
 </div>
 </div>
 </div>
 
-
-<!-- LOCK / PIN -->
-<div id="lockMo" class="mo">
-  <div class="modal" style="max-width:420px">
-    <h3>馃敀 Daten entsperren</h3>
-    <p style="color:var(--tx2);font-size:.88rem;margin-top:-.35rem">F眉r die verschl眉sselte Speicherung/Anzeige von QR-Rechnungen bitte einen PIN/Passphrase setzen.</p>
-    <div class="fg" style="margin-top:.9rem">
-      <label>PIN / Passphrase</label>
-      <input id="pinIn" type="password" placeholder="z.B. 6-stellig oder Satz">
-    </div>
-    <label style="display:flex;align-items:center;gap:8px;font-size:.84rem;color:var(--tx2);margin-top:.35rem">
-      <input id="pinRemember" type="checkbox" checked> Nur f眉r diese Session merken
-    </label>
-    <div id="pinErr" class="auth-err" style="margin-top:.5rem"></div>
-    <div class="mft">
-      <button class="btn" onclick="ST.lockCancel()">Abbrechen</button>
-      <button class="btn bp" onclick="ST.unlock()">Entsperren</button>
-    </div>
-  </div>
-</div>
-
-
 <!-- HEADER -->
 <header>
 <div class="hdr">
-<div class="brand"><div class="brand-icon">ST</div><div><h1 style="letter-spacing:.06em">TRACKERRAI</h1><small id="orgLbl">tracker</small></div></div>
+<div class="brand"><div class="brand-icon">ST</div><div><h1>Sektor Tracker</h1><small id="orgLbl" style="text-transform:uppercase;font-weight:900;letter-spacing:.04em">Organisation</small></div></div>
 <div class="ha">
-<span class="uchip" id="uChip" onclick="ST.openPwModal()" title="Passwort 盲ndern">鈥�</span>
-<button class="hb" id="navMsg" style="display:none;position:relative" onclick="ST.show('msg')">馃挰 <span id="msgBadge" class="badge" style="display:none">0</span></button>
-<button class="hb" id="navAdm" style="display:none" onclick="ST.show('admin')">鈿� Admin</button>
-<button class="hb" onclick="ST.show('dash')">馃彔</button>
-<button class="hb" onclick="ST.csvAll()" title="CSV">馃摜</button>
+<span class="uchip" id="uChip" onclick="ST.openPwModal()" title="Passwort Ã¤ndern">â€”</span>
+<button class="hb" id="navMsg" style="display:none;position:relative" onclick="ST.show('msg')">ðŸ’¬ <span id="msgBadge" class="badge" style="display:none">0</span></button>
+<button class="hb" id="navAdm" style="display:none" onclick="ST.show('admin')">âš™ Admin</button>
+<button class="hb" onclick="ST.show('dash')">ðŸ </button>
+<button class="hb" onclick="ST.csvAll()" title="CSV">ðŸ“¥</button>
 <button class="hb" onclick="ST.logout()">Logout</button>
 </div>
 </div>
@@ -203,7 +188,7 @@ header{padding-top:env(safe-area-inset-top)}
 <main>
 <!-- App User Bar -->
 <div id="appBar" class="app-bar" style="display:none">
-<span>馃懁</span>
+<span>ðŸ‘¤</span>
 <input id="auN" placeholder="Name">
 <input id="auP" type="password" placeholder="Passwort">
 <button class="btn bp bs" id="auLB" onclick="ST.appLogin()">Login</button>
@@ -223,8 +208,8 @@ header{padding-top:env(safe-area-inset-top)}
 <!-- SECTOR VIEW (Standard) -->
 <div id="secV" class="view">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.7rem">
-<div><button class="btn bgh bs" onclick="ST.show('dash')">鈫� Zur眉ck</button><h2 style="font-size:1.15rem;font-weight:800;margin-top:.4rem" id="secT">Sektor</h2></div>
-<div style="display:flex;gap:6px"><button class="btn bp" onclick="ST.addRow()">+ Eintrag</button><button class="btn bs" onclick="ST.csvSec()">馃摜 CSV</button></div>
+<div><button class="btn bgh bs" onclick="ST.show('dash')">â† ZurÃ¼ck</button><h2 style="font-size:1.15rem;font-weight:800;margin-top:.4rem" id="secT">Sektor</h2></div>
+<div style="display:flex;gap:6px"><button class="btn bp" onclick="ST.addRow()">+ Eintrag</button><button class="btn bs" onclick="ST.csvSec()">ðŸ“¥ CSV</button></div>
 </div>
 <div class="card" style="padding:.65rem"><div class="tw"><table><thead><tr id="sTh"></tr></thead><tbody id="sTb"></tbody></table></div></div>
 <div id="secSm" class="card" style="display:none"></div>
@@ -233,8 +218,8 @@ header{padding-top:env(safe-area-inset-top)}
 <!-- RECHNUNGEN VIEW -->
 <div id="invV" class="view">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.7rem">
-<div><button class="btn bgh bs" onclick="ST.show('dash')">鈫� Zur眉ck</button><h2 style="font-size:1.15rem;font-weight:800;margin-top:.4rem" id="invT">Rechnungen</h2></div>
-<div style="display:flex;gap:6px"><button class="btn bg" onclick="ST.openScanner()">馃摲 QR scannen</button><button class="btn bp" onclick="ST.addInv()">+ Manuell</button><button class="btn bs" onclick="ST.addInvMonth()">+ Monat</button><button class="btn bs" onclick="ST.csvInv()">馃摜</button></div>
+<div><button class="btn bgh bs" onclick="ST.show('dash')">â† ZurÃ¼ck</button><h2 style="font-size:1.15rem;font-weight:800;margin-top:.4rem" id="invT">Rechnungen</h2></div>
+<div style="display:flex;gap:6px"><button class="btn bg" onclick="ST.openScanner()">ðŸ“· QR scannen</button><button class="btn bp" onclick="ST.addInv()">+ Manuell</button><button class="btn bs" onclick="ST.csvInv()">ðŸ“¥</button></div>
 </div>
 <div id="invTotalCard" class="card" style="display:none"></div>
 <div id="invMonthTabs" class="mtabs"></div>
@@ -245,8 +230,8 @@ header{padding-top:env(safe-area-inset-top)}
 <!-- MESSAGES VIEW -->
 <div id="msgV" class="view">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.7rem">
-<h2 style="font-size:1.15rem;font-weight:800;margin:0">馃挰 Nachrichten</h2>
-<button class="btn bs" onclick="ST.show('dash')">鈫� Start</button>
+<h2 style="font-size:1.15rem;font-weight:800;margin:0">Nachrichten</h2>
+<button class="btn bs" onclick="ST.show('dash')">â† Start</button>
 </div>
 <div id="msgList"></div>
 </div>
@@ -254,87 +239,65 @@ header{padding-top:env(safe-area-inset-top)}
 <!-- ADMIN -->
 <div id="adminV" class="view">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.7rem">
-<h2 style="font-size:1.15rem;font-weight:800;margin:0">鈿� Administration</h2>
-<button class="btn bs" onclick="ST.show('dash')">鈫� Start</button>
+<h2 style="font-size:1.15rem;font-weight:800;margin:0">âš™ Administration</h2>
+<button class="btn bs" onclick="ST.show('dash')">â† Start</button>
 </div>
-<div class="card"><h3>馃彚 Organisation</h3><div class="fr"><div><label>Name</label><input id="aOrg" placeholder="Firmenname"></div><div style="align-self:end"><button class="btn bp bs" onclick="ST.saveOrg()">Speichern</button></div></div></div>
-<div class="card"><h3>馃摝 Sektoren</h3><div id="aSecL"></div>
+<div class="card"><h3>Organisation</h3><div class="fr"><div><label>Name</label><input id="aOrg" placeholder="Firmenname"></div><div style="align-self:end"><button class="btn bp bs" onclick="ST.saveOrg()">Speichern</button></div></div></div>
+<div class="card"><h3>ðŸ“¦ Sektoren</h3><div id="aSecL"></div>
 <hr style="margin:.85rem 0;border:none;border-top:1px solid var(--brd)">
 <h4 style="font-size:.85rem;margin-bottom:.4rem">Neuer Sektor</h4>
 <div class="fr"><div><label>Name</label><input id="aNS" placeholder="Name"></div><div><label>Typ</label><select id="aNT"><option value="standard">Standard</option><option value="rechnungen">Rechnungen (Monate + QR)</option></select></div><div style="align-self:end"><button class="btn bp bs" onclick="ST.admAddSec()">Erstellen</button></div></div>
 </div>
-<div class="card"><h3>馃懃 Benutzer</h3><div id="aUsrL"></div>
+<div class="card"><h3>ðŸ‘¥ Benutzer</h3><div id="aUsrL"></div>
 <hr style="margin:.85rem 0;border:none;border-top:1px solid var(--brd)">
 <h4 style="font-size:.85rem;margin-bottom:.4rem">Neuer Benutzer</h4>
 <div class="fr"><div><label>Name</label><input id="nuN" placeholder="Name"></div><div><label>Passwort</label><input id="nuP" placeholder="Passwort"></div></div>
 <div style="margin:.4rem 0 .6rem"><label>Sektoren</label><div id="nuS" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.2rem"></div></div>
 <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.6rem"><label style="margin:0;display:flex;align-items:center;gap:5px"><input type="checkbox" id="nuA"> Admin</label></div>
 <button class="btn bp bs" onclick="ST.admAddUsr()">Anlegen</button></div>
-<div class="card"><h3>馃挰 Nachricht senden</h3>
-<div class="fr"><div><label>Empf盲nger</label><select id="msgTo"></select></div></div>
+<div class="card"><h3>ðŸ’¬ Nachricht senden</h3>
+<div class="fr"><div><label>EmpfÃ¤nger</label><select id="msgTo"></select></div></div>
 <div class="fg"><label>Nachricht</label><textarea id="msgTxt" placeholder="Nachricht eingeben..."></textarea></div>
 <button class="btn bp bs" onclick="ST.sendMsg()">Senden</button></div>
-<div class="card" style="border-color:#fecaca"><h3 style="color:var(--err)">鈿狅笍 Gefahrenzone</h3><button class="btn bd bs" onclick="ST.jsonExport()">馃搵 JSON-Backup</button></div>
+<div class="card" style="border-color:#fecaca"><h3 style="color:var(--err)">âš ï¸ Gefahrenzone</h3><button class="btn bd bs" onclick="ST.jsonExport()">ðŸ“‹ JSON-Backup</button></div>
 </div>
 </main>
 
 <!-- MODALS -->
-<div class="mo" id="pwModal"><div class="modal"><h3>馃攽 Passwort 盲ndern</h3>
+<div class="mo" id="pwModal"><div class="modal"><h3>ðŸ”‘ Passwort Ã¤ndern</h3>
 <div class="fg"><label>Aktuelles Passwort</label><input type="password" id="pwOld"></div>
 <div class="fg"><label>Neues Passwort</label><input type="password" id="pwNew"></div>
-<div class="fg"><label>Neues Passwort best盲tigen</label><input type="password" id="pwNew2"></div>
+<div class="fg"><label>Neues Passwort bestÃ¤tigen</label><input type="password" id="pwNew2"></div>
 <div id="pwErr" class="auth-err"></div>
-<div class="mft"><button class="btn bs" onclick="ST.closeModal('pw')">Abbrechen</button><button class="btn bp bs" onclick="ST.changePw()">脛ndern</button></div></div></div>
+<div class="mft"><button class="btn bs" onclick="ST.closeModal('pw')">Abbrechen</button><button class="btn bp bs" onclick="ST.changePw()">Ã„ndern</button></div></div></div>
 
-<div class="mo" id="secCfgModal"><div class="modal"><h3>馃彿锔� Spalten f眉r <span id="cfgSecName"></span></h3>
+<div class="mo" id="secCfgModal"><div class="modal"><h3>ðŸ·ï¸ Spalten fÃ¼r <span id="cfgSecName"></span></h3>
 <p style="font-size:.8rem;color:var(--tx2);margin-bottom:.6rem">Leer = ausgeblendet</p>
 <div id="cfgFields" class="fr"></div>
 <div class="mft"><button class="btn bs" onclick="ST.closeModal('secCfg')">Abbrechen</button><button class="btn bp bs" onclick="ST.saveCfg()">Speichern</button></div></div></div>
 
-<div class="mo" id="scanModal"><div class="modal"><h3>馃摲 QR-Code scannen</h3>
-<div class="fr" style="margin-top:.25rem;margin-bottom:.65rem">
-  <div>
-    <label>Sektor</label>
-    <select id="qrSecSel"></select>
-  </div>
-  <div>
-    <label>Monat</label>
-    <select id="qrMonthSel"></select>
-  </div>
-  <div style="align-self:end">
-    <button class="btn bs" onclick="ST.qrAddSector()">+ Weitere</button>
-  </div>
-</div>
+<div class="mo" id="scanModal"><div class="modal"><h3>QR-Code scannen</h3>
 <div id="qrReader"></div>
 <div id="qrResult" style="display:none;margin-top:.75rem">
 <div class="fr">
 <div><label>Betrag</label><input type="number" id="qrAmt" step="0.01"></div>
-<div><label>Empf盲nger</label><input id="qrPayee" placeholder="wird aus QR 眉bernommen"></div>
-<input id="qrDesc" type="hidden">
+<div><label>Beschreibung</label><input id="qrDesc"></div>
 </div>
-<div class="fg" style="margin-top:.5rem">
-  <label>Ausgelesene QR-Daten</label>
-  <textarea id="qrDetails" readonly style="min-height:120px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"></textarea>
-</div>
-<button class="btn bp bs" onclick="ST.addScanned()" style="margin-top:.5rem">Hinzuf眉gen</button>
+<button class="btn bp bs" onclick="ST.addScanned()" style="margin-top:.5rem">HinzufÃ¼gen</button>
 </div>
 <div class="mft"><button class="btn bs" onclick="ST.closeScanner()">Schliessen</button></div></div></div>
 
 
 <div class="mo" id="qrShowModal"><div class="modal">
-  <h3>馃敵 QR-Code anzeigen</h3>
+  <h3>QR-Code anzeigen</h3>
   <p style="font-size:.82rem;color:var(--tx2);margin-bottom:.75rem">Zeigt den gespeicherten QR-Code der Rechnung (z.B. Swiss QR-Rechnung) wieder an.</p>
   <div style="display:flex;justify-content:center;margin:.4rem 0 .9rem">
-    <canvas id="qrCanvas" width="320" height="320" style="display:block;max-width:100%;border:1px solid var(--brd);border-radius:12px;padding:10px;background:#fff"></canvas>
+    <canvas id="qrCanvas" style="max-width:100%;border:1px solid var(--brd);border-radius:12px;padding:10px;background:#fff"></canvas>
   </div>
   <div class="fg">
     <label>QR-Inhalt (optional)</label>
     <textarea id="qrRawTxt" readonly style="min-height:90px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"></textarea>
-    <details style="margin-top:.55rem">
-      <summary style="cursor:pointer;color:var(--tx2)">Ausgelesene Daten anzeigen</summary>
-      <pre id="qrMetaTxt" style="white-space:pre-wrap;font-size:.82rem;line-height:1.25;margin:.5rem 0 0;color:var(--tx2)"></pre>
-    </details>
-    <button class="btn bs" style="margin-top:.45rem" onclick="ST.copyQrRaw()">馃搵 Kopieren</button>
+    <button class="btn bs" style="margin-top:.45rem" onclick="ST.copyQrRaw()">ðŸ“‹ Kopieren</button>
   </div>
   <div class="mft"><button class="btn bs" onclick="ST.closeModal('qrShow')">Schliessen</button></div>
 </div></div>
@@ -349,111 +312,6 @@ header{padding-top:env(safe-area-inset-top)}
 <script>
 const ST = window.ST = (function(){
 'use strict';
-
-/* ===== CLIENT-SIDE ENCRYPTION (light) =====
-   - AES-GCM with PBKDF2 (SHA-256)
-   - Stores only ciphertext in Firestore/local
-   - Passphrase is kept in-memory (optionally in sessionStorage)
-*/
-let _pass = null;
-const _invDecCache = new Map(); // invoiceId -> decrypted sensitive payload
-
-function _b64FromBytes(u8){ return btoa(String.fromCharCode(...u8)); }
-function _bytesFromB64(b64){ return Uint8Array.from(atob(b64), c => c.charCodeAt(0)); }
-function _randB64(n){ const a=new Uint8Array(n); crypto.getRandomValues(a); return _b64FromBytes(a); }
-
-async function _deriveKey(pass, saltB64){
-  const enc = new TextEncoder();
-  const salt = _bytesFromB64(saltB64);
-  const keyMat = await crypto.subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveKey"]);
-  return crypto.subtle.deriveKey(
-    { name:"PBKDF2", salt, iterations:150000, hash:"SHA-256" },
-    keyMat,
-    { name:"AES-GCM", length:256 },
-    false,
-    ["encrypt","decrypt"]
-  );
-}
-
-async function encryptJson(pass, obj){
-  const enc = new TextEncoder();
-  const saltB64 = _randB64(16);
-  const ivB64 = _randB64(12);
-  const key = await _deriveKey(pass, saltB64);
-  const iv = _bytesFromB64(ivB64);
-  const pt = enc.encode(JSON.stringify(obj));
-  const ctBuf = await crypto.subtle.encrypt({name:"AES-GCM", iv}, key, pt);
-  const ctB64 = _b64FromBytes(new Uint8Array(ctBuf));
-  return { v:1, alg:"AES-GCM", kdf:"PBKDF2-SHA256", saltB64, ivB64, ctB64 };
-}
-
-async function decryptJson(pass, pack){
-  const dec = new TextDecoder();
-  const key = await _deriveKey(pass, pack.saltB64);
-  const iv = _bytesFromB64(pack.ivB64);
-  const ct = _bytesFromB64(pack.ctB64);
-  const ptBuf = await crypto.subtle.decrypt({name:"AES-GCM", iv}, key, ct);
-  return JSON.parse(dec.decode(new Uint8Array(ptBuf)));
-}
-
-function _lockShow(on){
-  const mo=$('lockMo'); if(!mo) return;
-  if(on){ mo.classList.add('on'); setTimeout(()=>{$('pinIn')?.focus();},30); }
-  else { mo.classList.remove('on'); $('pinErr').textContent=''; $('pinIn').value=''; }
-}
-function lockCancel(){
-  _lockShow(false);
-  toast('Entsperren abgebrochen','info');
-}
-
-async function ensureUnlocked(){
-  if(_pass) return true;
-  // Try sessionStorage if available (session only)
-  try{
-    const sp = sessionStorage.getItem('st_pass');
-    if(sp){ _pass = sp; return true; }
-  }catch(_){}
-  _lockShow(true);
-  return false;
-}
-
-async function unlock(){
-  const pin = $('pinIn')?.value || '';
-  const err = $('pinErr');
-  err.textContent='';
-  if(String(pin).trim().length < 4){ err.textContent='Mindestens 4 Zeichen.'; toast('PIN zu kurz','warning'); return; }
-  _pass = String(pin).trim();
-  // Session remember
-  const remember = $('pinRemember')?.checked;
-  try{ if(remember) sessionStorage.setItem('st_pass', _pass); else sessionStorage.removeItem('st_pass'); }catch(_){}
-  _lockShow(false);
-  toast('Entsperrt','success');
-}
-
-async function getInvSensitive(r){
-  if(!r) return null;
-  if(r.encryptedBlob && r.id){
-    if(_invDecCache.has(r.id)) return _invDecCache.get(r.id);
-    if(!await ensureUnlocked()) return null;
-    try{
-      const dec = await decryptJson(_pass, r.encryptedBlob);
-      _invDecCache.set(r.id, dec);
-      return dec;
-    }catch(e){
-      toast('PIN falsch oder Daten besch盲digt','error');
-      return null;
-    }
-  }
-  // Legacy/plain
-  return {
-    qrRaw: r.qrRaw||'',
-    qrMeta: r.qrMeta||null,
-    desc: r.desc||'',
-    ref: r.ref||'',
-    payee: r.payee||''
-  };
-}
-
 
 /* ===== FIREBASE ===== */
 const FB_CFG={
@@ -492,7 +350,7 @@ const INV_FIELDS=[
   {key:'ref',label:'Referenz/QR'},
   {key:'amount',label:'Betrag',type:'number'}
 ];
-const MONTHS=['Januar','Februar','M盲rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+const MONTHS=['Januar','Februar','MÃ¤rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
 
 /* ===== UTIL ===== */
 const $=id=>document.getElementById(id);
@@ -523,12 +381,12 @@ async function initFirebase(){
       auth=firebase.auth();db=firebase.database();
       // Test connection
       await db.ref('.info/connected').once('value');
-      connSt(true,'鉁� Verbunden');
+      connSt(true,'âœ“ Verbunden');
       setupAuth();
       return;
     }catch(e){console.warn('DB URL failed:',url,e);}
   }
-  connSt(false,'鉁� DB nicht erreichbar 鈥� pr眉fe Firebase Realtime Database');
+  connSt(false,'âœ— DB nicht erreichbar â€“ prÃ¼fe Firebase Realtime Database');
   // Still set up auth with last tried
   auth=firebase.auth();db=firebase.database();
   setupAuth();
@@ -555,8 +413,8 @@ function setupAuth(){
 
 /* ===== AUTH ===== */
 function authTab(t){document.querySelectorAll('.auth-tab').forEach((b,i)=>b.classList.toggle('on',t==='login'?i===0:i===1));$('authLogin').style.display=t==='login'?'block':'none';$('authReg').style.display=t==='register'?'block':'none';}
-async function login(){const em=$('liEm').value.trim(),pw=$('liPw').value,err=$('liErr');err.textContent='';if(!em||!pw){err.textContent='E-Mail und Passwort eingeben.';return;}try{$('liBtn').disabled=true;await auth.signInWithEmailAndPassword(em,pw);}catch(e){err.textContent=({'auth/user-not-found':'Kein Konto gefunden.','auth/wrong-password':'Falsches Passwort.','auth/invalid-email':'Ung眉ltige E-Mail.','auth/too-many-requests':'Zu viele Versuche.','auth/invalid-credential':'Ung眉ltige Anmeldedaten.'})[e.code]||'Fehler: '+(e.message||e.code);}finally{$('liBtn').disabled=false;}}
-async function register(){const em=$('rgEm').value.trim(),nm=$('rgNm').value.trim(),pw=$('rgPw').value,pw2=$('rgPw2').value,err=$('rgErr');err.textContent='';if(!em||!pw){err.textContent='Alle Felder ausf眉llen.';return;}if(pw!==pw2){err.textContent='Passw枚rter stimmen nicht 眉berein.';return;}if(pw.length<6){err.textContent='Min. 6 Zeichen.';return;}try{$('rgBtn').disabled=true;const c=await auth.createUserWithEmailAndPassword(em,pw);if(nm)await c.user.updateProfile({displayName:nm});toast('Konto erstellt!','success');}catch(e){err.textContent=({'auth/email-already-in-use':'E-Mail bereits registriert.','auth/weak-password':'Passwort zu schwach.'})[e.code]||'Fehler: '+(e.message||e.code);}finally{$('rgBtn').disabled=false;}}
+async function login(){const em=$('liEm').value.trim(),pw=$('liPw').value,err=$('liErr');err.textContent='';if(!em||!pw){err.textContent='E-Mail und Passwort eingeben.';return;}try{$('liBtn').disabled=true;await auth.signInWithEmailAndPassword(em,pw);}catch(e){err.textContent=({'auth/user-not-found':'Kein Konto gefunden.','auth/wrong-password':'Falsches Passwort.','auth/invalid-email':'UngÃ¼ltige E-Mail.','auth/too-many-requests':'Zu viele Versuche.','auth/invalid-credential':'UngÃ¼ltige Anmeldedaten.'})[e.code]||'Fehler: '+(e.message||e.code);}finally{$('liBtn').disabled=false;}}
+async function register(){const em=$('rgEm').value.trim(),nm=$('rgNm').value.trim(),pw=$('rgPw').value,pw2=$('rgPw2').value,err=$('rgErr');err.textContent='';if(!em||!pw){err.textContent='Alle Felder ausfÃ¼llen.';return;}if(pw!==pw2){err.textContent='PasswÃ¶rter stimmen nicht Ã¼berein.';return;}if(pw.length<6){err.textContent='Min. 6 Zeichen.';return;}try{$('rgBtn').disabled=true;const c=await auth.createUserWithEmailAndPassword(em,pw);if(nm)await c.user.updateProfile({displayName:nm});toast('Konto erstellt!','success');}catch(e){err.textContent=({'auth/email-already-in-use':'E-Mail bereits registriert.','auth/weak-password':'Passwort zu schwach.'})[e.code]||'Fehler: '+(e.message||e.code);}finally{$('rgBtn').disabled=false;}}
 async function resetPw(){const em=$('liEm').value.trim();if(!em){toast('Zuerst E-Mail eingeben','warning');return;}try{await auth.sendPasswordResetEmail(em);toast('Reset-Mail gesendet','success');}catch(e){toast('Fehler: '+e.message,'error');}}
 function logout(){appUsr=null;auth.signOut();}
 $('liPw').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
@@ -568,8 +426,8 @@ function openPwModal(){$('pwOld').value='';$('pwNew').value='';$('pwNew2').value
 async function changePw(){
   const old=$('pwOld').value,nw=$('pwNew').value,nw2=$('pwNew2').value,err=$('pwErr');
   err.textContent='';
-  if(!old||!nw){err.textContent='Alle Felder ausf眉llen.';return;}
-  if(nw!==nw2){err.textContent='Neue Passw枚rter stimmen nicht 眉berein.';return;}
+  if(!old||!nw){err.textContent='Alle Felder ausfÃ¼llen.';return;}
+  if(nw!==nw2){err.textContent='Neue PasswÃ¶rter stimmen nicht Ã¼berein.';return;}
   if(nw.length<6){err.textContent='Min. 6 Zeichen.';return;}
   // Owner (Firebase Auth) vs App User
   if(isOwner && fbUser){
@@ -577,12 +435,12 @@ async function changePw(){
       const cred=firebase.auth.EmailAuthProvider.credential(fbUser.email,old);
       await fbUser.reauthenticateWithCredential(cred);
       await fbUser.updatePassword(nw);
-      toast('Passwort ge盲ndert','success');closeModal('pw');
+      toast('Passwort geÃ¤ndert','success');closeModal('pw');
     }catch(e){err.textContent=e.code==='auth/wrong-password'?'Aktuelles Passwort falsch.':'Fehler: '+(e.message||e.code);}
   } else if(appUsr){
     if(old!==appUsr.pw){err.textContent='Aktuelles Passwort falsch.';return;}
     const u=S.users.find(x=>x.name===appUsr.name);
-    if(u){u.pw=nw;appUsr.pw=nw;save();toast('Passwort ge盲ndert','success');closeModal('pw');}
+    if(u){u.pw=nw;appUsr.pw=nw;save();toast('Passwort geÃ¤ndert','success');closeModal('pw');}
   }
 }
 
@@ -606,7 +464,6 @@ function connectDB(uid){
   unsub=()=>ref.off('value',h);
 }
 function save(){if(!dbRef)return;return dbRef.set({orgName:S.orgName,sectors:S.sectors,users:S.users,messages:S.messages||[],deleteRequests:(S.deleteRequests||[]).filter(Boolean)});}
-function saveLocal(){return save();}
 function refreshUI(){
   const cur=document.querySelector('.view.active')?.id;
   if(cur==='dashV')rDash();if(cur==='secV')rSec();if(cur==='invV')rInv();if(cur==='adminV')rAdmin();if(cur==='msgV')rMsg();
@@ -615,43 +472,27 @@ function refreshUI(){
 }
 
 /* ===== APP USER ===== */
-function appLogin(){const n=$('auN').value.trim(),p=$('auP').value;if(!n){toast('Name eingeben','warning');return;}const u=S.users.find(x=>x.name.toLowerCase()===n.toLowerCase()&&x.pw===p);if(!u){toast('Ung眉ltige Daten','error');return;}appUsr=u;isOwner=false;$('auN').style.display='none';$('auP').style.display='none';$('auLB').style.display='none';$('auLbl').style.display='inline';$('auLbl').textContent='鉁� '+u.name;$('auOB').style.display='inline-flex';$('uChip').textContent=u.name;$('navAdm').style.display=u.isAdmin?'inline-flex':'none';$('navMsg').style.display='inline-flex';toast('Eingeloggt als '+u.name,'success');show('dash');
-registerSW();
-setTimeout(_onbStart, 350);}
-function appLogout(){appUsr=null;isOwner=true;$('auN').style.display='';$('auP').style.display='';$('auLB').style.display='';$('auLbl').style.display='none';$('auOB').style.display='none';$('auN').value='';$('auP').value='';$('uChip').textContent=fbUser?.displayName||fbUser?.email||'';$('navAdm').style.display='inline-flex';toast('Abgemeldet','info');show('dash');
-registerSW();
-setTimeout(_onbStart, 350);}
+function appLogin(){const n=$('auN').value.trim(),p=$('auP').value;if(!n){toast('Name eingeben','warning');return;}const u=S.users.find(x=>x.name.toLowerCase()===n.toLowerCase()&&x.pw===p);if(!u){toast('UngÃ¼ltige Daten','error');return;}appUsr=u;isOwner=false;$('auN').style.display='none';$('auP').style.display='none';$('auLB').style.display='none';$('auLbl').style.display='inline';$('auLbl').textContent='âœ… '+u.name;$('auOB').style.display='inline-flex';$('uChip').textContent=u.name;$('navAdm').style.display=u.isAdmin?'inline-flex':'none';$('navMsg').style.display='inline-flex';toast('Eingeloggt als '+u.name,'success');show('dash');}
+function appLogout(){appUsr=null;isOwner=true;$('auN').style.display='';$('auP').style.display='';$('auLB').style.display='';$('auLbl').style.display='none';$('auOB').style.display='none';$('auN').value='';$('auP').value='';$('uChip').textContent=fbUser?.displayName||fbUser?.email||'';$('navAdm').style.display='inline-flex';toast('Abgemeldet','info');show('dash');}
 
 /* ===== DASHBOARD ===== */
 function rDash(){
   const g=$('sGrid'),btns=$('dashBtns');
   btns.innerHTML=canAdm()?'<button class="btn bp" onclick="ST.show(\'admin\')">+ Neuer Sektor</button>':'';
   const secs=getSecs();
-  if(!secs.length){g.innerHTML='<div class="empty"><div class="ic">馃摝</div><p>Noch keine Sektoren.</p>'+(canAdm()?'<button class="btn bp" onclick="ST.show(\'admin\')">Im Admin erstellen</button>':'')+'</div>';return;}
+  if(!secs.length){g.innerHTML='<div class="empty"><div class="ic">ðŸ“¦</div><p>Noch keine Sektoren.</p>'+(canAdm()?'<button class="btn bp" onclick="ST.show(\'admin\')">Im Admin erstellen</button>':'')+'</div>';return;}
   g.innerHTML=secs.map(([s,i])=>{
     const isInv=s.type==='rechnungen';
     const rows=s.rows||[];
     const n=rows.length;
     const total=isInv?rows.reduce((a,r)=>a+(Number(r.amount)||0),0):0;
-    return `<div class="sc${isInv?' sc-inv':''}" onclick="ST.openSec(${i})"><h3>${esc(s.name)}</h3><span class="stag">${isInv?'Rechnungen':'Standard'}</span><div class="n">${isInv?fmtN(total):n}</div><div class="m">${isInv?'<span>'+n+' Rechnungen</span>':'<span>Eintr盲ge</span>'}</div></div>`;
+    return `<div class="sc${isInv?' sc-inv':''}" onclick="ST.openSec(${i})"><h3>${esc(s.name)}</h3><span class="stag">${isInv?'Rechnungen':'Standard'}</span><div class="n">${isInv?fmtN(total):n}</div><div class="m">${isInv?'<span>'+n+' Rechnungen</span>':'<span>EintrÃ¤ge</span>'}</div></div>`;
   }).join('');
 }
 function getSecs(){if(isOwner||!appUsr)return S.sectors.map((s,i)=>[s,i]);const al=(appUsr.allowedSectors||[]).map(x=>x.toLowerCase());if(!al.length)return S.sectors.map((s,i)=>[s,i]);return S.sectors.map((s,i)=>[s,i]).filter(([s])=>al.includes(s.name.toLowerCase()));}
 
 /* ===== SECTOR OPEN ===== */
-function openSec(i){
-  curSec=i;
-  const s=S.sectors[i];
-  if(!s) return;
-  if(s.type==='rechnungen'){
-    const months=invMonthsForSector(s);
-    // Do NOT auto-add current month. Only show months that exist.
-    if(!months.includes(curMonth)) curMonth = months[0] || '';
-    show('inv');
-  } else {
-    show('sec');
-  }
-}
+function openSec(i){curSec=i;const s=S.sectors[i];if(!s)return;if(s.type==='rechnungen'){curMonth=curMonth||getCurMonthKey();show('inv');}else show('sec');}
 
 /* ===== STANDARD SECTOR ===== */
 function rSec(){
@@ -660,19 +501,19 @@ function rSec(){
   const vf=vF(s);
   $('sTh').innerHTML='<th>#</th><th>Datum</th><th>Ersteller</th>'+vf.map(f=>'<th>'+esc(fL(s,f.key))+'</th>').join('')+'<th style="width:100px">Aktion</th>';
   const tb=$('sTb');tb.innerHTML='';
-  if(!s.rows?.length){tb.innerHTML=`<tr><td colspan="${vf.length+4}" style="text-align:center;color:var(--tx2);padding:2rem">Keine Eintr盲ge</td></tr>`;$('secSm').style.display='none';return;}
+  if(!s.rows?.length){tb.innerHTML=`<tr><td colspan="${vf.length+4}" style="text-align:center;color:var(--tx2);padding:2rem">Keine EintrÃ¤ge</td></tr>`;$('secSm').style.display='none';return;}
   s.rows.forEach((r,i)=>{
     const tr=document.createElement('tr');
-    if(r._ed){let ei=0,c=`<td style="color:var(--tx3)">${i+1}</td><td><input type="date" value="${r.datum||''}" data-i="${i}" data-f="datum" data-enter="${++ei}"></td><td><input value="${esc(r.ersteller||'')}" disabled style="min-width:60px"></td>`;vf.forEach(f=>{c+=`<td><input type="${fT(f.key)==='number'?'number':'text'}" value="${esc(r[f.key]??'')}" data-i="${i}" data-f="${f.key}" data-enter="${++ei}" step="any" placeholder="${esc(fL(s,f.key))}"></td>`;});c+=`<td style="white-space:nowrap"><button class="btn bg bs" data-enter="${++ei}" onclick="ST.saveRow(${i})">鉁�</button> <button class="btn bd bs" onclick="ST.cancelRow(${i})">鉁�</button></td>`;tr.innerHTML=c;tr.style.background='#f0f9ff';}
-    else{let c=`<td style="color:var(--tx3);font-size:.78rem">${i+1}</td><td>${esc(fmtD(r.datum))}</td><td>${esc(r.ersteller||'')}</td>`;vf.forEach(f=>{let v=r[f.key];if(v!=null&&v!==''){if(fT(f.key)==='number')v=Number(v).toLocaleString('de-CH');}else v='';c+=`<td>${esc(String(v))}</td>`;});const mine=r.ersteller===uName()||canAdm();c+=`<td style="white-space:nowrap">${mine?`<button class="btn bs" onclick="ST.editRow(${i})">鉁忥笍</button> <button class="btn bd bs" onclick="ST.delRow(${i})">馃棏</button>`:''}</td>`;tr.innerHTML=c;}
+    if(r._ed){let ei=0,c=`<td style="color:var(--tx3)">${i+1}</td><td><input type="date" value="${r.datum||''}" data-i="${i}" data-f="datum" data-enter="${++ei}"></td><td><input value="${esc(r.ersteller||'')}" disabled style="min-width:60px"></td>`;vf.forEach(f=>{c+=`<td><input type="${fT(f.key)==='number'?'number':'text'}" value="${esc(r[f.key]??'')}" data-i="${i}" data-f="${f.key}" data-enter="${++ei}" step="any" placeholder="${esc(fL(s,f.key))}"></td>`;});c+=`<td style="white-space:nowrap"><button class="btn bg bs" data-enter="${++ei}" onclick="ST.saveRow(${i})">âœ“</button> <button class="btn bd bs" onclick="ST.cancelRow(${i})">âœ—</button></td>`;tr.innerHTML=c;tr.style.background='#f0f9ff';}
+    else{let c=`<td style="color:var(--tx3);font-size:.78rem">${i+1}</td><td>${esc(fmtD(r.datum))}</td><td>${esc(r.ersteller||'')}</td>`;vf.forEach(f=>{let v=r[f.key];if(v!=null&&v!==''){if(fT(f.key)==='number')v=Number(v).toLocaleString('de-CH');}else v='';c+=`<td>${esc(String(v))}</td>`;});const mine=r.ersteller===uName()||canAdm();c+=`<td style="white-space:nowrap">${mine?`<button class="btn bs" onclick="ST.editRow(${i})">âœï¸</button> <button class="btn bd bs" onclick="ST.delRow(${i})">ðŸ—‘</button>`:''}</td>`;tr.innerHTML=c;}
     tb.appendChild(tr);
   });
   // Summary
   const sm=$('secSm');sm.style.display='block';
   const nf=vF(s).filter(f=>fT(f.key)==='number');
-  let h='<h3>馃搳 Zusammenfassung</h3><div style="display:flex;flex-wrap:wrap;gap:1rem">';
+  let h='<h3>ðŸ“Š Zusammenfassung</h3><div style="display:flex;flex-wrap:wrap;gap:1rem">';
   nf.forEach(f=>{const sum=s.rows.reduce((a,r)=>a+(Number(r[f.key])||0),0);h+=`<div style="text-align:center;padding:.6rem 1rem;background:#f8fafc;border-radius:10px;border:1px solid var(--brd)"><div style="font-size:.73rem;color:var(--tx2);font-weight:600;text-transform:uppercase">${esc(fL(s,f.key))}</div><div style="font-size:1.3rem;font-weight:800;color:var(--c1)">${sum.toLocaleString('de-CH')}</div></div>`;});
-  h+=`<div style="text-align:center;padding:.6rem 1rem;background:#f8fafc;border-radius:10px;border:1px solid var(--brd)"><div style="font-size:.73rem;color:var(--tx2);font-weight:600;text-transform:uppercase">Eintr盲ge</div><div style="font-size:1.3rem;font-weight:800">${s.rows.length}</div></div></div>`;
+  h+=`<div style="text-align:center;padding:.6rem 1rem;background:#f8fafc;border-radius:10px;border:1px solid var(--brd)"><div style="font-size:.73rem;color:var(--tx2);font-weight:600;text-transform:uppercase">EintrÃ¤ge</div><div style="font-size:1.3rem;font-weight:800">${s.rows.length}</div></div></div>`;
   sm.innerHTML=h;
 }
 
@@ -680,20 +521,13 @@ function addRow(){const s=S.sectors[curSec];if(!s)return;if(!s.rows)s.rows=[];co
 function editRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;s.rows[i]._ed=true;rSec();}
 function cancelRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;const r=s.rows[i],has=FIELDS.some(f=>r[f.key]&&String(r[f.key]).trim());if(!has)s.rows.splice(i,1);else delete r._ed;save();rSec();}
 function saveRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;document.querySelectorAll(`#sTb input[data-i="${i}"]`).forEach(inp=>{const f=inp.dataset.f;if(f)s.rows[i][f]=inp.value;});delete s.rows[i]._ed;save();toast('Gespeichert','success');}
-function delRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i]||!confirm('L枚schen?'))return;s.rows.splice(i,1);save();toast('Gel枚scht','success');}
+function delRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i]||!confirm('LÃ¶schen?'))return;s.rows.splice(i,1);save();toast('GelÃ¶scht','success');}
 
 /* Enter nav */
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const el=e.target;if(!el.dataset.enter)return;const tr=el.closest('tr');if(!tr)return;e.preventDefault();const nx=tr.querySelector(`[data-enter="${Number(el.dataset.enter)+1}"]`);if(nx){if(nx.tagName==='BUTTON')nx.click();else{nx.focus();if(nx.select)nx.select();}}});
 
 /* ===== RECHNUNGEN SECTOR ===== */
 function getCurMonthKey(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
-function invMonthsForSector(sec){
-  const months=new Set();
-  const rows=(sec&&sec.rows)||[];
-  rows.forEach(r=>{if(r && r.datum) months.add(String(r.datum).slice(0,7));});
-  (sec && Array.isArray(sec.invMonths) ? sec.invMonths : []).forEach(m=>{ if(m) months.add(m); });
-  return [...months].filter(m=>/^\d{4}-\d{2}$/.test(m)).sort().reverse();
-}
 function rInv(){
   const s=S.sectors[curSec];if(!s)return;
   $('invT').textContent=s.name;
@@ -701,257 +535,53 @@ function rInv(){
   const allRows=s.rows||[];
   const totalAll=allRows.reduce((a,r)=>a+(Number(r.amount)||0),0);
   const tc=$('invTotalCard');tc.style.display='block';
-  // Month breakdown
-  const byMonth = {};
-  allRows.forEach(r=>{
-    const mk = (r.datum||'').slice(0,7);
-    if(!/^\d{4}-\d{2}$/.test(mk)) return;
-    if(!byMonth[mk]) byMonth[mk]={sum:0,count:0};
-    byMonth[mk].sum += (Number(r.amount)||0);
-    byMonth[mk].count += 1;
-  });
-  const bmKeys = Object.keys(byMonth).sort().reverse();
-  const bmHtml = bmKeys.length ? `<div style="margin-top:.85rem" class="tw"><table><thead><tr><th>Monat</th><th style="text-align:right">Total</th><th style="text-align:right">Rechnungen</th></tr></thead><tbody>` +
-    bmKeys.map(mk=>{
-      const [y,mo]=mk.split('-'); const label=MONTHS[parseInt(mo,10)-1]+' '+y;
-      return `<tr><td>${label}</td><td style="text-align:right;font-weight:700">CHF ${fmtN(byMonth[mk].sum)}</td><td style="text-align:right;color:var(--tx2)">${byMonth[mk].count}</td></tr>`;
-    }).join('') + `</tbody></table></div>` : '';
-
-  tc.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-    <div>
-      <div style="font-size:.78rem;color:var(--tx2);font-weight:600;text-transform:uppercase">Gesamttotal</div>
-      <div style="font-size:2rem;font-weight:800;color:var(--ok)">CHF ${fmtN(totalAll)}</div>
-    </div>
-    <div style="font-size:.88rem;color:var(--tx2)">${allRows.length} Rechnungen</div>
-  </div>${bmHtml}`;
+  tc.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem"><div><div style="font-size:.78rem;color:var(--tx2);font-weight:600;text-transform:uppercase">Gesamttotal</div><div style="font-size:2rem;font-weight:800;color:var(--ok)">CHF ${fmtN(totalAll)}</div></div><div style="font-size:.88rem;color:var(--tx2)">${allRows.length} Rechnungen</div></div>`;
 
   // Month tabs
-  const sorted=invMonthsForSector(s);
-  if(!curMonth || !sorted.includes(curMonth)) curMonth = sorted[0] || '';
-  $('invMonthTabs').innerHTML = sorted.length ? sorted.map(m=>{
+  const months=new Set();allRows.forEach(r=>{if(r.datum)months.add(r.datum.slice(0,7));});
+  if(!months.has(curMonth))months.add(curMonth);
+  const sorted=[...months].sort().reverse();
+  $('invMonthTabs').innerHTML=sorted.map(m=>{
     const [y,mo]=m.split('-');const label=MONTHS[parseInt(mo)-1]+' '+y;
     return `<button class="mtab${m===curMonth?' on':''}" onclick="ST.setMonth('${m}')">${label}</button>`;
-  }).join('') : `<div class="hint" style="color:var(--tx2);padding:.35rem .25rem">Keine Monate angelegt. Tippe <b>+ Monat</b>.</div>`;
+  }).join('');
 
   // Filtered rows
   const filtered=allRows.filter(r=>(r.datum||'').startsWith(curMonth));
   const monthTotal=filtered.reduce((a,r)=>a+(Number(r.amount)||0),0);
 
-  $('iTh').innerHTML='<th>#</th><th>Datum</th><th>Empf盲nger</th><th style="text-align:right">Betrag</th><th style="width:160px">Aktion</th>';
+  $('iTh').innerHTML='<th>#</th><th>Datum</th><th>Beschreibung</th><th>Referenz</th><th style="text-align:right">Betrag</th><th style="width:80px">Aktion</th>';
   const tb=$('iTb');tb.innerHTML='';
-  if(!filtered.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--tx2);padding:2rem">Keine Rechnungen in diesem Monat</td></tr>';$('invMonthSum').style.display='none';return;}
+  if(!filtered.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--tx2);padding:2rem">Keine Rechnungen in diesem Monat</td></tr>';$('invMonthSum').style.display='none';return;}
 
   filtered.forEach((r,fi)=>{
     const ri=allRows.indexOf(r);
     const tr=document.createElement('tr');
     if(r._ed){
-      tr.innerHTML=`<td>${fi+1}</td><td><input type="date" value="${r.datum||''}" data-ri="${ri}" data-f="datum" data-enter="1"></td><td><input value="${esc(r.payee||'')}" data-ri="${ri}" data-f="payee" data-enter="2" placeholder="Empf盲nger"></td><td><input type="number" step="0.01" value="${r.amount||''}" data-ri="${ri}" data-f="amount" data-enter="3" style="text-align:right"></td><td><button class="btn bg bs" data-enter="4" onclick="ST.saveInvRow(${ri})" title="Speichern">鉁�</button> <button class="btn bd bs" onclick="ST.cancelInvRow(${ri})" title="Abbrechen">鉁�</button></td>`;
+      tr.innerHTML=`<td>${fi+1}</td><td><input type="date" value="${r.datum||''}" data-ri="${ri}" data-f="datum" data-enter="1"></td><td><input value="${esc(r.desc||'')}" data-ri="${ri}" data-f="desc" data-enter="2" placeholder="Beschreibung"></td><td><input value="${esc(r.ref||'')}" data-ri="${ri}" data-f="ref" data-enter="3" placeholder="Referenz"></td><td><input type="number" step="0.01" value="${r.amount||''}" data-ri="${ri}" data-f="amount" data-enter="4" style="text-align:right"></td><td><button class="btn bg bs" data-enter="5" onclick="ST.saveInvRow(${ri})">âœ“</button> <button class="btn bd bs" onclick="ST.cancelInvRow(${ri})">âœ—</button></td>`;
       tr.style.background='#f0fdf4';
     } else {
       const mine=r.ersteller===uName()||canAdm();
-      tr.innerHTML=`<td style="color:var(--tx3);font-size:.78rem">${fi+1}</td><td>${esc(fmtD(r.datum))}</td><td>${esc(r.payee||'')}</td><td style="text-align:right;font-weight:700">${fmtN(r.amount)}</td><td style="white-space:nowrap"><button class="btn bs" onclick="ST.showInvDetails(${ri})" title="Details">馃Ь</button> ${(r.hasQr||r.qrRaw||r.encryptedBlob)?`<button class=\"btn bs\" onclick=\"ST.showInvQR(${ri})\" title=\"QR anzeigen\">馃敵</button> `:''}${(r.hasQr||r.qrRaw||r.encryptedBlob)?`<button class=\"btn bs\" onclick=\"ST.exportInvPdf(${ri})\" title=\"PDF Export\">馃搫</button> `:''}${mine?`<button class="btn bs" onclick="ST.editInvRow(${ri})" title="Bearbeiten">鉁忥笍</button> <button class="btn bd bs" onclick="ST.delInvRow(${ri})" title="L枚schen">馃棏</button>`:''}</td>`;
+      tr.innerHTML=`<td style="color:var(--tx3);font-size:.78rem">${fi+1}</td><td>${esc(fmtD(r.datum))}</td><td>${esc(r.desc||'')}</td><td style="font-size:.8rem;color:var(--tx2)">${esc(r.ref||'')}${r.qrRaw?` <button class="btn bs" onclick="ST.showInvQR(${ri})" title="QR anzeigen">ðŸ”³</button>`:''}</td><td style="text-align:right;font-weight:700">${fmtN(r.amount)}</td><td style="white-space:nowrap">${mine?`<button class="btn bs" onclick="ST.editInvRow(${ri})">âœï¸</button> <button class="btn bd bs" onclick="ST.delInvRow(${ri})">ðŸ—‘</button>`:''}</td>`;
     }
     tb.appendChild(tr);
   });
 
   const ms=$('invMonthSum');ms.style.display='block';
   const [y,mo]=curMonth.split('-');
-  ms.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap"><div><div style="font-size:.78rem;color:var(--tx2);font-weight:600;text-transform:uppercase">${MONTHS[parseInt(mo)-1]} ${y}</div><div style="font-size:1.5rem;font-weight:800;color:var(--ok)">CHF ${fmtN(monthTotal)}</div></div><div style="display:flex;align-items:center;gap:.6rem;color:var(--tx2)"><span>${filtered.length} Rechnungen</span><button class="btn bs" onclick="ST.exportMonthPdf()" title="Monat als PDF">馃搫 Monat</button></div></div>`;
+  ms.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:.78rem;color:var(--tx2);font-weight:600;text-transform:uppercase">${MONTHS[parseInt(mo)-1]} ${y}</div><div style="font-size:1.5rem;font-weight:800;color:var(--ok)">CHF ${fmtN(monthTotal)}</div></div><div style="color:var(--tx2)">${filtered.length} Rechnungen</div></div>`;
 }
 
 function setMonth(m){curMonth=m;rInv();}
-function addInvMonth(){
-  const s=S.sectors[curSec];if(!s)return;
-  const m=prompt('Monat hinzuf眉gen (YYYY-MM)', curMonth);
-  if(!m) return;
-  const mm=String(m).trim();
-  if(!/^\d{4}-\d{2}$/.test(mm)){toast('Ung眉ltiges Format. Nutze YYYY-MM', 'error');return;}
-  if(!s.invMonths) s.invMonths=[];
-  if(!s.invMonths.includes(mm)) s.invMonths.push(mm);
-  curMonth=mm;
-  save();
-  rInv();
-  toast('Monat hinzugef眉gt', 'success');
-}
-function addInv(){const s=S.sectors[curSec];if(!s)return;if(!s.rows)s.rows=[];s.rows.push({id:cid(),datum:(()=>{const t=today(); if(curMonth!==t.slice(0,7)) return curMonth+'-01'; return t;})(),ersteller:uName(),payee:'',desc:'',ref:'',amount:'',_ed:true});save();rInv();}
+function addInv(){const s=S.sectors[curSec];if(!s)return;if(!s.rows)s.rows=[];s.rows.push({id:cid(),datum:today(),ersteller:uName(),desc:'',ref:'',amount:'',_ed:true});save();rInv();}
 function editInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;s.rows[i]._ed=true;rInv();}
-function cancelInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;const r=s.rows[i];if(!r.payee&&!r.desc&&!r.ref&&!r.amount)s.rows.splice(i,1);else delete r._ed;save();rInv();}
+function cancelInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;const r=s.rows[i];if(!r.desc&&!r.ref&&!r.amount)s.rows.splice(i,1);else delete r._ed;save();rInv();}
 function saveInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;document.querySelectorAll(`#iTb input[data-ri="${i}"]`).forEach(inp=>{const f=inp.dataset.f;if(f)s.rows[i][f]=inp.value;});delete s.rows[i]._ed;save();toast('Gespeichert','success');}
-function delInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i]||!confirm('L枚schen?'))return;s.rows.splice(i,1);save();toast('Gel枚scht','success');}
-
-
-function invoiceSectorIdxs(){
-  return (S.sectors||[]).map((s,idx)=>({s,idx})).filter(x=>x.s?.type==='rechnungen');
-}
-function fillQrSecSel(){
-  const sel=$('qrSecSel'); if(!sel) return;
-  const invSecs=invoiceSectorIdxs();
-  sel.innerHTML = invSecs.map(x=>`<option value="${x.idx}">${esc(x.s.name||'Sektor')}</option>`).join('') || `<option value="-1">Keine Rechnungs-Sektoren</option>`;
-  // default to current sector if it's a invoices sector
-  if(curSec>=0 && S.sectors[curSec]?.type==='rechnungen') sel.value=String(curSec);
-  // refresh month dropdown + hook change
-  fillQrMonthSel();
-  sel.onchange = ()=>{ fillQrMonthSel(); };
-}
-function fillQrMonthSel(){
-  const secSel=$('qrSecSel'), monSel=$('qrMonthSel');
-  if(!monSel) return;
-  const idx = secSel ? parseInt(secSel.value,10) : curSec;
-  const sec = S.sectors[idx];
-  const months = sec && sec.type==='rechnungen' ? invMonthsForSector(sec) : (curMonth ? [curMonth] : []);
-  if(!months.length){
-    monSel.innerHTML = `<option value="">鈥� Monat anlegen 鈥�</option>`;
-    monSel.value='';
-    return;
-  }
-  monSel.innerHTML = months.map(m=>{const [y,mo]=m.split('-');const label=MONTHS[parseInt(mo,10)-1]+' '+y;return `<option value="${m}">${label}</option>`;}).join('');
-  // default to current selected month if possible
-  if(months.includes(curMonth)) monSel.value=curMonth;
-  else if(months.length) monSel.value=months[0];
-}
-function qrAddSector(){
-  const name = prompt('Neuer Rechnungs-Sektor (Name):','');
-  if(!name) return;
-  const n=name.trim(); if(!n){toast('Name eingeben','warning');return;}
-  const sec={id:cid(),name:n,type:'rechnungen',rows:[],fieldConfig:{}};
-  S.sectors.push(sec);
-  curSec=S.sectors.length-1;
-  save();
-  toast('Sektor erstellt','success');
-  fillQrSecSel();
-  // keep scanner open; selection will jump to new sector
-  const sel=$('qrSecSel'); if(sel) sel.value=String(curSec);
-}
+function delInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i]||!confirm('LÃ¶schen?'))return;s.rows.splice(i,1);save();toast('GelÃ¶scht','success');}
 
 /* ===== QR SCANNER ===== */
-function parseSwissQr(raw){
-  const lines = String(raw||'').replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n');
-  if(lines[0] !== 'SPC') return null;
-  // Swiss QR Code elements are line-based and fixed-order (SIX IG QR-bill v2.x)
-  // We parse defensively (some optional tail elements may be missing).
-  const get = (i)=> (lines[i]??'').trim();
-  const obj = {
-    kind:'swissqr',
-    qrType:get(0),
-    version:get(1),
-    coding:get(2),
-    iban:get(3),
-    creditor:{
-      adrType:get(4),
-      name:get(5),
-      line1:get(6),
-      line2:get(7),
-      postal:get(8),
-      city:get(9),
-      country:get(10)
-    },
-    ultimateCreditor:{
-      adrType:get(11),
-      name:get(12),
-      line1:get(13),
-      line2:get(14),
-      postal:get(15),
-      city:get(16),
-      country:get(17)
-    },
-    amount:get(18),
-    currency:get(19),
-    debtor:{
-      adrType:get(20),
-      name:get(21),
-      line1:get(22),
-      line2:get(23),
-      postal:get(24),
-      city:get(25),
-      country:get(26)
-    },
-    refType:get(27),
-    ref:get(28),
-    unstructuredMsg:get(29),
-    trailer:get(30),
-    billInfo:get(31),
-    altScheme: lines.slice(32).map(s=>String(s||'').trim()).filter(Boolean)
-  };
-  // numeric amount (best-effort)
-  if(obj.amount){
-    const a = obj.amount.replace(',','.');
-    const n = Number(a);
-    if(!Number.isNaN(n)) obj.amountValue = n;
-  }
-  return obj;
-}
-
-function parseEpcQr(raw){
-  const lines = String(raw||'').replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').map(s=>String(s||'').trim());
-  if(lines[0] !== 'BCD') return null;
-  // EPC069-12 (EPC QR for SCT) is line-based; fields may vary by version.
-  const get=(i)=> (lines[i]??'').trim();
-  const obj = {
-    kind:'epc',
-    serviceTag:get(0),
-    version:get(1),
-    charset:get(2),
-    identification:get(3), // usually SCT
-    bic:get(4),
-    name:get(5),
-    iban:get(6),
-    amount:get(7), // e.g. EUR12.34
-    purpose:get(8),
-    remittanceRef:get(9),
-    remittanceText:get(10),
-    information:get(11),
-    rawLines: lines
-  };
-  // extract numeric from amount like "EUR12.34"
-  const m = obj.amount.match(/([A-Z]{3})(\d+(?:[.,]\d{2})?)/);
-  if(m){
-    obj.currency = m[1];
-    const n = Number(m[2].replace(',','.'));
-    if(!Number.isNaN(n)) obj.amountValue = n;
-  }
-  return obj;
-}
-
-function formatQrMeta(meta){
-  if(!meta) return '';
-  if(meta.kind==='swissqr'){
-    const c=meta.creditor||{};
-    const d=meta.debtor||{};
-    const parts=[
-      `Typ: Swiss QR-Rechnung (SPC)`,
-      `IBAN/QR-IBAN: ${meta.iban||''}`,
-      `Empf盲nger: ${c.name||''}`,
-      `Empf盲nger Ort: ${(c.postal||'')} ${(c.city||'')}`.trim(),
-      `Betrag: ${(meta.amount||'')} ${(meta.currency||'')}`.trim(),
-      `Referenz-Typ: ${meta.refType||''}`,
-      `Referenz: ${meta.ref||''}`,
-      meta.unstructuredMsg ? `Mitteilung: ${meta.unstructuredMsg}` : '',
-      meta.billInfo ? `Rechnungsinfo: ${meta.billInfo}` : '',
-      d.name ? `Zahler: ${d.name}` : ''
-    ].filter(Boolean);
-    return parts.join('\n');
-  }
-  if(meta.kind==='epc'){
-    const parts=[
-      `Typ: EPC / SEPA SCT`,
-      `IBAN: ${meta.iban||''}`,
-      `Empf盲nger: ${meta.name||''}`,
-      meta.bic ? `BIC: ${meta.bic}` : '',
-      meta.amount ? `Betrag: ${meta.amount}` : '',
-      meta.remittanceRef ? `Referenz: ${meta.remittanceRef}` : '',
-      meta.remittanceText ? `Text: ${meta.remittanceText}` : ''
-    ].filter(Boolean);
-    return parts.join('\n');
-  }
-  if(meta.kind==='generic'){
-    return `Typ: Unbekannt/Generic\n${meta.preview||''}`.trim();
-  }
-  return `Typ: Unbekannt`;
-}
-
-async function openScanner(){
-  if(!await ensureUnlocked()) return;
-  openModal('scan');fillQrSecSel();fillQrMonthSel();$('qrResult').style.display='none';$('qrAmt').value='';$('qrPayee').value='';$('qrDesc').value='';const det=$('qrDetails'); if(det) det.value='';
+function openScanner(){
+  openModal('scan');$('qrResult').style.display='none';$('qrAmt').value='';$('qrDesc').value='';
   setTimeout(()=>{
     if(qrScanner){try{qrScanner.clear();}catch(_){}}
     qrScanner=new Html5Qrcode("qrReader");
@@ -962,128 +592,90 @@ async function openScanner(){
       // iOS Safari: keep video inline
       const v=document.querySelector('#qrReader video');
       if(v){v.setAttribute('playsinline','true');v.setAttribute('webkit-playsinline','true');v.muted=true;}
-    }).catch(e=>{toast('Kamera nicht verf眉gbar: '+e,'error');});
+    }).catch(e=>{toast('Kamera nicht verfÃ¼gbar: '+e,'error');});
   },300);
 }
 function closeScanner(){if(qrScanner){try{qrScanner.stop();}catch(_){}}closeModal('scan');}
 function onQrScanned(txt){
   try{qrScanner.stop();}catch(_){}
-  lastQrRaw = String(txt||'');
-  // Parse (Swiss QR / EPC / generic)
-  const swiss = parseSwissQr(lastQrRaw);
-  const epc = swiss ? null : parseEpcQr(lastQrRaw);
-  if(swiss){
-    lastQrMeta = swiss;
-  } else if(epc){
-    lastQrMeta = epc;
+  lastQrRaw = txt;
+  lastQrMeta = {kind:'unknown'};
+  // Parse Swiss QR-Rechnung
+  const lines=txt.split('\n');
+  let amt='',desc='';
+  if(lines[0]==='SPC'&&lines.length>20){
+    // Swiss QR bill format
+    amt=lines[18]||'';desc=(lines[24]||'').trim();
+    if(!desc)desc=(lines[9]||'').trim(); // creditor name
+    lastQrMeta = {
+      kind:'swissqr',
+      currency:(lines[19]||'').trim(),
+      iban:(lines[3]||'').trim(),
+      refType:(lines[25]||'').trim(),
+      ref:(lines[26]||'').trim()
+    };
   } else {
-    lastQrMeta = {kind:'generic', preview:lastQrRaw.slice(0,180)};
+    lastQrMeta = {kind:'generic'};
+    // Try to find amount pattern
+    const amtMatch=txt.match(/(\d+[\.,]\d{2})/);
+    if(amtMatch)amt=amtMatch[1].replace(',','.');
+    desc=txt.substring(0,60);
   }
-
-  // Prefill amount/desc (best-effort)
-  let amt='';
-  let desc='';
-  if(lastQrMeta.kind==='swissqr'){
-    amt = (lastQrMeta.amountValue!=null) ? String(lastQrMeta.amountValue.toFixed(2)) : (lastQrMeta.amount||'');
-    desc = (lastQrMeta.unstructuredMsg||lastQrMeta.billInfo||'').trim();
-    if(!desc) desc = (lastQrMeta.creditor?.name||'').trim();
-  } else if(lastQrMeta.kind==='epc'){
-    amt = (lastQrMeta.amountValue!=null) ? String(lastQrMeta.amountValue.toFixed(2)) : (lastQrMeta.amount||'').replace(/^EUR/i,'');
-    desc = (lastQrMeta.remittanceText||lastQrMeta.remittanceRef||lastQrMeta.name||'').trim();
-  } else {
-    const amtMatch=lastQrRaw.match(/(\d+[\.,]\d{2})/);
-    if(amtMatch) amt=amtMatch[1].replace(',','.');
-    desc=lastQrRaw.substring(0,60);
-  }
-
-  $('qrAmt').value=amt;
-  // payee / beneficiary
-  let payee='';
-  if(lastQrMeta.kind==='swissqr') payee=(lastQrMeta.creditor?.name||'').trim();
-  else if(lastQrMeta.kind==='epc') payee=(lastQrMeta.name||'').trim();
-  if(!payee) payee=desc;
-  $('qrPayee').value=payee;
-  // keep a hidden description/info field for storage (not shown in list)
-  $('qrDesc').value=desc;
-  const det=$('qrDetails'); if(det) det.value = formatQrMeta(lastQrMeta);
-  $('qrResult').style.display='block';
+  $('qrAmt').value=amt;$('qrDesc').value=desc;$('qrResult').style.display='block';
 }
-async function addScanned(){
-  if(!await ensureUnlocked()) return;
-  const amt=$('qrAmt').value, payee=$('qrPayee').value, desc=$('qrDesc').value;
+function addScanned(){
+  const amt=$('qrAmt').value,desc=$('qrDesc').value;
   if(!amt){toast('Betrag eingeben','warning');return;}
-  const sel=$('qrSecSel');
-  const tIdx = sel ? parseInt(sel.value,10) : curSec;
-  const s=S.sectors[tIdx];
-  if(!s || s.type!=='rechnungen'){toast('Bitte einen Rechnungs-Sektor w盲hlen','warning');return;}
-  if(!s.rows) s.rows=[];
+  const s=S.sectors[curSec];if(!s)return;if(!s.rows)s.rows=[];
   const ref = (lastQrMeta?.kind==='swissqr' && lastQrMeta?.ref) ? lastQrMeta.ref : 'QR';
-
-  // Encrypt sensitive payload (QR + metadata + reference/desc)
-  const sensitive = {
-    qrRaw: String(lastQrRaw||''),
-    qrMeta: lastQrMeta||{kind:'unknown'},
-    desc: String(desc||'').trim(),
-    ref: String(ref||'').trim(),
-    payee: String(payee||'').trim()
-  };
-  let encryptedBlob=null;
-  try{
-    encryptedBlob = await encryptJson(_pass, sensitive);
-  }catch(e){
-    console.error(e);
-    toast('Verschl眉sselung fehlgeschlagen','error');
-    return;
-  }
-
   s.rows.push({
     id:cid(),
-    datum:(()=>{const ms=$('qrMonthSel');const t=today();const m=ms?String(ms.value||'').trim():'';if(/^\d{4}-\d{2}$/.test(m) && m!==t.slice(0,7)) return m+'-01';return t;})(),
+    datum:today(),
     ersteller:uName(),
-    payee: String(payee||'').trim(), // keep clear for list
+    desc,
+    ref,
     amount:amt,
-    hasQr:true,
-    encryptedBlob
+    qrRaw:lastQrRaw||'',
+    qrMeta:lastQrMeta||{kind:'unknown'}
   });
-
-  // switch current sector to the target so the new invoice is visible immediately
-  const mSel=$('qrMonthSel'); const mKey=mSel?String(mSel.value||'').trim():'';
-  if(/^\d{4}-\d{2}$/.test(mKey)){
-    if(!s.invMonths) s.invMonths=[];
-    if(!s.invMonths.includes(mKey)) s.invMonths.push(mKey);
-    curMonth=mKey;
-  }
-  curSec=tIdx;
   lastQrRaw=null;lastQrMeta=null;
-  save();
-  closeScanner();
-  rInv();
-  toast('Rechnung hinzugef眉gt','success');
+  save();closeScanner();toast('Rechnung hinzugefÃ¼gt','success');
 }
 
+
+async function ensureQrLib(){
+  if(window.QRCode && typeof window.QRCode.toCanvas==='function') return true;
+  // try to load dynamically (helps in PWA when SW cached HTML but CDN script wasn't cached yet)
+  const src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js";
+  await new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src=src;
+    s.async=true;
+    s.onload=()=>resolve();
+    s.onerror=()=>reject(new Error('QR lib load failed'));
+    document.head.appendChild(s);
+  }).catch(e=>{ console.error(e); });
+  return !!(window.QRCode && typeof window.QRCode.toCanvas==='function');
+}
 
 /* ===== QR DISPLAY (for stored invoices) ===== */
 async function showInvQR(i){
-  const s=S.sectors[curSec];
-  const r=s?.rows?.[i];
-  if(!r){toast('Rechnung nicht gefunden','error');return;}
-  const sens = await getInvSensitive(r);
-  if(!sens || !sens.qrRaw){toast('Kein QR f眉r diese Rechnung gespeichert','warning');return;}
-
-  $('qrRawTxt').value = sens.qrRaw;
-  const metaEl=$('qrMetaTxt');
-  if(metaEl){
-    const meta = (sens.qrMeta && typeof sens.qrMeta==='object')
-      ? sens.qrMeta
-      : (parseSwissQr(sens.qrRaw)||parseEpcQr(sens.qrRaw)||{kind:'generic',preview:String(sens.qrRaw||'').slice(0,180)});
-    metaEl.textContent = formatQrMeta(meta);
-  }
+  const s=S.sectors[curSec];const r=s?.rows?.[i];
+  if(!r||!r.qrRaw){toast('Kein QR fÃ¼r diese Rechnung gespeichert','warning');return;}
+  $('qrRawTxt').value=r.qrRaw;
   openModal('qrShow');
+  const okLib = await ensureQrLib();
+  if(!okLib){toast('QR-Bibliothek konnte nicht geladen werden','error');return;}
 
+  // Render QR into canvas
   const c=$('qrCanvas');
+  // Ensure visible size in standalone PWA (some devices report 0x0 until sized)
+  const px = Math.min(320, Math.floor((window.innerWidth||360)*0.78));
+  c.width = px; c.height = px;
+
   try{
-    await QRCode.toCanvas(c, sens.qrRaw, {errorCorrectionLevel:'M', margin:1, width:280});
-    toast('QR angezeigt','success');
+    // High error correction for better scanning off-screen
+    await QRCode.toCanvas(c, r.qrRaw, {errorCorrectionLevel:'M', margin:1, width:280});
   }catch(e){
     console.error(e);
     toast('QR konnte nicht gerendert werden','error');
@@ -1098,170 +690,8 @@ async function copyQrRaw(){
   }catch(_){
     // Fallback
     const ta=$('qrRawTxt');ta.focus();ta.select();
-    try{document.execCommand('copy');toast('In Zwischenablage kopiert','success');}catch(e){toast('Kopieren nicht m枚glich','error');}
+    try{document.execCommand('copy');toast('In Zwischenablage kopiert','success');}catch(e){toast('Kopieren nicht mÃ¶glich','error');}
   }
-}
-
-
-
-/* ===== PDF EXPORT ===== */
-function _printHtml(title, html){
-  const w=window.open('','_blank');
-  if(!w){toast('Popup blockiert 鈥� bitte Popups erlauben','error');return;}
-  w.document.open();
-  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>${esc(title)}</title>
-  <style>
-    :root{font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Inter,Arial,sans-serif;}
-    body{padding:24px; color:#111;}
-    h1{margin:0 0 6px; font-size:20px;}
-    h2{margin:18px 0 8px; font-size:16px;}
-    .sub{color:#444; font-size:12px; margin-bottom:14px;}
-    .card{border:1px solid #ddd; border-radius:12px; padding:14px; margin:12px 0;}
-    .row{display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
-    .k{color:#555; font-size:11px; text-transform:uppercase; letter-spacing:.02em;}
-    .v{font-size:14px; font-weight:600;}
-    table{width:100%; border-collapse:collapse; margin-top:10px;}
-    th,td{border-bottom:1px solid #eee; padding:10px 6px; text-align:left; font-size:12px;}
-    th{text-transform:uppercase; letter-spacing:.02em; color:#555; font-size:11px;}
-    .amt{text-align:right; font-weight:700;}
-    img.qr{width:220px; height:220px; image-rendering:pixelated; border:1px solid #ddd; border-radius:12px; padding:10px; background:#fff;}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:10px; white-space:pre-wrap; color:#333;}
-    @media print{button{display:none} body{padding:0} .card{break-inside:avoid}}
-  </style></head><body>${html}
-<!-- ONBOARDING -->
-<div id="onbO" class="overlay" style="display:none">
-  <div class="modal" style="max-width:520px">
-    <h3 id="onbT">Willkommen</h3>
-    <p id="onbP" style="color:var(--tx2);line-height:1.35;margin-top:.35rem"></p>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.9rem;gap:10px">
-      <button class="btn bs" id="onbBack" onclick="ST._onbPrev()">Zur眉ck</button>
-      <div style="display:flex;gap:8px;align-items:center">
-        <span id="onbDot" style="font-size:.85rem;color:var(--tx2)"></span>
-        <button class="btn bp" id="onbNext" onclick="ST._onbNext()">Weiter</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-</body></html>`);
-  w.document.close();
-  w.focus();
-  setTimeout(()=>{w.print();}, 250);
-}
-
-async function _qrDataUrl(raw){
-  if(!raw) return '';
-  try{
-    if(QRCode?.toDataURL){
-      return await QRCode.toDataURL(raw, {errorCorrectionLevel:'M', margin:1, width:320});
-    }
-    // fallback: render to temp canvas
-    const c=document.createElement('canvas');
-    await QRCode.toCanvas(c, raw, {errorCorrectionLevel:'M', margin:1, width:320});
-    return c.toDataURL('image/png');
-  }catch(e){
-    console.error(e);
-    return '';
-  }
-}
-
-async function exportInvPdf(i){
-  const s=S.sectors[curSec];
-  const r=s?.rows?.[i];
-  if(!r){toast('Rechnung nicht gefunden','error');return;}
-  const sens = await getInvSensitive(r);
-  if(!sens || !sens.qrRaw){toast('Kein QR gespeichert 鈥� PDF ohne QR nicht m枚glich','warning');return;}
-  const meta = (sens.qrMeta && typeof sens.qrMeta==='object')
-    ? sens.qrMeta
-    : (parseSwissQr(sens.qrRaw)||parseEpcQr(sens.qrRaw)||{kind:'generic',preview:String(sens.qrRaw||'').slice(0,180)});
-  const qrUrl = await _qrDataUrl(sens.qrRaw);
-  const title = `${(S.orgName||'Organisator')} 鈥� Rechnung`;
-  const html = `
-    <h1>${esc(S.orgName||'Organisator')}</h1>
-    <div class="sub">${esc(s?.name||'Rechnungen')} 鈥� ${esc(fmtD(r.datum||''))}</div>
-    <div class="card">
-      <div class="row">
-        <div><div class="k">Empf盲nger</div><div class="v">${esc(r.payee||meta?.creditor?.name||meta?.name||'')}</div></div>
-        <div><div class="k">Betrag</div><div class="v">CHF ${esc(fmtN(r.amount))}</div></div>
-      </div>
-    </div>
-    <div class="card" style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
-      ${qrUrl?`<img class="qr" src="${qrUrl}" alt="QR Code">`:''}
-      <div style="flex:1;min-width:240px">
-        <h2>Details</h2>
-        <div class="mono">${esc(formatQrMeta(meta))}</div>
-      </div>
-    </div>
-  `;
-  toast('PDF Druckdialog ge枚ffnet','success');
-  _printHtml(title, html);
-}
-
-async function exportMonthPdf(){
-  const s=S.sectors[curSec]; if(!s) return;
-  if(!curMonth){toast('Bitte zuerst einen Monat w盲hlen','warning');return;}
-  const rows=(s.rows||[]).filter(r=>(r.datum||'').startsWith(curMonth));
-  if(!rows.length){toast('Keine Rechnungen in diesem Monat','warning');return;}
-  const [y,mo]=curMonth.split('-');
-  const monthLabel = `${MONTHS[parseInt(mo,10)-1]} ${y}`;
-
-  const total = rows.reduce((a,r)=>a+(Number(r.amount)||0),0);
-
-  let html = `
-    <h1>${esc(S.orgName||'Organisator')}</h1>
-    <div class="sub">${esc(s.name||'Rechnungen')} 鈥� ${esc(monthLabel)} 鈥� ${rows.length} Rechnungen</div>
-    <div class="card">
-      <div class="row">
-        <div><div class="k">Monat</div><div class="v">${esc(monthLabel)}</div></div>
-        <div><div class="k">Total</div><div class="v">CHF ${esc(fmtN(total))}</div></div>
-      </div>
-    </div>
-    <h2>Rechnungen</h2>
-    <div class="tw">
-      <table>
-        <thead><tr><th>#</th><th>Datum</th><th>Empf盲nger</th><th class="amt">Betrag</th></tr></thead>
-        <tbody>
-          ${rows.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(fmtD(r.datum||''))}</td><td>${esc(r.payee||'')}</td><td class="amt">CHF ${esc(fmtN(r.amount))}</td></tr>`).join('')}
-        </tbody>
-      </table>
-    </div>
-    <h2>QR-Codes & Details</h2>
-    <div>
-  `;
-
-  for(let i=0;i<rows.length;i++){
-    const r=rows[i];
-    const sens = await getInvSensitive(r);
-    const raw = sens?.qrRaw || '';
-    const meta = (sens?.qrMeta && typeof sens.qrMeta==='object')
-      ? sens.qrMeta
-      : (raw ? (parseSwissQr(raw)||parseEpcQr(raw)||{kind:'generic',preview:String(raw||'').slice(0,180)}) : null);
-
-    const qrUrl = raw ? await _qrDataUrl(raw) : '';
-    html += `
-      <div class="card">
-        <div class="row">
-          <div><div class="k">Datum</div><div class="v">${esc(fmtD(r.datum||''))}</div></div>
-          <div><div class="k">Empf盲nger</div><div class="v">${esc(r.payee||meta?.creditor?.name||meta?.name||'')}</div></div>
-          <div><div class="k">Betrag</div><div class="v">CHF ${esc(fmtN(r.amount))}</div></div>
-        </div>
-        <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-top:10px">
-          ${qrUrl?`<img class="qr" src="${qrUrl}" alt="QR Code">`:`<div style="color:#888;font-size:12px">Kein QR gespeichert</div>`}
-          ${meta?`<div class="mono" style="flex:1;min-width:240px">${esc(formatQrMeta(meta))}</div>`:''}
-        </div>
-      </div>
-    `;
-  }
-
-  html += `</div>`;
-  toast('Monats-PDF Druckdialog ge枚ffnet','success');
-  _printHtml(`${S.orgName||'Organisator'} 鈥� ${s.name||'Rechnungen'} 鈥� ${monthLabel}`, html);
-}
-
-async function showInvDetails(i){
-  await showInvQR(i);
-  toast('Details ge枚ffnet','info');
 }
 
 
@@ -1274,7 +704,7 @@ function rMsg(){
   const name=uName();
   const msgs=(S.messages||[]).filter(m=>m.to===name||m.from===name).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   const el=$('msgList');
-  if(!msgs.length){el.innerHTML='<div class="empty"><div class="ic">馃挰</div><p>Keine Nachrichten.</p></div>';return;}
+  if(!msgs.length){el.innerHTML='<div class="empty"><div class="ic">ðŸ’¬</div><p>Keine Nachrichten.</p></div>';return;}
   // Mark as read
   let changed=false;
   msgs.forEach(m=>{if(m.to===name&&!m.read){m.read=true;changed=true;}});
@@ -1283,7 +713,7 @@ function rMsg(){
 }
 function sendMsg(){
   const to=$('msgTo').value,txt=$('msgTxt').value.trim();
-  if(!to||!txt){toast('Empf盲nger und Text n枚tig','warning');return;}
+  if(!to||!txt){toast('EmpfÃ¤nger und Text nÃ¶tig','warning');return;}
   if(!S.messages)S.messages=[];
   S.messages.push({id:cid(),from:uName(),to,text:txt,date:new Date().toISOString(),read:false});
   $('msgTxt').value='';save();toast('Gesendet','success');
@@ -1294,7 +724,7 @@ function rAdmin(){
   $('aOrg').value=S.orgName||'';
   rAdmSec();rAdmUsr();
   // Message recipients
-  const sel=$('msgTo');sel.innerHTML='<option value="">W盲hlen...</option>';
+  const sel=$('msgTo');sel.innerHTML='<option value="">WÃ¤hlen...</option>';
   S.users.forEach(u=>sel.innerHTML+=`<option value="${esc(u.name)}">${esc(u.name)}</option>`);
 }
 function saveOrg(){S.orgName=$('aOrg').value.trim()||'';save();$('orgLbl').textContent=S.orgName||'Organisation';toast('Gespeichert','success');}
@@ -1303,12 +733,12 @@ function saveOrg(){S.orgName=$('aOrg').value.trim()||'';save();$('orgLbl').textC
 function rAdmSec(){
   const l=$('aSecL');
   if(!S.sectors.length){l.innerHTML='<p style="color:var(--tx2);font-size:.85rem">Keine Sektoren.</p>';return;}
-  l.innerHTML=S.sectors.map((s,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--brd)"><span style="font-weight:600">${esc(s.name)} <span class="pill ${s.type==='rechnungen'?'pw':'pi'}">${s.type==='rechnungen'?'Rechnungen':'Standard'}</span> <span class="pill pi">${(s.rows||[]).length}</span></span><div style="display:flex;gap:4px">${s.type!=='rechnungen'?`<button class="btn bs" onclick="ST.openCfg(${i})" title="Spalten">馃彿锔�</button>`:''}<button class="btn bs" onclick="ST.openRen(${i})">鉁忥笍</button><button class="btn bd bs" onclick="ST.delSec(${i})">馃棏</button></div></div>`).join('');
+  l.innerHTML=S.sectors.map((s,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--brd)"><span style="font-weight:600">${esc(s.name)} <span class="pill ${s.type==='rechnungen'?'pw':'pi'}">${s.type==='rechnungen'?'Rechnungen':'Standard'}</span> <span class="pill pi">${(s.rows||[]).length}</span></span><div style="display:flex;gap:4px">${s.type!=='rechnungen'?`<button class="btn bs" onclick="ST.openCfg(${i})" title="Spalten">ðŸ·ï¸</button>`:''}<button class="btn bs" onclick="ST.openRen(${i})">âœï¸</button><button class="btn bd bs" onclick="ST.delSec(${i})">ðŸ—‘</button></div></div>`).join('');
 }
 function admAddSec(){const n=$('aNS').value.trim(),t=$('aNT').value;if(!n){toast('Name eingeben','warning');return;}S.sectors.push({id:cid(),name:n,type:t,rows:[],fieldConfig:{}});$('aNS').value='';save();toast('Erstellt','success');}
 function openRen(i){renIdx=i;$('mSR').value=S.sectors[i]?.name||'';openModal('ren');}
 function renameSec(){const n=$('mSR').value.trim();if(!n){toast('Name eingeben','warning');return;}const old=S.sectors[renIdx]?.name;S.sectors[renIdx].name=n;S.users.forEach(u=>{if(u.allowedSectors)u.allowedSectors=u.allowedSectors.map(s=>s===old?n:s);});closeModal('ren');save();toast('Umbenannt','success');}
-function delSec(i){const s=S.sectors[i];if(!s||!confirm(`"${s.name}" l枚schen?`))return;S.sectors.splice(i,1);save();toast('Gel枚scht','success');}
+function delSec(i){const s=S.sectors[i];if(!s||!confirm(`"${s.name}" lÃ¶schen?`))return;S.sectors.splice(i,1);save();toast('GelÃ¶scht','success');}
 
 /* Sector field config */
 function openCfg(i){
@@ -1329,95 +759,40 @@ function rAdmUsr(){
   const l=$('aUsrL'),sc=$('nuS');
   sc.innerHTML=S.sectors.map(s=>`<label style="display:flex;align-items:center;gap:4px;font-size:.82rem;background:#f8fafc;padding:3px 9px;border-radius:6px;border:1px solid var(--brd)"><input type="checkbox" class="nu-s" value="${esc(s.name)}"> ${esc(s.name)}</label>`).join('')||'<span style="color:var(--tx2);font-size:.82rem">Zuerst Sektoren erstellen</span>';
   if(!S.users.length){l.innerHTML='<p style="color:var(--tx2);font-size:.85rem">Keine Benutzer.</p>';return;}
-  l.innerHTML='<div class="tw"><table><thead><tr><th>Name</th><th>Admin</th><th>Sektoren</th><th>Aktion</th></tr></thead><tbody>'+S.users.map((u,i)=>{const ss=(u.allowedSectors||[]).join(', ')||'<span style="color:var(--tx3)">Alle</span>';return `<tr><td><strong>${esc(u.name)}</strong></td><td>${u.isAdmin?'<span class="pill pw">Admin</span>':'鈥�'}</td><td style="font-size:.8rem">${ss}</td><td><button class="btn bd bs" onclick="ST.delUsr(${i})">馃棏</button></td></tr>`;}).join('')+'</tbody></table></div>';
+  l.innerHTML='<div class="tw"><table><thead><tr><th>Name</th><th>Admin</th><th>Sektoren</th><th>Aktion</th></tr></thead><tbody>'+S.users.map((u,i)=>{const ss=(u.allowedSectors||[]).join(', ')||'<span style="color:var(--tx3)">Alle</span>';return `<tr><td><strong>${esc(u.name)}</strong></td><td>${u.isAdmin?'<span class="pill pw">Admin</span>':'â€”'}</td><td style="font-size:.8rem">${ss}</td><td><button class="btn bd bs" onclick="ST.delUsr(${i})">ðŸ—‘</button></td></tr>`;}).join('')+'</tbody></table></div>';
 }
-function admAddUsr(){const nm=$('nuN').value.trim(),pw=$('nuP').value.trim();if(!nm||!pw){toast('Name + Passwort n枚tig','warning');return;}if(S.users.some(u=>u.name.toLowerCase()===nm.toLowerCase())){toast('Name existiert','warning');return;}const ss=Array.from(document.querySelectorAll('.nu-s:checked')).map(c=>c.value);S.users.push({name:nm,pw,isAdmin:$('nuA').checked,allowedSectors:ss});$('nuN').value='';$('nuP').value='';$('nuA').checked=false;save();toast('Angelegt','success');}
-function delUsr(i){if(!confirm(`"${S.users[i]?.name}" l枚schen?`))return;S.users.splice(i,1);save();toast('Gel枚scht','success');}
+function admAddUsr(){const nm=$('nuN').value.trim(),pw=$('nuP').value.trim();if(!nm||!pw){toast('Name + Passwort nÃ¶tig','warning');return;}if(S.users.some(u=>u.name.toLowerCase()===nm.toLowerCase())){toast('Name existiert','warning');return;}const ss=Array.from(document.querySelectorAll('.nu-s:checked')).map(c=>c.value);S.users.push({name:nm,pw,isAdmin:$('nuA').checked,allowedSectors:ss});$('nuN').value='';$('nuP').value='';$('nuA').checked=false;save();toast('Angelegt','success');}
+function delUsr(i){if(!confirm(`"${S.users[i]?.name}" lÃ¶schen?`))return;S.users.splice(i,1);save();toast('GelÃ¶scht','success');}
 
 /* ===== CSV ===== */
 function csvSec(){const s=S.sectors[curSec];if(!s)return;const vf=vF(s);const hdr=['#','Datum','Ersteller',...vf.map(f=>fL(s,f.key))];const rows=s.rows.map((r,i)=>[i+1,r.datum||'',r.ersteller||'',...vf.map(f=>r[f.key]??'')]);dlCSV(s.name+'.csv',[hdr,...rows]);}
-function csvInv(){const s=S.sectors[curSec];if(!s)return;const hdr=['#','Datum','Empf盲nger','Betrag','QR'];const rows=(s.rows||[]).map((r,i)=>[i+1,r.datum||'',r.payee||'',r.amount||'',(r.hasQr||r.qrRaw||r.encryptedBlob)?'ja':'']);dlCSV(s.name+'_Rechnungen.csv',[hdr,...rows]);}
+function csvInv(){const s=S.sectors[curSec];if(!s)return;const hdr=['#','Datum','Beschreibung','Referenz','Betrag'];const rows=(s.rows||[]).map((r,i)=>[i+1,r.datum||'',r.desc||'',r.ref||'',r.amount||'']);dlCSV(s.name+'_Rechnungen.csv',[hdr,...rows]);}
 function csvAll(){const rows=[['Sektor','Typ','Datum','Ersteller','F1','F2','F3','F4','F5','F6','F7','F8']];S.sectors.forEach(s=>{(s.rows||[]).forEach(r=>{if(s.type==='rechnungen')rows.push([s.name,'Rechnung',r.datum||'',r.ersteller||'',r.desc||'',r.ref||'','','',r.amount||'','','','']);else rows.push([s.name,'Standard',r.datum||'',r.ersteller||'',...FIELDS.map(f=>r[f.key]??'')]);});});dlCSV('SektorTracker_Export.csv',rows);}
 function dlCSV(name,data){const csv=data.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(';')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download=name;a.click();toast('CSV exportiert','success');}
 function jsonExport(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:'application/json'}));a.download='SektorTracker_Backup.json';a.click();toast('JSON exportiert','success');}
 
-
-/* ===== ONBOARDING (first start) ===== */
-let _onbStep = 0;
-const _onbSlides = [
-  {t:'Willkommen', p:'Kurzer Rundgang durch Trackerrai. Du kannst Sektoren anlegen, Eintr盲ge erfassen und QR鈥慠echnungen scannen.'},
-  {t:'Rechnungen per QR', p:'Im Bereich 鈥濺echnungen鈥� kannst du Monate manuell anlegen und danach Rechnungen per Kamera/QR erfassen. QR鈥慍ode & Details lassen sich sp盲ter wieder anzeigen.'},
-  {t:'PIN & Verschl眉sselung', p:'QR鈥慏etails (QR鈥慠aw, Referenz, Metadaten) werden clientseitig verschl眉sselt gespeichert. PIN nicht vergessen 鈥� ohne PIN k枚nnen Details nicht entschl眉sselt werden.'}
-];
-function _onbRender(){
-  const o = $('onbO'); if(!o) return;
-  $('onbT').textContent = _onbSlides[_onbStep].t;
-  $('onbP').textContent = _onbSlides[_onbStep].p;
-  $('onbBack').style.visibility = _onbStep===0 ? 'hidden' : 'visible';
-  $('onbNext').textContent = (_onbStep===_onbSlides.length-1) ? 'Fertig' : 'Weiter';
-  $('onbDot').textContent = (_onbStep+1)+' / '+_onbSlides.length;
-}
-function _onbStart(){
-  try{
-    if(localStorage.getItem('st_onb_v1')==='1') return;
-    const o = $('onbO'); if(!o) return;
-    o.style.display='flex';
-    _onbStep=0; _onbRender();
-  }catch(_){}
-}
-function _onbDone(){
-  try{ localStorage.setItem('st_onb_v1','1'); }catch(_){}
-  const o = $('onbO'); if(o) o.style.display='none';
-  toast('Start bereit 鉁�','success');
-}
-function _onbNext(){
-  if(_onbStep>=_onbSlides.length-1) return _onbDone();
-  _onbStep++; _onbRender();
-}
-function _onbPrev(){
-  if(_onbStep<=0) return;
-  _onbStep--; _onbRender();
-}
-
-/* ===== PWA / Service Worker ===== */
-function registerSW(){
-  if(!('serviceWorker' in navigator)) return;
-  navigator.serviceWorker.register('/sw_trackerrai_v8.js').catch(()=>{});
-}
-
 /* ===== INIT ===== */
 initFirebase();
 show('dash');
-registerSW();
-setTimeout(_onbStart, 350);
 
-return{authTab,login,register,resetPw,logout,show,openModal,closeModal,unlock,lockCancel,
+return{authTab,login,register,resetPw,logout,show,openModal,closeModal,
 openPwModal,changePw,
 appLogin,appLogout,openSec,
 addRow,editRow,saveRow,cancelRow,delRow,
-setMonth,addInvMonth,addInv,editInvRow,saveInvRow,cancelInvRow,delInvRow,
-openScanner,qrAddSector,closeScanner,addScanned,showInvDetails,showInvQR,copyQrRaw,exportInvPdf,exportMonthPdf,
+setMonth,addInv,editInvRow,saveInvRow,cancelInvRow,delInvRow,
+openScanner,closeScanner,addScanned,showInvQR,copyQrRaw,
 rMsg,sendMsg,
 saveOrg,admAddSec,openRen,renameSec,delSec,openCfg,saveCfg,
-admAddUsr,delUsr,csvSec,csvInv,csvAll,jsonExport,_onbNext,_onbPrev};
+admAddUsr,delUsr,csvSec,csvInv,csvAll,jsonExport};
 })();
 
+// ===== PWA Service Worker =====
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw_trackerrai_v9.js').catch(() => {});
+  });
+}
+
 </script>
-
-<!-- ONBOARDING -->
-<div id="onbO" class="overlay" style="display:none">
-  <div class="modal" style="max-width:520px">
-    <h3 id="onbT">Willkommen</h3>
-    <p id="onbP" style="color:var(--tx2);line-height:1.35;margin-top:.35rem"></p>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.9rem;gap:10px">
-      <button class="btn bs" id="onbBack" onclick="ST._onbPrev()">Zur眉ck</button>
-      <div style="display:flex;gap:8px;align-items:center">
-        <span id="onbDot" style="font-size:.85rem;color:var(--tx2)"></span>
-        <button class="btn bp" id="onbNext" onclick="ST._onbNext()">Weiter</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
