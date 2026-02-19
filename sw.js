@@ -1,5 +1,5 @@
-/* TrackerRAI PWA Service Worker (v9) */
-const CACHE_NAME = 'trackerrai-v9';
+/* TrackerRAI PWA Service Worker (v10) */
+const CACHE_NAME = 'trackerrai-v10';
 const CORE = [
   '/',
   '/index.html',
@@ -8,17 +8,17 @@ const CORE = [
   '/icon-512.png'
 ];
 
-// External libs (best-effort cache for offline/PWA reliability)
 const EXT = [
   'https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js',
-  'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js'
+  'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js',
+  'https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js'
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
     await cache.addAll(CORE);
-    // Best-effort: don't fail install if CDN is temporarily unavailable
     await Promise.allSettled(EXT.map(u => cache.add(u)));
     self.skipWaiting();
   })());
@@ -35,8 +35,8 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   const url = new URL(req.url);
+  const isExt = EXT.includes(req.url);
 
-  // Network-first for navigations
   if (req.mode === 'navigate') {
     event.respondWith((async () => {
       try {
@@ -52,21 +52,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Cache-first for same-origin static assets
-  if (url.origin === location.origin) {
-    event.respondWith((async () => {
-      const cached = await caches.match(req);
-      if (cached) return cached;
-      const res = await fetch(req);
-      const cache = await caches.open(CACHE_NAME);
-      cache.put(req, res.clone());
-      return res;
-    })());
-    return;
-  }
-
-  // Stale-while-revalidate for CDN libs (keeps QR + scanner working in PWA)
-  if (EXT.includes(req.url)) {
+  if (isExt) {
     event.respondWith((async () => {
       const cache = await caches.open(CACHE_NAME);
       const cached = await cache.match(req);
@@ -76,6 +62,14 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Default: passthrough
-  return;
+  if (url.origin !== location.origin) return;
+
+  event.respondWith((async () => {
+    const cached = await caches.match(req);
+    if (cached) return cached;
+    const res = await fetch(req);
+    const cache = await caches.open(CACHE_NAME);
+    cache.put(req, res.clone());
+    return res;
+  })());
 });
