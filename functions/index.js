@@ -128,3 +128,118 @@ exports.mirrorSecretContactOnAccept = functions.firestore
       // ignore
     }
   });
+
+// 3) Friend requests: Create / Accept requests safely from Cloud Function
+exports.addFriendRequest = functions.https.onCall(async (data, context) => {
+  if (!context.auth) throw new functions.https.HttpsError('unauthenticated', 'User not authenticated');
+  
+  const { friendCode } = data;
+  const currentUid = context.auth.uid;
+  
+  if (!friendCode || typeof friendCode !== 'string') {
+    throw new functions.https.HttpsError('invalid-argument', 'Invalid friend code');
+  }
+
+  try {
+    // 1) Find friend by code in public_profiles
+    const profilesSnap = await db.collection('artifacts').doc(APP_ID).collection('public_profiles').where('shareCode', '==', friendCode).limit(1).get();
+    
+    if (profilesSnap.empty) {
+      throw new functions.https.HttpsError('not-found', 'Friend code not found');
+    }
+
+    const friendProfile = profilesSnap.docs[0].data();
+    const friendUid = friendProfile.userId;
+    const friendName = friendProfile.name || 'Friend';
+
+    if (friendUid === currentUid) {
+      throw new functions.https.HttpsError('invalid-argument', 'Cannot add yourself');
+    }
+
+    // 2) Get current user's shareCode
+    const currentProfileSnap = await db.collection('artifacts').doc(APP_ID).collection('users').doc(currentUid).get();
+    const currentProfileData = currentProfileSnap.data() || {};
+    const currentShareCode = currentProfileData.shareCode || '';
+    const currentName = currentProfileData.name || currentUid.slice(0, 6);
+
+    // 3) Write both directions in transaction
+    await db.runTransaction(async (transaction) => {
+      transaction.set(
+        db.collection('artifacts').doc(APP_ID).collection('users').doc(currentUid).collection('friends').doc(friendUid),
+        { status: 'pending_sent', shareCode: friendCode, name: friendName, createdAt: admin.firestore.FieldValue.serverTimestamp() },
+        { merge: true }
+      );
+      transaction.set(
+        db.collection('artifacts').doc(APP_ID).collection('users').doc(friendUid).collection('friends').doc(currentUid),
+        { status: 'pending_received', shareCode: currentShareCode, name: currentName, createdAt: admin.firestore.FieldValue.serverTimestamp() },
+        { merge: true }
+      );
+    });
+
+    return { success: true, friendName };
+  } catch (e) {
+    console.error('addFriendRequest error:', e);
+    throw new functions.https.HttpsError('internal', e.message || 'Error adding friend');
+  }
+});
+
+// 4) Accept friend request
+exports.acceptFriendRequest = functions.https.onCall(async (data, context) => {
+  if (!context.auth) throw new functions.https.HttpsError('unauthenticated', 'User not authenticated');
+  
+  const { friendUid } = data;
+  const currentUid = context.auth.uid;
+
+  if (!friendUid || typeof friendUid !== 'string') {
+    throw new functions.https.HttpsError('invalid-argument', 'Invalid friend UID');
+  }
+
+  try {
+    await db.runTransaction(async (transaction) => {
+      transaction.update(
+        db.collection('artifacts').doc(APP_ID).collection('users').doc(currentUid).collection('friends').doc(friendUid),
+        { status: 'accepted', acceptedAt: admin.firestore.FieldValue.serverTimestamp() }
+      );
+      transaction.update(
+        db.collection('artifacts').doc(APP_ID).collection('users').doc(friendUid).collection('friends').doc(currentUid),
+        { status: 'accepted', acceptedAt: admin.firestore.FieldValue.serverTimestamp() }
+      );
+    });
+
+    return { success: true };
+  } catch (e) {
+    console.error('acceptFriendRequest error:', e);
+    throw new functions.https.HttpsError('internal', e.message || 'Error accepting request');
+  }
+});
+
+// 5) Update user profile and public profile (creates/updates shareCode)
+exports.updateUserProfile = functions.https.onCall(async (data, context) => {
+  if (!context.auth) throw new functions.https.HttpsError('unauthenticated', 'User not authenticated');
+  
+  const { name, shareCode } = data;
+  const uid = context.auth.uid;
+
+  try {
+    const profileRef = db.collection('artifacts').doc(APP_ID).collection('users').doc(uid);
+    
+    // Update main profile
+    await profileRef.set(
+      { name: name || uid.slice(0, 6), shareCode, updatedAt: admin.firestore.FieldValue.serverTimestamp() },
+      { merge: true }
+    );
+
+    // Update public profile
+    if (shareCode) {
+      await db.collection('artifacts').doc(APP_ID).collection('public_profiles').doc(shareCode).set(
+        { userId: uid, name: name || uid.slice(0, 6), updatedAt: admin.firestore.FieldValue.serverTimestamp() },
+        { merge: true }
+      );
+    }
+
+    return { success: true };
+  } catch (e) {
+    console.error('updateUserProfile error:', e);
+    throw new functions.https.HttpsError('internal', e.message || 'Error updating profile');
+  }
+});
