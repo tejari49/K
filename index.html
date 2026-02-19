@@ -344,6 +344,7 @@
             deleteDoc, onSnapshot, query, orderBy, where, serverTimestamp, writeBatch, limit, deleteField 
         } from 'firebase/firestore';
         import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+        import { getFunctions, httpsCallable } from 'firebase/functions';
 
         // --- KONFIGURATION ---
         const firebaseConfig = {
@@ -359,6 +360,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const functions = getFunctions(app);
 
         // --- Firebase Messaging (FCM) ---
         let messaging = null;
@@ -4837,27 +4839,27 @@
                 if(!code) return;
                 setLoading(true);
                 try {
-                    const snap = await getDoc(doc(db, 'artifacts', appId, 'public_profiles', code));
-                    if (!snap.exists()) { alert(t('codeNotFound')); setLoading(false); return; }
-                    const profileData = snap.data();
-                    const fid = profileData.userId;
-                    const friendName = profileData.name || 'Friend';
-                    if(fid === user.uid) { setLoading(false); return alert(t('selfRequest')); }
-                    const myName = (currentUserName || '').trim() || getUserName(user);
-                    const batch = writeBatch(db);
-                    batch.set(doc(db, 'artifacts', appId, 'users', user.uid, 'friends', fid), { status: 'pending_sent', shareCode: code, name: friendName });
-                    batch.set(doc(db, 'artifacts', appId, 'users', fid, 'friends', user.uid), { status: 'pending_received', shareCode: currentShareCode, name: myName });
-                    await batch.commit();
-                    alert(t('requestSent')); setFriendCode('');
-                } catch(e) { console.error(e); alert(t('errorAddFriend')); }
+                    const addFriendRequest = httpsCallable(functions, 'addFriendRequest');
+                    const result = await addFriendRequest({ friendCode: code });
+                    alert(t('requestSent')); 
+                    setFriendCode('');
+                } catch(e) { 
+                    console.error(e); 
+                    const errorMsg = e.message || e.code || 'Error adding friend';
+                    alert(errorMsg.includes('not-found') ? t('codeNotFound') : t('errorAddFriend')); 
+                }
                 setLoading(false);
             };
 
-
             const accept = async (fid) => {
-                const batch = writeBatch(db);
-                batch.update(doc(db, 'artifacts', appId, 'users', user.uid, 'friends', fid), { status: 'accepted' });
-                batch.update(doc(db, 'artifacts', appId, 'users', fid, 'friends', user.uid), { status: 'accepted' });
+                try {
+                    const acceptFriendRequest = httpsCallable(functions, 'acceptFriendRequest');
+                    await acceptFriendRequest({ friendUid: fid });
+                } catch(e) { 
+                    console.error('Accept error:', e);
+                    alert('Error accepting request');
+                }
+            };
                 await batch.commit();
             };
 
@@ -8219,9 +8221,13 @@ function TimeRosterApp() {
                                 const nm = (data.name || '').trim() || getUserName(u);
                                 setShareCode(sc);
                                 setDisplayName(nm);
-                                // Ensure public profile exists / stays in sync
-                                await setDoc(doc(db, 'artifacts', appId, 'public_profiles', sc), { userId: u.uid, name: nm }, { merge: true });
-                                if (!data.shareCode || !data.name) {
+                                // Use Cloud Function to update profile and public profile
+                                try {
+                                    const updateUserProfile = httpsCallable(functions, 'updateUserProfile');
+                                    await updateUserProfile({ name: nm, shareCode: sc });
+                                } catch(e) {
+                                    console.warn('Profile sync error:', e);
+                                    // Fallback: write locally
                                     await setDoc(profileRef, { shareCode: sc, name: nm }, { merge: true });
                                 }
                             } else {
@@ -8229,8 +8235,14 @@ function TimeRosterApp() {
                                 const userName = getUserName(u);
                                 setShareCode(newCode);
                                 setDisplayName(userName);
-                                await setDoc(profileRef, { shareCode: newCode, name: userName });
-                                await setDoc(doc(db, 'artifacts', appId, 'public_profiles', newCode), { userId: u.uid, name: userName });
+                                try {
+                                    const updateUserProfile = httpsCallable(functions, 'updateUserProfile');
+                                    await updateUserProfile({ name: userName, shareCode: newCode });
+                                } catch(e) {
+                                    console.warn('Profile creation error:', e);
+                                    // Fallback: write locally
+                                    await setDoc(profileRef, { shareCode: newCode, name: userName });
+                                }
                             }
                         }).catch(e => console.log("Profile init error (silent)", e));
                     } else {
@@ -9138,7 +9150,14 @@ function TimeRosterApp() {
                     const profileRef = doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'main');
                     await setDoc(profileRef, { name: newName }, { merge: true });
                     if (shareCode) {
-                        await setDoc(doc(db, 'artifacts', appId, 'public_profiles', shareCode), { userId: user.uid, name: newName }, { merge: true });
+                        try {
+                            const updateUserProfile = httpsCallable(functions, 'updateUserProfile');
+                            await updateUserProfile({ name: newName, shareCode });
+                        } catch(e) {
+                            console.warn('Public profile update failed, using fallback:', e);
+                            // Fallback: write directly
+                            await setDoc(doc(db, 'artifacts', appId, 'public_profiles', shareCode), { userId: user.uid, name: newName }, { merge: true });
+                        }
                     }
                     // Update name in friends' documents (so existing friends see it too)
                     const myFriendsSnap = await getDocs(collection(db, 'artifacts', appId, 'users', user.uid, 'friends'));
