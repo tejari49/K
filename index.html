@@ -2,6 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#0ea5e9">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -134,7 +135,7 @@ header{padding-top:env(safe-area-inset-top)}
 </style>
 
 <!-- PWA -->
-<link rel="manifest" href="manifest_trackerrai_v9.webmanifest">
+<link rel="manifest" href="/manifest_trackerrai_v10.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Sektor Tracker">
@@ -146,7 +147,7 @@ header{padding-top:env(safe-area-inset-top)}
 <!-- AUTH -->
 <div id="authOv" class="auth-ov">
 <div class="auth-box">
-<h2>ðŸ“¦ Sektor Tracker</h2>
+<h2>Sektor Tracker</h2>
 <p class="sub">Anmelden oder Konto erstellen</p>
 <div class="auth-tabs">
 <button class="auth-tab on" onclick="ST.authTab('login')">Anmelden</button>
@@ -154,7 +155,7 @@ header{padding-top:env(safe-area-inset-top)}
 </div>
 <div id="authLogin">
 <div class="fg"><label>E-Mail</label><input type="email" id="liEm" placeholder="name@firma.ch"></div>
-<div class="fg"><label>Passwort</label><input type="password" id="liPw" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"></div>
+<div class="fg"><label>Passwort</label><input type="password" id="liPw" placeholder="********"></div>
 <button class="btn bp bb" id="liBtn" onclick="ST.login()">Anmelden</button>
 <div id="liErr" class="auth-err"></div>
 <span class="auth-link" onclick="ST.resetPw()">Passwort vergessen?</span>
@@ -162,8 +163,8 @@ header{padding-top:env(safe-area-inset-top)}
 <div id="authReg" style="display:none">
 <div class="fg"><label>E-Mail</label><input type="email" id="rgEm" placeholder="name@firma.ch"></div>
 <div class="fg"><label>Anzeigename</label><input type="text" id="rgNm" placeholder="Vor- / Nachname"></div>
-<div class="fg"><label>Passwort (min. 6)</label><input type="password" id="rgPw" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"></div>
-<div class="fg"><label>Passwort bestÃ¤tigen</label><input type="password" id="rgPw2" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"></div>
+<div class="fg"><label>Passwort (min. 6)</label><input type="password" id="rgPw" placeholder="********"></div>
+<div class="fg"><label>Passwort bestätigen</label><input type="password" id="rgPw2" placeholder="********"></div>
 <button class="btn bp bb" id="rgBtn" onclick="ST.register()">Konto erstellen</button>
 <div id="rgErr" class="auth-err"></div>
 </div>
@@ -175,11 +176,11 @@ header{padding-top:env(safe-area-inset-top)}
 <div class="hdr">
 <div class="brand"><div class="brand-icon">ST</div><div><h1>Sektor Tracker</h1><small id="orgLbl" style="text-transform:uppercase;font-weight:900;letter-spacing:.04em">Organisation</small></div></div>
 <div class="ha">
-<span class="uchip" id="uChip" onclick="ST.openPwModal()" title="Passwort Ã¤ndern">â€”</span>
-<button class="hb" id="navMsg" style="display:none;position:relative" onclick="ST.show('msg')">ðŸ’¬ <span id="msgBadge" class="badge" style="display:none">0</span></button>
-<button class="hb" id="navAdm" style="display:none" onclick="ST.show('admin')">âš™ Admin</button>
-<button class="hb" onclick="ST.show('dash')">ðŸ </button>
-<button class="hb" onclick="ST.csvAll()" title="CSV">ðŸ“¥</button>
+<span class="uchip" id="uChip" onclick="ST.openPwModal()" title="Passwort ändern">—</span>
+<button class="hb" id="navMsg" style="display:none;position:relative" onclick="ST.show('msg')">MSG <span id="msgBadge" class="badge" style="display:none">0</span></button>
+<button class="hb" id="navAdm" style="display:none" onclick="ST.show('admin')"> Admin</button>
+<button class="hb" onclick="ST.show('dash')">Start</button>
+<button class="hb" onclick="ST.csvAll()" title="CSV">CSV</button>
 <button class="hb" onclick="ST.logout()">Logout</button>
 </div>
 </div>
@@ -188,7 +189,7 @@ header{padding-top:env(safe-area-inset-top)}
 <main>
 <!-- App User Bar -->
 <div id="appBar" class="app-bar" style="display:none">
-<span>ðŸ‘¤</span>
+<span></span>
 <input id="auN" placeholder="Name">
 <input id="auP" type="password" placeholder="Passwort">
 <button class="btn bp bs" id="auLB" onclick="ST.appLogin()">Login</button>
@@ -208,8 +209,8 @@ header{padding-top:env(safe-area-inset-top)}
 <!-- SECTOR VIEW (Standard) -->
 <div id="secV" class="view">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.7rem">
-<div><button class="btn bgh bs" onclick="ST.show('dash')">â† ZurÃ¼ck</button><h2 style="font-size:1.15rem;font-weight:800;margin-top:.4rem" id="secT">Sektor</h2></div>
-<div style="display:flex;gap:6px"><button class="btn bp" onclick="ST.addRow()">+ Eintrag</button><button class="btn bs" onclick="ST.csvSec()">ðŸ“¥ CSV</button></div>
+<div><button class="btn bgh bs" onclick="ST.show('dash')">← Zurück</button><h2 style="font-size:1.15rem;font-weight:800;margin-top:.4rem" id="secT">Sektor</h2></div>
+<div style="display:flex;gap:6px"><button class="btn bp" onclick="ST.addRow()">+ Eintrag</button><button class="btn bs" onclick="ST.csvSec()">CSV CSV</button></div>
 </div>
 <div class="card" style="padding:.65rem"><div class="tw"><table><thead><tr id="sTh"></tr></thead><tbody id="sTb"></tbody></table></div></div>
 <div id="secSm" class="card" style="display:none"></div>
@@ -218,8 +219,8 @@ header{padding-top:env(safe-area-inset-top)}
 <!-- RECHNUNGEN VIEW -->
 <div id="invV" class="view">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.7rem">
-<div><button class="btn bgh bs" onclick="ST.show('dash')">â† ZurÃ¼ck</button><h2 style="font-size:1.15rem;font-weight:800;margin-top:.4rem" id="invT">Rechnungen</h2></div>
-<div style="display:flex;gap:6px"><button class="btn bg" onclick="ST.openScanner()">ðŸ“· QR scannen</button><button class="btn bp" onclick="ST.addInv()">+ Manuell</button><button class="btn bs" onclick="ST.csvInv()">ðŸ“¥</button></div>
+<div><button class="btn bgh bs" onclick="ST.show('dash')">← Zurück</button><h2 style="font-size:1.15rem;font-weight:800;margin-top:.4rem" id="invT">Rechnungen</h2></div>
+<div style="display:flex;gap:6px"><button class="btn bg" onclick="ST.openScanner()"> QR scannen</button><button class="btn bp" onclick="ST.addInv()">+ Manuell</button><button class="btn bs" onclick="ST.csvInv()">CSV</button></div>
 </div>
 <div id="invTotalCard" class="card" style="display:none"></div>
 <div id="invMonthTabs" class="mtabs"></div>
@@ -231,7 +232,7 @@ header{padding-top:env(safe-area-inset-top)}
 <div id="msgV" class="view">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.7rem">
 <h2 style="font-size:1.15rem;font-weight:800;margin:0">Nachrichten</h2>
-<button class="btn bs" onclick="ST.show('dash')">â† Start</button>
+<button class="btn bs" onclick="ST.show('dash')">\1</button>
 </div>
 <div id="msgList"></div>
 </div>
@@ -239,39 +240,39 @@ header{padding-top:env(safe-area-inset-top)}
 <!-- ADMIN -->
 <div id="adminV" class="view">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.7rem">
-<h2 style="font-size:1.15rem;font-weight:800;margin:0">âš™ Administration</h2>
-<button class="btn bs" onclick="ST.show('dash')">â† Start</button>
+<h2 style="font-size:1.15rem;font-weight:800;margin:0"> Administration</h2>
+<button class="btn bs" onclick="ST.show('dash')">\1</button>
 </div>
 <div class="card"><h3>Organisation</h3><div class="fr"><div><label>Name</label><input id="aOrg" placeholder="Firmenname"></div><div style="align-self:end"><button class="btn bp bs" onclick="ST.saveOrg()">Speichern</button></div></div></div>
-<div class="card"><h3>ðŸ“¦ Sektoren</h3><div id="aSecL"></div>
+<div class="card"><h3> Sektoren</h3><div id="aSecL"></div>
 <hr style="margin:.85rem 0;border:none;border-top:1px solid var(--brd)">
 <h4 style="font-size:.85rem;margin-bottom:.4rem">Neuer Sektor</h4>
 <div class="fr"><div><label>Name</label><input id="aNS" placeholder="Name"></div><div><label>Typ</label><select id="aNT"><option value="standard">Standard</option><option value="rechnungen">Rechnungen (Monate + QR)</option></select></div><div style="align-self:end"><button class="btn bp bs" onclick="ST.admAddSec()">Erstellen</button></div></div>
 </div>
-<div class="card"><h3>ðŸ‘¥ Benutzer</h3><div id="aUsrL"></div>
+<div class="card"><h3> Benutzer</h3><div id="aUsrL"></div>
 <hr style="margin:.85rem 0;border:none;border-top:1px solid var(--brd)">
 <h4 style="font-size:.85rem;margin-bottom:.4rem">Neuer Benutzer</h4>
 <div class="fr"><div><label>Name</label><input id="nuN" placeholder="Name"></div><div><label>Passwort</label><input id="nuP" placeholder="Passwort"></div></div>
 <div style="margin:.4rem 0 .6rem"><label>Sektoren</label><div id="nuS" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.2rem"></div></div>
 <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.6rem"><label style="margin:0;display:flex;align-items:center;gap:5px"><input type="checkbox" id="nuA"> Admin</label></div>
 <button class="btn bp bs" onclick="ST.admAddUsr()">Anlegen</button></div>
-<div class="card"><h3>ðŸ’¬ Nachricht senden</h3>
-<div class="fr"><div><label>EmpfÃ¤nger</label><select id="msgTo"></select></div></div>
+<div class="card"><h3>MSG Nachricht senden</h3>
+<div class="fr"><div><label>Empfänger</label><select id="msgTo"></select></div></div>
 <div class="fg"><label>Nachricht</label><textarea id="msgTxt" placeholder="Nachricht eingeben..."></textarea></div>
 <button class="btn bp bs" onclick="ST.sendMsg()">Senden</button></div>
-<div class="card" style="border-color:#fecaca"><h3 style="color:var(--err)">âš ï¸ Gefahrenzone</h3><button class="btn bd bs" onclick="ST.jsonExport()">ðŸ“‹ JSON-Backup</button></div>
+<div class="card" style="border-color:#fecaca"><h3 style="color:var(--err)">⚠️ Gefahrenzone</h3><button class="btn bd bs" onclick="ST.jsonExport()"> JSON-Backup</button></div>
 </div>
 </main>
 
 <!-- MODALS -->
-<div class="mo" id="pwModal"><div class="modal"><h3>ðŸ”‘ Passwort Ã¤ndern</h3>
+<div class="mo" id="pwModal"><div class="modal"><h3> Passwort ändern</h3>
 <div class="fg"><label>Aktuelles Passwort</label><input type="password" id="pwOld"></div>
 <div class="fg"><label>Neues Passwort</label><input type="password" id="pwNew"></div>
-<div class="fg"><label>Neues Passwort bestÃ¤tigen</label><input type="password" id="pwNew2"></div>
+<div class="fg"><label>Neues Passwort bestätigen</label><input type="password" id="pwNew2"></div>
 <div id="pwErr" class="auth-err"></div>
-<div class="mft"><button class="btn bs" onclick="ST.closeModal('pw')">Abbrechen</button><button class="btn bp bs" onclick="ST.changePw()">Ã„ndern</button></div></div></div>
+<div class="mft"><button class="btn bs" onclick="ST.closeModal('pw')">Abbrechen</button><button class="btn bp bs" onclick="ST.changePw()">Ändern</button></div></div></div>
 
-<div class="mo" id="secCfgModal"><div class="modal"><h3>ðŸ·ï¸ Spalten fÃ¼r <span id="cfgSecName"></span></h3>
+<div class="mo" id="secCfgModal"><div class="modal"><h3>️ Spalten für <span id="cfgSecName"></span></h3>
 <p style="font-size:.8rem;color:var(--tx2);margin-bottom:.6rem">Leer = ausgeblendet</p>
 <div id="cfgFields" class="fr"></div>
 <div class="mft"><button class="btn bs" onclick="ST.closeModal('secCfg')">Abbrechen</button><button class="btn bp bs" onclick="ST.saveCfg()">Speichern</button></div></div></div>
@@ -283,7 +284,7 @@ header{padding-top:env(safe-area-inset-top)}
 <div><label>Betrag</label><input type="number" id="qrAmt" step="0.01"></div>
 <div><label>Beschreibung</label><input id="qrDesc"></div>
 </div>
-<button class="btn bp bs" onclick="ST.addScanned()" style="margin-top:.5rem">HinzufÃ¼gen</button>
+<button class="btn bp bs" onclick="ST.addScanned()" style="margin-top:.5rem">Hinzufügen</button>
 </div>
 <div class="mft"><button class="btn bs" onclick="ST.closeScanner()">Schliessen</button></div></div></div>
 
@@ -297,7 +298,7 @@ header{padding-top:env(safe-area-inset-top)}
   <div class="fg">
     <label>QR-Inhalt (optional)</label>
     <textarea id="qrRawTxt" readonly style="min-height:90px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"></textarea>
-    <button class="btn bs" style="margin-top:.45rem" onclick="ST.copyQrRaw()">ðŸ“‹ Kopieren</button>
+    <button class="btn bs" style="margin-top:.45rem" onclick="ST.copyQrRaw()"> Kopieren</button>
   </div>
   <div class="mft"><button class="btn bs" onclick="ST.closeModal('qrShow')">Schliessen</button></div>
 </div></div>
@@ -350,7 +351,7 @@ const INV_FIELDS=[
   {key:'ref',label:'Referenz/QR'},
   {key:'amount',label:'Betrag',type:'number'}
 ];
-const MONTHS=['Januar','Februar','MÃ¤rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+const MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
 
 /* ===== UTIL ===== */
 const $=id=>document.getElementById(id);
@@ -381,12 +382,12 @@ async function initFirebase(){
       auth=firebase.auth();db=firebase.database();
       // Test connection
       await db.ref('.info/connected').once('value');
-      connSt(true,'âœ“ Verbunden');
+      connSt(true,'✓ Verbunden');
       setupAuth();
       return;
     }catch(e){console.warn('DB URL failed:',url,e);}
   }
-  connSt(false,'âœ— DB nicht erreichbar â€“ prÃ¼fe Firebase Realtime Database');
+  connSt(false,'✗ DB nicht erreichbar – prüfe Firebase Realtime Database');
   // Still set up auth with last tried
   auth=firebase.auth();db=firebase.database();
   setupAuth();
@@ -413,8 +414,8 @@ function setupAuth(){
 
 /* ===== AUTH ===== */
 function authTab(t){document.querySelectorAll('.auth-tab').forEach((b,i)=>b.classList.toggle('on',t==='login'?i===0:i===1));$('authLogin').style.display=t==='login'?'block':'none';$('authReg').style.display=t==='register'?'block':'none';}
-async function login(){const em=$('liEm').value.trim(),pw=$('liPw').value,err=$('liErr');err.textContent='';if(!em||!pw){err.textContent='E-Mail und Passwort eingeben.';return;}try{$('liBtn').disabled=true;await auth.signInWithEmailAndPassword(em,pw);}catch(e){err.textContent=({'auth/user-not-found':'Kein Konto gefunden.','auth/wrong-password':'Falsches Passwort.','auth/invalid-email':'UngÃ¼ltige E-Mail.','auth/too-many-requests':'Zu viele Versuche.','auth/invalid-credential':'UngÃ¼ltige Anmeldedaten.'})[e.code]||'Fehler: '+(e.message||e.code);}finally{$('liBtn').disabled=false;}}
-async function register(){const em=$('rgEm').value.trim(),nm=$('rgNm').value.trim(),pw=$('rgPw').value,pw2=$('rgPw2').value,err=$('rgErr');err.textContent='';if(!em||!pw){err.textContent='Alle Felder ausfÃ¼llen.';return;}if(pw!==pw2){err.textContent='PasswÃ¶rter stimmen nicht Ã¼berein.';return;}if(pw.length<6){err.textContent='Min. 6 Zeichen.';return;}try{$('rgBtn').disabled=true;const c=await auth.createUserWithEmailAndPassword(em,pw);if(nm)await c.user.updateProfile({displayName:nm});toast('Konto erstellt!','success');}catch(e){err.textContent=({'auth/email-already-in-use':'E-Mail bereits registriert.','auth/weak-password':'Passwort zu schwach.'})[e.code]||'Fehler: '+(e.message||e.code);}finally{$('rgBtn').disabled=false;}}
+async function login(){const em=$('liEm').value.trim(),pw=$('liPw').value,err=$('liErr');err.textContent='';if(!em||!pw){err.textContent='E-Mail und Passwort eingeben.';return;}try{$('liBtn').disabled=true;await auth.signInWithEmailAndPassword(em,pw);}catch(e){err.textContent=({'auth/user-not-found':'Kein Konto gefunden.','auth/wrong-password':'Falsches Passwort.','auth/invalid-email':'Ungültige E-Mail.','auth/too-many-requests':'Zu viele Versuche.','auth/invalid-credential':'Ungültige Anmeldedaten.'})[e.code]||'Fehler: '+(e.message||e.code);}finally{$('liBtn').disabled=false;}}
+async function register(){const em=$('rgEm').value.trim(),nm=$('rgNm').value.trim(),pw=$('rgPw').value,pw2=$('rgPw2').value,err=$('rgErr');err.textContent='';if(!em||!pw){err.textContent='Alle Felder ausfüllen.';return;}if(pw!==pw2){err.textContent='Passwörter stimmen nicht überein.';return;}if(pw.length<6){err.textContent='Min. 6 Zeichen.';return;}try{$('rgBtn').disabled=true;const c=await auth.createUserWithEmailAndPassword(em,pw);if(nm)await c.user.updateProfile({displayName:nm});toast('Konto erstellt!','success');}catch(e){err.textContent=({'auth/email-already-in-use':'E-Mail bereits registriert.','auth/weak-password':'Passwort zu schwach.'})[e.code]||'Fehler: '+(e.message||e.code);}finally{$('rgBtn').disabled=false;}}
 async function resetPw(){const em=$('liEm').value.trim();if(!em){toast('Zuerst E-Mail eingeben','warning');return;}try{await auth.sendPasswordResetEmail(em);toast('Reset-Mail gesendet','success');}catch(e){toast('Fehler: '+e.message,'error');}}
 function logout(){appUsr=null;auth.signOut();}
 $('liPw').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
@@ -426,8 +427,8 @@ function openPwModal(){$('pwOld').value='';$('pwNew').value='';$('pwNew2').value
 async function changePw(){
   const old=$('pwOld').value,nw=$('pwNew').value,nw2=$('pwNew2').value,err=$('pwErr');
   err.textContent='';
-  if(!old||!nw){err.textContent='Alle Felder ausfÃ¼llen.';return;}
-  if(nw!==nw2){err.textContent='Neue PasswÃ¶rter stimmen nicht Ã¼berein.';return;}
+  if(!old||!nw){err.textContent='Alle Felder ausfüllen.';return;}
+  if(nw!==nw2){err.textContent='Neue Passwörter stimmen nicht überein.';return;}
   if(nw.length<6){err.textContent='Min. 6 Zeichen.';return;}
   // Owner (Firebase Auth) vs App User
   if(isOwner && fbUser){
@@ -435,12 +436,12 @@ async function changePw(){
       const cred=firebase.auth.EmailAuthProvider.credential(fbUser.email,old);
       await fbUser.reauthenticateWithCredential(cred);
       await fbUser.updatePassword(nw);
-      toast('Passwort geÃ¤ndert','success');closeModal('pw');
+      toast('Passwort geändert','success');closeModal('pw');
     }catch(e){err.textContent=e.code==='auth/wrong-password'?'Aktuelles Passwort falsch.':'Fehler: '+(e.message||e.code);}
   } else if(appUsr){
     if(old!==appUsr.pw){err.textContent='Aktuelles Passwort falsch.';return;}
     const u=S.users.find(x=>x.name===appUsr.name);
-    if(u){u.pw=nw;appUsr.pw=nw;save();toast('Passwort geÃ¤ndert','success');closeModal('pw');}
+    if(u){u.pw=nw;appUsr.pw=nw;save();toast('Passwort geändert','success');closeModal('pw');}
   }
 }
 
@@ -472,7 +473,7 @@ function refreshUI(){
 }
 
 /* ===== APP USER ===== */
-function appLogin(){const n=$('auN').value.trim(),p=$('auP').value;if(!n){toast('Name eingeben','warning');return;}const u=S.users.find(x=>x.name.toLowerCase()===n.toLowerCase()&&x.pw===p);if(!u){toast('UngÃ¼ltige Daten','error');return;}appUsr=u;isOwner=false;$('auN').style.display='none';$('auP').style.display='none';$('auLB').style.display='none';$('auLbl').style.display='inline';$('auLbl').textContent='âœ… '+u.name;$('auOB').style.display='inline-flex';$('uChip').textContent=u.name;$('navAdm').style.display=u.isAdmin?'inline-flex':'none';$('navMsg').style.display='inline-flex';toast('Eingeloggt als '+u.name,'success');show('dash');}
+function appLogin(){const n=$('auN').value.trim(),p=$('auP').value;if(!n){toast('Name eingeben','warning');return;}const u=S.users.find(x=>x.name.toLowerCase()===n.toLowerCase()&&x.pw===p);if(!u){toast('Ungültige Daten','error');return;}appUsr=u;isOwner=false;$('auN').style.display='none';$('auP').style.display='none';$('auLB').style.display='none';$('auLbl').style.display='inline';$('auLbl').textContent='✅ '+u.name;$('auOB').style.display='inline-flex';$('uChip').textContent=u.name;$('navAdm').style.display=u.isAdmin?'inline-flex':'none';$('navMsg').style.display='inline-flex';toast('Eingeloggt als '+u.name,'success');show('dash');}
 function appLogout(){appUsr=null;isOwner=true;$('auN').style.display='';$('auP').style.display='';$('auLB').style.display='';$('auLbl').style.display='none';$('auOB').style.display='none';$('auN').value='';$('auP').value='';$('uChip').textContent=fbUser?.displayName||fbUser?.email||'';$('navAdm').style.display='inline-flex';toast('Abgemeldet','info');show('dash');}
 
 /* ===== DASHBOARD ===== */
@@ -480,13 +481,13 @@ function rDash(){
   const g=$('sGrid'),btns=$('dashBtns');
   btns.innerHTML=canAdm()?'<button class="btn bp" onclick="ST.show(\'admin\')">+ Neuer Sektor</button>':'';
   const secs=getSecs();
-  if(!secs.length){g.innerHTML='<div class="empty"><div class="ic">ðŸ“¦</div><p>Noch keine Sektoren.</p>'+(canAdm()?'<button class="btn bp" onclick="ST.show(\'admin\')">Im Admin erstellen</button>':'')+'</div>';return;}
+  if(!secs.length){g.innerHTML='<div class="empty"><div class="ic"></div><p>Noch keine Sektoren.</p>'+(canAdm()?'<button class="btn bp" onclick="ST.show(\'admin\')">Im Admin erstellen</button>':'')+'</div>';return;}
   g.innerHTML=secs.map(([s,i])=>{
     const isInv=s.type==='rechnungen';
     const rows=s.rows||[];
     const n=rows.length;
     const total=isInv?rows.reduce((a,r)=>a+(Number(r.amount)||0),0):0;
-    return `<div class="sc${isInv?' sc-inv':''}" onclick="ST.openSec(${i})"><h3>${esc(s.name)}</h3><span class="stag">${isInv?'Rechnungen':'Standard'}</span><div class="n">${isInv?fmtN(total):n}</div><div class="m">${isInv?'<span>'+n+' Rechnungen</span>':'<span>EintrÃ¤ge</span>'}</div></div>`;
+    return `<div class="sc${isInv?' sc-inv':''}" onclick="ST.openSec(${i})"><h3>${esc(s.name)}</h3><span class="stag">${isInv?'Rechnungen':'Standard'}</span><div class="n">${isInv?fmtN(total):n}</div><div class="m">${isInv?'<span>'+n+' Rechnungen</span>':'<span>Einträge</span>'}</div></div>`;
   }).join('');
 }
 function getSecs(){if(isOwner||!appUsr)return S.sectors.map((s,i)=>[s,i]);const al=(appUsr.allowedSectors||[]).map(x=>x.toLowerCase());if(!al.length)return S.sectors.map((s,i)=>[s,i]);return S.sectors.map((s,i)=>[s,i]).filter(([s])=>al.includes(s.name.toLowerCase()));}
@@ -501,19 +502,19 @@ function rSec(){
   const vf=vF(s);
   $('sTh').innerHTML='<th>#</th><th>Datum</th><th>Ersteller</th>'+vf.map(f=>'<th>'+esc(fL(s,f.key))+'</th>').join('')+'<th style="width:100px">Aktion</th>';
   const tb=$('sTb');tb.innerHTML='';
-  if(!s.rows?.length){tb.innerHTML=`<tr><td colspan="${vf.length+4}" style="text-align:center;color:var(--tx2);padding:2rem">Keine EintrÃ¤ge</td></tr>`;$('secSm').style.display='none';return;}
+  if(!s.rows?.length){tb.innerHTML=`<tr><td colspan="${vf.length+4}" style="text-align:center;color:var(--tx2);padding:2rem">Keine Einträge</td></tr>`;$('secSm').style.display='none';return;}
   s.rows.forEach((r,i)=>{
     const tr=document.createElement('tr');
-    if(r._ed){let ei=0,c=`<td style="color:var(--tx3)">${i+1}</td><td><input type="date" value="${r.datum||''}" data-i="${i}" data-f="datum" data-enter="${++ei}"></td><td><input value="${esc(r.ersteller||'')}" disabled style="min-width:60px"></td>`;vf.forEach(f=>{c+=`<td><input type="${fT(f.key)==='number'?'number':'text'}" value="${esc(r[f.key]??'')}" data-i="${i}" data-f="${f.key}" data-enter="${++ei}" step="any" placeholder="${esc(fL(s,f.key))}"></td>`;});c+=`<td style="white-space:nowrap"><button class="btn bg bs" data-enter="${++ei}" onclick="ST.saveRow(${i})">âœ“</button> <button class="btn bd bs" onclick="ST.cancelRow(${i})">âœ—</button></td>`;tr.innerHTML=c;tr.style.background='#f0f9ff';}
-    else{let c=`<td style="color:var(--tx3);font-size:.78rem">${i+1}</td><td>${esc(fmtD(r.datum))}</td><td>${esc(r.ersteller||'')}</td>`;vf.forEach(f=>{let v=r[f.key];if(v!=null&&v!==''){if(fT(f.key)==='number')v=Number(v).toLocaleString('de-CH');}else v='';c+=`<td>${esc(String(v))}</td>`;});const mine=r.ersteller===uName()||canAdm();c+=`<td style="white-space:nowrap">${mine?`<button class="btn bs" onclick="ST.editRow(${i})">âœï¸</button> <button class="btn bd bs" onclick="ST.delRow(${i})">ðŸ—‘</button>`:''}</td>`;tr.innerHTML=c;}
+    if(r._ed){let ei=0,c=`<td style="color:var(--tx3)">${i+1}</td><td><input type="date" value="${r.datum||''}" data-i="${i}" data-f="datum" data-enter="${++ei}"></td><td><input value="${esc(r.ersteller||'')}" disabled style="min-width:60px"></td>`;vf.forEach(f=>{c+=`<td><input type="${fT(f.key)==='number'?'number':'text'}" value="${esc(r[f.key]??'')}" data-i="${i}" data-f="${f.key}" data-enter="${++ei}" step="any" placeholder="${esc(fL(s,f.key))}"></td>`;});c+=`<td style="white-space:nowrap"><button class="btn bg bs" data-enter="${++ei}" onclick="ST.saveRow(${i})">✓</button> <button class="btn bd bs" onclick="ST.cancelRow(${i})">✗</button></td>`;tr.innerHTML=c;tr.style.background='#f0f9ff';}
+    else{let c=`<td style="color:var(--tx3);font-size:.78rem">${i+1}</td><td>${esc(fmtD(r.datum))}</td><td>${esc(r.ersteller||'')}</td>`;vf.forEach(f=>{let v=r[f.key];if(v!=null&&v!==''){if(fT(f.key)==='number')v=Number(v).toLocaleString('de-CH');}else v='';c+=`<td>${esc(String(v))}</td>`;});const mine=r.ersteller===uName()||canAdm();c+=`<td style="white-space:nowrap">${mine?`<button class="btn bs" onclick="ST.editRow(${i})">✏️</button> <button class="btn bd bs" onclick="ST.delRow(${i})"></button>`:''}</td>`;tr.innerHTML=c;}
     tb.appendChild(tr);
   });
   // Summary
   const sm=$('secSm');sm.style.display='block';
   const nf=vF(s).filter(f=>fT(f.key)==='number');
-  let h='<h3>ðŸ“Š Zusammenfassung</h3><div style="display:flex;flex-wrap:wrap;gap:1rem">';
+  let h='<h3> Zusammenfassung</h3><div style="display:flex;flex-wrap:wrap;gap:1rem">';
   nf.forEach(f=>{const sum=s.rows.reduce((a,r)=>a+(Number(r[f.key])||0),0);h+=`<div style="text-align:center;padding:.6rem 1rem;background:#f8fafc;border-radius:10px;border:1px solid var(--brd)"><div style="font-size:.73rem;color:var(--tx2);font-weight:600;text-transform:uppercase">${esc(fL(s,f.key))}</div><div style="font-size:1.3rem;font-weight:800;color:var(--c1)">${sum.toLocaleString('de-CH')}</div></div>`;});
-  h+=`<div style="text-align:center;padding:.6rem 1rem;background:#f8fafc;border-radius:10px;border:1px solid var(--brd)"><div style="font-size:.73rem;color:var(--tx2);font-weight:600;text-transform:uppercase">EintrÃ¤ge</div><div style="font-size:1.3rem;font-weight:800">${s.rows.length}</div></div></div>`;
+  h+=`<div style="text-align:center;padding:.6rem 1rem;background:#f8fafc;border-radius:10px;border:1px solid var(--brd)"><div style="font-size:.73rem;color:var(--tx2);font-weight:600;text-transform:uppercase">Einträge</div><div style="font-size:1.3rem;font-weight:800">${s.rows.length}</div></div></div>`;
   sm.innerHTML=h;
 }
 
@@ -521,7 +522,7 @@ function addRow(){const s=S.sectors[curSec];if(!s)return;if(!s.rows)s.rows=[];co
 function editRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;s.rows[i]._ed=true;rSec();}
 function cancelRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;const r=s.rows[i],has=FIELDS.some(f=>r[f.key]&&String(r[f.key]).trim());if(!has)s.rows.splice(i,1);else delete r._ed;save();rSec();}
 function saveRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;document.querySelectorAll(`#sTb input[data-i="${i}"]`).forEach(inp=>{const f=inp.dataset.f;if(f)s.rows[i][f]=inp.value;});delete s.rows[i]._ed;save();toast('Gespeichert','success');}
-function delRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i]||!confirm('LÃ¶schen?'))return;s.rows.splice(i,1);save();toast('GelÃ¶scht','success');}
+function delRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i]||!confirm('Löschen?'))return;s.rows.splice(i,1);save();toast('Gelöscht','success');}
 
 /* Enter nav */
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const el=e.target;if(!el.dataset.enter)return;const tr=el.closest('tr');if(!tr)return;e.preventDefault();const nx=tr.querySelector(`[data-enter="${Number(el.dataset.enter)+1}"]`);if(nx){if(nx.tagName==='BUTTON')nx.click();else{nx.focus();if(nx.select)nx.select();}}});
@@ -558,11 +559,11 @@ function rInv(){
     const ri=allRows.indexOf(r);
     const tr=document.createElement('tr');
     if(r._ed){
-      tr.innerHTML=`<td>${fi+1}</td><td><input type="date" value="${r.datum||''}" data-ri="${ri}" data-f="datum" data-enter="1"></td><td><input value="${esc(r.desc||'')}" data-ri="${ri}" data-f="desc" data-enter="2" placeholder="Beschreibung"></td><td><input value="${esc(r.ref||'')}" data-ri="${ri}" data-f="ref" data-enter="3" placeholder="Referenz"></td><td><input type="number" step="0.01" value="${r.amount||''}" data-ri="${ri}" data-f="amount" data-enter="4" style="text-align:right"></td><td><button class="btn bg bs" data-enter="5" onclick="ST.saveInvRow(${ri})">âœ“</button> <button class="btn bd bs" onclick="ST.cancelInvRow(${ri})">âœ—</button></td>`;
+      tr.innerHTML=`<td>${fi+1}</td><td><input type="date" value="${r.datum||''}" data-ri="${ri}" data-f="datum" data-enter="1"></td><td><input value="${esc(r.desc||'')}" data-ri="${ri}" data-f="desc" data-enter="2" placeholder="Beschreibung"></td><td><input value="${esc(r.ref||'')}" data-ri="${ri}" data-f="ref" data-enter="3" placeholder="Referenz"></td><td><input type="number" step="0.01" value="${r.amount||''}" data-ri="${ri}" data-f="amount" data-enter="4" style="text-align:right"></td><td><button class="btn bg bs" data-enter="5" onclick="ST.saveInvRow(${ri})">✓</button> <button class="btn bd bs" onclick="ST.cancelInvRow(${ri})">✗</button></td>`;
       tr.style.background='#f0fdf4';
     } else {
       const mine=r.ersteller===uName()||canAdm();
-      tr.innerHTML=`<td style="color:var(--tx3);font-size:.78rem">${fi+1}</td><td>${esc(fmtD(r.datum))}</td><td>${esc(r.desc||'')}</td><td style="font-size:.8rem;color:var(--tx2)">${esc(r.ref||'')}${r.qrRaw?` <button class="btn bs" onclick="ST.showInvQR(${ri})" title="QR anzeigen">ðŸ”³</button>`:''}</td><td style="text-align:right;font-weight:700">${fmtN(r.amount)}</td><td style="white-space:nowrap">${mine?`<button class="btn bs" onclick="ST.editInvRow(${ri})">âœï¸</button> <button class="btn bd bs" onclick="ST.delInvRow(${ri})">ðŸ—‘</button>`:''}</td>`;
+      tr.innerHTML=`<td style="color:var(--tx3);font-size:.78rem">${fi+1}</td><td>${esc(fmtD(r.datum))}</td><td>${esc(r.desc||'')}</td><td style="font-size:.8rem;color:var(--tx2)">${esc(r.ref||'')}${r.qrRaw?` <button class="btn bs" onclick="ST.showInvQR(${ri})" title="QR anzeigen">QR</button>`:''}</td><td style="text-align:right;font-weight:700">${fmtN(r.amount)}</td><td style="white-space:nowrap">${mine?`<button class="btn bs" onclick="ST.editInvRow(${ri})">✏️</button> <button class="btn bd bs" onclick="ST.delInvRow(${ri})"></button>`:''}</td>`;
     }
     tb.appendChild(tr);
   });
@@ -577,7 +578,7 @@ function addInv(){const s=S.sectors[curSec];if(!s)return;if(!s.rows)s.rows=[];s.
 function editInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;s.rows[i]._ed=true;rInv();}
 function cancelInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;const r=s.rows[i];if(!r.desc&&!r.ref&&!r.amount)s.rows.splice(i,1);else delete r._ed;save();rInv();}
 function saveInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;document.querySelectorAll(`#iTb input[data-ri="${i}"]`).forEach(inp=>{const f=inp.dataset.f;if(f)s.rows[i][f]=inp.value;});delete s.rows[i]._ed;save();toast('Gespeichert','success');}
-function delInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i]||!confirm('LÃ¶schen?'))return;s.rows.splice(i,1);save();toast('GelÃ¶scht','success');}
+function delInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i]||!confirm('Löschen?'))return;s.rows.splice(i,1);save();toast('Gelöscht','success');}
 
 /* ===== QR SCANNER ===== */
 function openScanner(){
@@ -592,7 +593,7 @@ function openScanner(){
       // iOS Safari: keep video inline
       const v=document.querySelector('#qrReader video');
       if(v){v.setAttribute('playsinline','true');v.setAttribute('webkit-playsinline','true');v.muted=true;}
-    }).catch(e=>{toast('Kamera nicht verfÃ¼gbar: '+e,'error');});
+    }).catch(e=>{toast('Kamera nicht verfügbar: '+e,'error');});
   },300);
 }
 function closeScanner(){if(qrScanner){try{qrScanner.stop();}catch(_){}}closeModal('scan');}
@@ -639,29 +640,41 @@ function addScanned(){
     qrMeta:lastQrMeta||{kind:'unknown'}
   });
   lastQrRaw=null;lastQrMeta=null;
-  save();closeScanner();toast('Rechnung hinzugefÃ¼gt','success');
+  save();closeScanner();toast('Rechnung hinzugefügt','success');
 }
 
 
 async function ensureQrLib(){
   if(window.QRCode && typeof window.QRCode.toCanvas==='function') return true;
-  // try to load dynamically (helps in PWA when SW cached HTML but CDN script wasn't cached yet)
-  const src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js";
-  await new Promise((resolve,reject)=>{
-    const s=document.createElement('script');
-    s.src=src;
-    s.async=true;
-    s.onload=()=>resolve();
-    s.onerror=()=>reject(new Error('QR lib load failed'));
-    document.head.appendChild(s);
-  }).catch(e=>{ console.error(e); });
-  return !!(window.QRCode && typeof window.QRCode.toCanvas==='function');
+
+  const sources=[
+    "https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js",
+    "https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"
+  ];
+
+  for(const src of sources){
+    try{
+      await new Promise((resolve,reject)=>{
+        const s=document.createElement('script');
+        s.src=src + (src.includes('?')?'&':'?') + 'v=' + Date.now(); // bust aggressive SW/proxy caching
+        s.async=true;
+        s.onload=()=>resolve();
+        s.onerror=()=>reject(new Error('QR lib load failed: '+src));
+        document.head.appendChild(s);
+      });
+      if(window.QRCode && typeof window.QRCode.toCanvas==='function') return true;
+    }catch(e){
+      console.warn(e);
+    }
+  }
+  return false;
 }
 
 /* ===== QR DISPLAY (for stored invoices) ===== */
 async function showInvQR(i){
   const s=S.sectors[curSec];const r=s?.rows?.[i];
-  if(!r||!r.qrRaw){toast('Kein QR fÃ¼r diese Rechnung gespeichert','warning');return;}
+  if(!r||!r.qrRaw){toast('Kein QR für diese Rechnung gespeichert','warning');return;}
   $('qrRawTxt').value=r.qrRaw;
   openModal('qrShow');
   const okLib = await ensureQrLib();
@@ -690,7 +703,7 @@ async function copyQrRaw(){
   }catch(_){
     // Fallback
     const ta=$('qrRawTxt');ta.focus();ta.select();
-    try{document.execCommand('copy');toast('In Zwischenablage kopiert','success');}catch(e){toast('Kopieren nicht mÃ¶glich','error');}
+    try{document.execCommand('copy');toast('In Zwischenablage kopiert','success');}catch(e){toast('Kopieren nicht möglich','error');}
   }
 }
 
@@ -704,7 +717,7 @@ function rMsg(){
   const name=uName();
   const msgs=(S.messages||[]).filter(m=>m.to===name||m.from===name).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   const el=$('msgList');
-  if(!msgs.length){el.innerHTML='<div class="empty"><div class="ic">ðŸ’¬</div><p>Keine Nachrichten.</p></div>';return;}
+  if(!msgs.length){el.innerHTML='<div class="empty"><div class="ic">MSG</div><p>Keine Nachrichten.</p></div>';return;}
   // Mark as read
   let changed=false;
   msgs.forEach(m=>{if(m.to===name&&!m.read){m.read=true;changed=true;}});
@@ -713,7 +726,7 @@ function rMsg(){
 }
 function sendMsg(){
   const to=$('msgTo').value,txt=$('msgTxt').value.trim();
-  if(!to||!txt){toast('EmpfÃ¤nger und Text nÃ¶tig','warning');return;}
+  if(!to||!txt){toast('Empfänger und Text nötig','warning');return;}
   if(!S.messages)S.messages=[];
   S.messages.push({id:cid(),from:uName(),to,text:txt,date:new Date().toISOString(),read:false});
   $('msgTxt').value='';save();toast('Gesendet','success');
@@ -724,7 +737,7 @@ function rAdmin(){
   $('aOrg').value=S.orgName||'';
   rAdmSec();rAdmUsr();
   // Message recipients
-  const sel=$('msgTo');sel.innerHTML='<option value="">WÃ¤hlen...</option>';
+  const sel=$('msgTo');sel.innerHTML='<option value="">Wählen...</option>';
   S.users.forEach(u=>sel.innerHTML+=`<option value="${esc(u.name)}">${esc(u.name)}</option>`);
 }
 function saveOrg(){S.orgName=$('aOrg').value.trim()||'';save();$('orgLbl').textContent=S.orgName||'Organisation';toast('Gespeichert','success');}
@@ -733,12 +746,12 @@ function saveOrg(){S.orgName=$('aOrg').value.trim()||'';save();$('orgLbl').textC
 function rAdmSec(){
   const l=$('aSecL');
   if(!S.sectors.length){l.innerHTML='<p style="color:var(--tx2);font-size:.85rem">Keine Sektoren.</p>';return;}
-  l.innerHTML=S.sectors.map((s,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--brd)"><span style="font-weight:600">${esc(s.name)} <span class="pill ${s.type==='rechnungen'?'pw':'pi'}">${s.type==='rechnungen'?'Rechnungen':'Standard'}</span> <span class="pill pi">${(s.rows||[]).length}</span></span><div style="display:flex;gap:4px">${s.type!=='rechnungen'?`<button class="btn bs" onclick="ST.openCfg(${i})" title="Spalten">ðŸ·ï¸</button>`:''}<button class="btn bs" onclick="ST.openRen(${i})">âœï¸</button><button class="btn bd bs" onclick="ST.delSec(${i})">ðŸ—‘</button></div></div>`).join('');
+  l.innerHTML=S.sectors.map((s,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--brd)"><span style="font-weight:600">${esc(s.name)} <span class="pill ${s.type==='rechnungen'?'pw':'pi'}">${s.type==='rechnungen'?'Rechnungen':'Standard'}</span> <span class="pill pi">${(s.rows||[]).length}</span></span><div style="display:flex;gap:4px">${s.type!=='rechnungen'?`<button class="btn bs" onclick="ST.openCfg(${i})" title="Spalten">️</button>`:''}<button class="btn bs" onclick="ST.openRen(${i})">✏️</button><button class="btn bd bs" onclick="ST.delSec(${i})"></button></div></div>`).join('');
 }
 function admAddSec(){const n=$('aNS').value.trim(),t=$('aNT').value;if(!n){toast('Name eingeben','warning');return;}S.sectors.push({id:cid(),name:n,type:t,rows:[],fieldConfig:{}});$('aNS').value='';save();toast('Erstellt','success');}
 function openRen(i){renIdx=i;$('mSR').value=S.sectors[i]?.name||'';openModal('ren');}
 function renameSec(){const n=$('mSR').value.trim();if(!n){toast('Name eingeben','warning');return;}const old=S.sectors[renIdx]?.name;S.sectors[renIdx].name=n;S.users.forEach(u=>{if(u.allowedSectors)u.allowedSectors=u.allowedSectors.map(s=>s===old?n:s);});closeModal('ren');save();toast('Umbenannt','success');}
-function delSec(i){const s=S.sectors[i];if(!s||!confirm(`"${s.name}" lÃ¶schen?`))return;S.sectors.splice(i,1);save();toast('GelÃ¶scht','success');}
+function delSec(i){const s=S.sectors[i];if(!s||!confirm(`"${s.name}" löschen?`))return;S.sectors.splice(i,1);save();toast('Gelöscht','success');}
 
 /* Sector field config */
 function openCfg(i){
@@ -759,10 +772,10 @@ function rAdmUsr(){
   const l=$('aUsrL'),sc=$('nuS');
   sc.innerHTML=S.sectors.map(s=>`<label style="display:flex;align-items:center;gap:4px;font-size:.82rem;background:#f8fafc;padding:3px 9px;border-radius:6px;border:1px solid var(--brd)"><input type="checkbox" class="nu-s" value="${esc(s.name)}"> ${esc(s.name)}</label>`).join('')||'<span style="color:var(--tx2);font-size:.82rem">Zuerst Sektoren erstellen</span>';
   if(!S.users.length){l.innerHTML='<p style="color:var(--tx2);font-size:.85rem">Keine Benutzer.</p>';return;}
-  l.innerHTML='<div class="tw"><table><thead><tr><th>Name</th><th>Admin</th><th>Sektoren</th><th>Aktion</th></tr></thead><tbody>'+S.users.map((u,i)=>{const ss=(u.allowedSectors||[]).join(', ')||'<span style="color:var(--tx3)">Alle</span>';return `<tr><td><strong>${esc(u.name)}</strong></td><td>${u.isAdmin?'<span class="pill pw">Admin</span>':'â€”'}</td><td style="font-size:.8rem">${ss}</td><td><button class="btn bd bs" onclick="ST.delUsr(${i})">ðŸ—‘</button></td></tr>`;}).join('')+'</tbody></table></div>';
+  l.innerHTML='<div class="tw"><table><thead><tr><th>Name</th><th>Admin</th><th>Sektoren</th><th>Aktion</th></tr></thead><tbody>'+S.users.map((u,i)=>{const ss=(u.allowedSectors||[]).join(', ')||'<span style="color:var(--tx3)">Alle</span>';return `<tr><td><strong>${esc(u.name)}</strong></td><td>${u.isAdmin?'<span class="pill pw">Admin</span>':'—'}</td><td style="font-size:.8rem">${ss}</td><td><button class="btn bd bs" onclick="ST.delUsr(${i})"></button></td></tr>`;}).join('')+'</tbody></table></div>';
 }
-function admAddUsr(){const nm=$('nuN').value.trim(),pw=$('nuP').value.trim();if(!nm||!pw){toast('Name + Passwort nÃ¶tig','warning');return;}if(S.users.some(u=>u.name.toLowerCase()===nm.toLowerCase())){toast('Name existiert','warning');return;}const ss=Array.from(document.querySelectorAll('.nu-s:checked')).map(c=>c.value);S.users.push({name:nm,pw,isAdmin:$('nuA').checked,allowedSectors:ss});$('nuN').value='';$('nuP').value='';$('nuA').checked=false;save();toast('Angelegt','success');}
-function delUsr(i){if(!confirm(`"${S.users[i]?.name}" lÃ¶schen?`))return;S.users.splice(i,1);save();toast('GelÃ¶scht','success');}
+function admAddUsr(){const nm=$('nuN').value.trim(),pw=$('nuP').value.trim();if(!nm||!pw){toast('Name + Passwort nötig','warning');return;}if(S.users.some(u=>u.name.toLowerCase()===nm.toLowerCase())){toast('Name existiert','warning');return;}const ss=Array.from(document.querySelectorAll('.nu-s:checked')).map(c=>c.value);S.users.push({name:nm,pw,isAdmin:$('nuA').checked,allowedSectors:ss});$('nuN').value='';$('nuP').value='';$('nuA').checked=false;save();toast('Angelegt','success');}
+function delUsr(i){if(!confirm(`"${S.users[i]?.name}" löschen?`))return;S.users.splice(i,1);save();toast('Gelöscht','success');}
 
 /* ===== CSV ===== */
 function csvSec(){const s=S.sectors[curSec];if(!s)return;const vf=vF(s);const hdr=['#','Datum','Ersteller',...vf.map(f=>fL(s,f.key))];const rows=s.rows.map((r,i)=>[i+1,r.datum||'',r.ersteller||'',...vf.map(f=>r[f.key]??'')]);dlCSV(s.name+'.csv',[hdr,...rows]);}
@@ -789,7 +802,7 @@ admAddUsr,delUsr,csvSec,csvInv,csvAll,jsonExport};
 // ===== PWA Service Worker =====
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw_trackerrai_v9.js').catch(() => {});
+    navigator.serviceWorker.register('/sw_trackerrai_v10.js').catch(() => {});
   });
 }
 
