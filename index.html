@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0ea5e9">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<title>Sektor Tracker</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='10' y='10' width='35' height='35' rx='6' fill='%230ea5e9'/><rect x='55' y='10' width='35' height='35' rx='6' fill='%2338bdf8'/><rect x='10' y='55' width='35' height='35' rx='6' fill='%2338bdf8'/><rect x='55' y='55' width='35' height='35' rx='6' fill='%230ea5e9'/></svg>">
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap');
+:root{--c1:#0ea5e9;--c1d:#0284c7;--c1l:#e0f2fe;--bg:#f8fafc;--card:#fff;--tx:#0f172a;--tx2:#64748b;--tx3:#94a3b8;--brd:#e2e8f0;--ok:#10b981;--warn:#f59e0b;--err:#ef4444;--r:10px;--rl:14px;--sh:0 1px 3px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.03)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--tx);line-height:1.5;min-height:100vh}
+header{background:linear-gradient(135deg,#0ea5e9,#0369a1);color:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(3,105,161,.35)}
+.hdr{max-width:1400px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-icon{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem}
+.brand h1{font-size:1.15rem;font-weight:800;letter-spacing:-.02em}
+.brand small{font-size:.78rem;opacity:.8}
+.ha{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.hb{padding:6px 12px;border-radius:7px;font-weight:600;font-size:.82rem;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.1);color:#fff;cursor:pointer;transition:.15s;font-family:inherit}
+.hb:hover{background:rgba(255,255,255,.2)}
+.uchip{padding:5px 12px;border-radius:999px;background:rgba(0,0,0,.15);font-size:.82rem;font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;transition:.15s}
+.uchip:hover{background:rgba(0,0,0,.25)}
+.badge{position:absolute;top:-4px;right:-4px;background:var(--err);color:#fff;font-size:.65rem;font-weight:800;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+main{max-width:1400px;margin:0 auto;padding:1.5rem 1rem}
+.view{display:none;animation:fi .25s ease}.view.active{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border:1px solid var(--brd);border-radius:var(--rl);padding:1.25rem 1.5rem;margin-bottom:1.2rem;box-shadow:var(--sh)}
+.card h2{font-size:1rem;font-weight:700;margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:2px solid var(--bg)}
+.card h3{font-size:.92rem;font-weight:700;margin-bottom:.6rem}
+.fr{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.6rem;margin-bottom:.6rem}
+label{display:block;font-size:.78rem;color:var(--tx2);margin-bottom:2px;font-weight:500}
+input,select,textarea{width:100%;padding:.5rem .65rem;border:1px solid var(--brd);border-radius:var(--r);font-size:.88rem;font-family:inherit;background:#f8fafc;transition:.15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c1);background:#fff;box-shadow:0 0 0 3px var(--c1l)}
+input:disabled{background:#f1f5f9;color:var(--tx3);cursor:not-allowed}
+textarea{min-height:60px;resize:vertical}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:.45rem .85rem;border-radius:var(--r);font-weight:600;font-size:.84rem;border:1px solid var(--brd);background:#fff;color:var(--tx);cursor:pointer;transition:.15s;font-family:inherit;white-space:nowrap}
+.btn:hover{background:#f8fafc;border-color:#cbd5e1}
+.bp{background:var(--c1);color:#fff;border-color:var(--c1)}.bp:hover{background:var(--c1d)}
+.bd{background:#fef2f2;color:var(--err);border-color:#fecaca}.bd:hover{background:#fee2e2}
+.bg{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}.bg:hover{background:#d1fae5}
+.bs{padding:.3rem .55rem;font-size:.8rem}
+.bb{width:100%;justify-content:center;padding:.7rem}
+.bgh{background:transparent;border-color:transparent;color:var(--c1)}.bgh:hover{background:var(--c1l)}
+.tw{overflow-x:auto;border-radius:var(--r);border:1px solid var(--brd)}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+thead{background:#f8fafc}
+th{padding:.55rem .7rem;text-align:left;font-weight:700;font-size:.75rem;color:var(--tx2);text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid var(--brd);white-space:nowrap}
+td{padding:.5rem .7rem;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+tr:hover{background:#fafbfc}
+td input,td select{padding:.35rem .45rem;font-size:.83rem;min-width:60px}
+/* Auth */
+.auth-ov{position:fixed;inset:0;z-index:999;background:linear-gradient(135deg,#0ea5e9 0%,#0369a1 60%,#075985 100%);display:flex;align-items:center;justify-content:center;padding:1rem}
+.auth-box{background:#fff;border-radius:20px;padding:2.25rem 2rem;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.auth-box h2{text-align:center;font-size:1.4rem;font-weight:800;margin-bottom:.2rem;border:none;padding:0}
+.auth-box .sub{text-align:center;color:var(--tx2);font-size:.88rem;margin-bottom:1.25rem}
+.fg{margin-bottom:.85rem}
+.auth-tabs{display:flex;margin-bottom:1.25rem;border-radius:var(--r);overflow:hidden;border:1px solid var(--brd)}
+.auth-tab{flex:1;padding:.55rem;text-align:center;font-weight:600;font-size:.88rem;cursor:pointer;background:#f8fafc;border:none;color:var(--tx2);transition:.15s;font-family:inherit}
+.auth-tab.on{background:var(--c1);color:#fff}
+.auth-err{color:var(--err);font-size:.82rem;margin-top:.5rem;min-height:1.2em}
+.auth-link{display:block;text-align:center;margin-top:.75rem;font-size:.82rem;color:var(--c1);cursor:pointer;text-decoration:underline}
+/* Sector grid */
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem}
+.sc{background:#fff;border:1px solid var(--brd);border-radius:var(--rl);padding:1.2rem;cursor:pointer;transition:.2s;position:relative;overflow:hidden}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--c1);opacity:.65}
+.sc.sc-inv::before{background:var(--ok)}
+.sc:hover{border-color:var(--c1);box-shadow:0 4px 20px rgba(14,165,233,.15);transform:translateY(-2px)}
+.sc h3{font-size:1rem;font-weight:700;margin-bottom:.4rem}
+.sc .n{font-size:1.7rem;font-weight:800;color:var(--c1);margin:.4rem 0}
+.sc.sc-inv .n{color:var(--ok)}
+.sc .m{font-size:.8rem;color:var(--tx2);display:flex;gap:.75rem}
+.sc .stag{position:absolute;top:10px;right:10px;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:6px;background:var(--c1l);color:var(--c1d)}
+.sc.sc-inv .stag{background:#ecfdf5;color:#065f46}
+/* Toast */
+.tc{position:fixed;bottom:18px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:7px}
+.toast{padding:.6rem .9rem;border-radius:var(--r);font-size:.83rem;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.12);animation:tin .3s ease;min-width:220px}
+.t-ok{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+.t-err{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.t-warn{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+.t-info{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe}
+@keyframes tin{from{opacity:0;transform:translateX(30px)}}
+/* Modal */
+.mo{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;padding:1rem}
+.mo.on{display:flex}
+.modal{background:#fff;border-radius:var(--rl);padding:1.5rem;width:100%;max-width:500px;box-shadow:0 8px 30px rgba(0,0,0,.15);animation:fi .2s ease;max-height:90vh;overflow-y:auto}
+.modal h3{font-size:1.05rem;font-weight:700;margin-bottom:.85rem}
+.mft{display:flex;gap:8px;justify-content:flex-end;margin-top:1.1rem}
+.pill{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:.73rem;font-weight:700}
+.pi{background:var(--c1l);color:var(--c1d)}.pw{background:#fef3c7;color:#92400e}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--tx2)}
+.empty .ic{font-size:2.5rem;margin-bottom:.6rem}
+.empty p{font-size:.92rem;margin-bottom:.85rem}
+/* App bar */
+.app-bar{background:#fffbeb;border:1px solid #fde68a;border-radius:var(--r);padding:.6rem .85rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;font-size:.85rem}
+.app-bar input{max-width:140px;padding:.35rem .55rem;font-size:.84rem}
+/* Month tabs */
+.mtabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1rem}
+.mtab{padding:6px 14px;border-radius:8px;font-size:.82rem;font-weight:600;border:1px solid var(--brd);background:#fff;cursor:pointer;transition:.15s;font-family:inherit}
+.mtab.on{background:var(--ok);color:#fff;border-color:var(--ok)}
+.mtab:hover{border-color:var(--ok)}
+/* QR scanner */
+#qrReader{width:100%;max-width:400px;margin:0 auto}
+#qrReader video{border-radius:var(--r)}
+/* Messages */
+.msg-item{padding:.6rem;border:1px solid var(--brd);border-radius:var(--r);margin-bottom:.5rem;background:#f8fafc}
+.msg-item.unread{background:#eff6ff;border-color:#bfdbfe}
+.msg-from{font-weight:700;font-size:.82rem}.msg-date{font-size:.75rem;color:var(--tx3)}
+.msg-text{font-size:.88rem;margin-top:.25rem}
+/* Connection status */
+.conn-status{position:fixed;bottom:8px;left:8px;font-size:.7rem;padding:3px 8px;border-radius:6px;z-index:9999}
+.conn-ok{background:#ecfdf5;color:#065f46}.conn-err{background:#fef2f2;color:#991b1b}
+@media(max-width:640px){.hdr{flex-direction:column;align-items:stretch}.ha{justify-content:flex-end}.brand h1{font-size:1.05rem}main{padding:1rem .7rem}.fr{grid-template-columns:1fr}}
+
+/* Mobile ergonomics */
+html,body{height:100%}
+body{-webkit-text-size-adjust:100%;touch-action:manipulation}
+main{padding-bottom:calc(1.5rem + env(safe-area-inset-bottom))}
+header{padding-top:env(safe-area-inset-top)}
+.mo{padding:calc(1rem + env(safe-area-inset-top)) 1rem calc(1rem + env(safe-area-inset-bottom))}
+.modal{scrollbar-gutter:stable}
+.btn,.hb,.mtab{min-height:40px}
+#qrReader video{width:100%!important;height:auto!important;object-fit:cover}
+
+
+.org-name{font-size:1.55rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;line-height:1.05}
+.app-name{font-size:.85rem;opacity:.88;margin-top:.15rem;font-weight:700;letter-spacing:.02em}
+
+</style>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sektor Tracker">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="authOv" class="auth-ov">
+<div class="auth-box">
+<h2>Sektor Tracker</h2>
+<p class="sub">Anmelden oder Konto erstellen</p>
+<div class="auth-tabs">
+<button class="auth-tab on" onclick="ST.authTab('login')">Anmelden</button>
+<button class="auth-tab" onclick="ST.authTab('register')">Registrieren</button>
+</div>
+<div id="authLogin">
+<div class="fg"><label>E-Mail</label><input type="email" id="liEm" placeholder="name@firma.ch"></div>
+<div class="fg"><label>Passwort</label><input type="password" id="liPw" placeholder="********"></div>
+<button class="btn bp bb" id="liBtn" onclick="ST.login()">Anmelden</button>
+<div id="liErr" class="auth-err"></div>
+<span class="auth-link" onclick="ST.resetPw()">Passwort vergessen?</span>
+</div>
+<div id="authReg" style="display:none">
+<div class="fg"><label>E-Mail</label><input type="email" id="rgEm" placeholder="name@firma.ch"></div>
+<div class="fg"><label>Anzeigename</label><input type="text" id="rgNm" placeholder="Vor- / Nachname"></div>
+<div class="fg"><label>Passwort (min. 6)</label><input type="password" id="rgPw" placeholder="********"></div>
+<div class="fg"><label>Passwort bestätigen</label><input type="password" id="rgPw2" placeholder="********"></div>
+<button class="btn bp bb" id="rgBtn" onclick="ST.register()">Konto erstellen</button>
+<div id="rgErr" class="auth-err"></div>
+</div>
+</div>
+</div>
+
+<!-- HEADER -->
+<header>
+<div class="hdr">
+<div class="brand"><div class="brand-icon">ST</div><div><div id="orgLbl" class="org-name">ORGANISATION</div><div class="app-name">Sektor Tracker</div></div></div>
+<div class="ha">
+<span class="uchip" id="uChip" onclick="ST.openPwModal()" title="Passwort ändern">-</span>
+<button class="hb" id="navMsg" style="display:none;position:relative" onclick="ST.show('msg')">💬 MSG <span id="msgBadge" class="badge" style="display:none">0</span></button>
+<button class="hb" id="navAdm" style="display:none" onclick="ST.show('admin')">⚙️ Admin</button>
+<button class="hb" onclick="ST.show('dash')">🏠 Start</button>
+<button class="hb" onclick="ST.csvAll()" title="CSV">📄 CSV</button>
+<button class="hb" onclick="ST.logout()">🚪 Logout</button>
+</div>
+</div>
+</header>
+
+<main>
+<!-- App User Bar -->
+<div id="appBar" class="app-bar" style="display:none">
+<span></span>
+<input id="auN" placeholder="Name">
+<input id="auP" type="password" placeholder="Passwort">
+<button class="btn bp bs" id="auLB" onclick="ST.appLogin()">Login</button>
+<strong id="auLbl" style="display:none"></strong>
+<button id="auOB" class="btn bs" style="display:none" onclick="ST.appLogout()">Wechseln</button>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashV" class="view active">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.1rem;flex-wrap:wrap;gap:.7rem">
+<h2 style="font-size:1.2rem;font-weight:800;margin:0">Sektoren</h2>
+<div style="display:flex;gap:6px" id="dashBtns"></div>
+</div>
+<div id="sGrid" class="sg"></div>
+</div>
+
+<!-- SECTOR VIEW (Standard) -->
+<div id="secV" class="view">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.7rem">
+<div><button class="btn bgh bs" onclick="ST.show('dash')">← Zurück</button><h2 style="font-size:1.15rem;font-weight:800;margin-top:.4rem" id="secT">Sektor</h2></div>
+<div style="display:flex;gap:6px"><button class="btn bp" onclick="ST.addRow()">➕ Eintrag</button><button class="btn bs" onclick="ST.csvSec()">CSV CSV</button></div>
+</div>
+<div class="card" style="padding:.65rem"><div class="tw"><table><thead><tr id="sTh"></tr></thead><tbody id="sTb"></tbody></table></div></div>
+<div id="secSm" class="card" style="display:none"></div>
+</div>
+
+<!-- RECHNUNGEN VIEW -->
+<div id="invV" class="view">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.7rem">
+<div><button class="btn bgh bs" onclick="ST.show('dash')">← Zurück</button><h2 style="font-size:1.15rem;font-weight:800;margin-top:.4rem" id="invT">Rechnungen</h2></div>
+<div style="display:flex;gap:6px"><button class="btn bg" onclick="ST.openScanner()">📷 QR scannen</button><button class="btn bp" onclick="ST.addInv()">➕ Manuell</button><button class="btn bs" onclick="ST.csvInv()">📄 CSV</button></div>
+</div>
+<div id="invTotalCard" class="card" style="display:none"></div>
+<div id="invMonthTabs" class="mtabs"></div>
+<div class="card" style="padding:.65rem"><div class="tw"><table><thead><tr id="iTh"></tr></thead><tbody id="iTb"></tbody></table></div></div>
+<div id="invMonthSum" class="card" style="display:none"></div>
+</div>
+
+<!-- MESSAGES VIEW -->
+<div id="msgV" class="view">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.7rem">
+<h2 style="font-size:1.15rem;font-weight:800;margin:0">Nachrichten</h2>
+<button class="btn bs" onclick="ST.show('dash')">\1</button>
+</div>
+<div id="msgList"></div>
+</div>
+
+<!-- ADMIN -->
+<div id="adminV" class="view">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.7rem">
+<h2 style="font-size:1.15rem;font-weight:800;margin:0"> Administration</h2>
+<button class="btn bs" onclick="ST.show('dash')">\1</button>
+</div>
+<div class="card"><h3>Organisation</h3><div class="fr"><div><label>Name</label><input id="aOrg" placeholder="Firmenname"></div><div style="align-self:end"><button class="btn bp bs" onclick="ST.saveOrg()">Speichern</button></div></div></div>
+<div class="card"><h3> Sektoren</h3><div id="aSecL"></div>
+<hr style="margin:.85rem 0;border:none;border-top:1px solid var(--brd)">
+<h4 style="font-size:.85rem;margin-bottom:.4rem">Neuer Sektor</h4>
+<div class="fr"><div><label>Name</label><input id="aNS" placeholder="Name"></div><div><label>Typ</label><select id="aNT"><option value="standard">Standard</option><option value="rechnungen">Rechnungen (Monate + QR)</option></select></div><div style="align-self:end"><button class="btn bp bs" onclick="ST.admAddSec()">Erstellen</button></div></div>
+</div>
+<div class="card"><h3> Benutzer</h3><div id="aUsrL"></div>
+<hr style="margin:.85rem 0;border:none;border-top:1px solid var(--brd)">
+<h4 style="font-size:.85rem;margin-bottom:.4rem">Neuer Benutzer</h4>
+<div class="fr"><div><label>Name</label><input id="nuN" placeholder="Name"></div><div><label>Passwort</label><input id="nuP" placeholder="Passwort"></div></div>
+<div style="margin:.4rem 0 .6rem"><label>Sektoren</label><div id="nuS" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.2rem"></div></div>
+<div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.6rem"><label style="margin:0;display:flex;align-items:center;gap:5px"><input type="checkbox" id="nuA">⚙️ Admin</label></div>
+<button class="btn bp bs" onclick="ST.admAddUsr()">Anlegen</button></div>
+<div class="card"><h3>MSG Nachricht senden</h3>
+<div class="fr"><div><label>Empfänger</label><select id="msgTo"></select></div></div>
+<div class="fg"><label>Nachricht</label><textarea id="msgTxt" placeholder="Nachricht eingeben..."></textarea></div>
+<button class="btn bp bs" onclick="ST.sendMsg()">Senden</button></div>
+<div class="card" style="border-color:#fecaca"><h3 style="color:var(--err)">! Gefahrenzone</h3><button class="btn bd bs" onclick="ST.jsonExport()"> JSON-Backup</button></div>
+</div>
+</main>
+
+<!-- MODALS -->
+<div class="mo" id="pwModal"><div class="modal"><h3> Passwort ändern</h3>
+<div class="fg"><label>Aktuelles Passwort</label><input type="password" id="pwOld"></div>
+<div class="fg"><label>Neues Passwort</label><input type="password" id="pwNew"></div>
+<div class="fg"><label>Neues Passwort bestätigen</label><input type="password" id="pwNew2"></div>
+<div id="pwErr" class="auth-err"></div>
+<div class="mft"><button class="btn bs" onclick="ST.closeModal('pw')">Abbrechen</button><button class="btn bp bs" onclick="ST.changePw()">Ändern</button></div></div></div>
+
+<div class="mo" id="secCfgModal"><div class="modal"><h3> Spalten für <span id="cfgSecName"></span></h3>
+<p style="font-size:.8rem;color:var(--tx2);margin-bottom:.6rem">Leer = ausgeblendet</p>
+<div id="cfgFields" class="fr"></div>
+<div class="mft"><button class="btn bs" onclick="ST.closeModal('secCfg')">Abbrechen</button><button class="btn bp bs" onclick="ST.saveCfg()">Speichern</button></div></div></div>
+
+<div class="mo" id="scanModal"><div class="modal"><h3>QR-Code scannen</h3>
+<div id="qrReader"></div>
+<div id="qrResult" style="display:none;margin-top:.75rem">
+<div class="fr">
+<div><label>Betrag</label><input type="number" id="qrAmt" step="0.01"></div>
+<div><label>Beschreibung</label><input id="qrDesc"></div>
+</div>
+<button class="btn bp bs" onclick="ST.addScanned()" style="margin-top:.5rem">Hinzufügen</button>
+</div>
+<div class="mft"><button class="btn bs" onclick="ST.closeScanner()">Schliessen</button></div></div></div>
+
+
+<div class="mo" id="qrShowModal"><div class="modal">
+  <h3>QR-Code anzeigen</h3>
+  <p style="font-size:.82rem;color:var(--tx2);margin-bottom:.75rem">Zeigt den gespeicherten QR-Code der Rechnung (z.B. Swiss QR-Rechnung) wieder an.</p>
+  <div style="display:flex;justify-content:center;margin:.4rem 0 .9rem">
+    <canvas id="qrCanvas" style="max-width:100%;border:1px solid var(--brd);border-radius:12px;padding:10px;background:#fff"></canvas>
+    <img id="qrImg" alt="QR" style="display:none;max-width:100%;border:1px solid var(--brd);border-radius:12px;padding:10px;background:#fff" />
+  </div>
+  <div class="fg">
+    <label>QR-Inhalt (optional)</label>
+    <textarea id="qrRawTxt" readonly style="min-height:90px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"></textarea>
+    <button class="btn bs" style="margin-top:.45rem" onclick="ST.copyQrRaw()"> Kopieren</button>
+  </div>
+  <div class="mft"><button class="btn bs" onclick="ST.closeModal('qrShow')">Schliessen</button></div>
+</div></div>
+
+</div></div></div>
+
+<div class="mo" id="renModal"><div class="modal"><h3>Sektor umbenennen</h3><div class="fg"><label>Name</label><input id="mSR"></div><div class="mft"><button class="btn bs" onclick="ST.closeModal('ren')">Abbrechen</button><button class="btn bp bs" onclick="ST.renameSec()">Speichern</button></div></div></div>
+
+<div class="tc" id="tc"></div>
+<div id="connSt" class="conn-status" style="display:none"></div>
+
+<script>
+const ST = window.ST = (function(){
+'use strict';
+
+/* ===== FIREBASE ===== */
+const FB_CFG={
+  apiKey:"AIzaSyBiyptQ5RpPeXJSpraNpvTlnJE9PrZ2rU0",
+  authDomain:"produktionstracker-rai.firebaseapp.com",
+  projectId:"produktionstracker-rai",
+  storageBucket:"produktionstracker-rai.firebasestorage.app",
+  messagingSenderId:"221362841834",
+  appId:"1:221362841834:web:9c8d21b47310ce56848f93"
+};
+
+// Try multiple databaseURL patterns
+const DB_URLS=[
+  "https://produktionstracker-rai-default-rtdb.europe-west1.firebasedatabase.app",
+  "https://produktionstracker-rai-default-rtdb.firebaseio.com"
+];
+
+let fbApp,auth,db,dbRef=null,unsub=null;
+let fbUser=null,appUsr=null,isOwner=false;
+let S={orgName:'',sectors:[],users:[],messages:[],deleteRequests:[]};
+let curSec=-1,renIdx=-1,curMonth='',qrScanner=null;
+let lastQrRaw=null,lastQrMeta=null;
+
+const FIELDS=[
+  {key:'f1',def:'Bezeichnung',type:'text'},
+  {key:'f2',def:'Nummer',type:'text'},
+  {key:'f3',def:'Referenz',type:'text'},
+  {key:'f4',def:'Kategorie',type:'text'},
+  {key:'f5',def:'Menge',type:'number'},
+  {key:'f6',def:'Betrag',type:'number'},
+  {key:'f7',def:'Notiz',type:'text'},
+  {key:'f8',def:'',type:'text'}
+];
+const INV_FIELDS=[
+  {key:'desc',label:'Beschreibung'},
+  {key:'ref',label:'Referenz/QR'},
+  {key:'amount',label:'Betrag',type:'number'}
+];
+const MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+
+/* ===== UTIL ===== */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const cid=()=>Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
+const today=()=>new Date().toISOString().slice(0,10);
+const fmtD=d=>{if(!d)return'';const p=d.split('-');return p.length===3?p[2]+'.'+p[1]+'.'+p[0]:d;};
+const fmtN=n=>n!=null?Number(n).toLocaleString('de-CH',{minimumFractionDigits:2,maximumFractionDigits:2}):'';
+const canAdm=()=>isOwner||appUsr?.isAdmin;
+const uName=()=>appUsr?appUsr.name:(fbUser?.displayName||fbUser?.email||'');
+const toA=v=>Array.isArray(v)?v:(v?Object.values(v):[]);
+function fL(sec,key){return sec?.fieldConfig?.[key]!=null?sec.fieldConfig[key]:(FIELDS.find(f=>f.key===key)?.def??'');}
+function fT(key){return FIELDS.find(f=>f.key===key)?.type||'text';}
+function vF(sec){return FIELDS.filter(f=>fL(sec,f.key)!=='');}
+
+function toast(m,t='info'){const c=$('tc'),e=document.createElement('div');e.className='toast t-'+({success:'ok',error:'err',warning:'warn'}[t]||'info');e.textContent=m;c.appendChild(e);setTimeout(()=>{e.style.opacity='0';e.style.transition='.3s';setTimeout(()=>e.remove(),300)},3500);}
+function show(v){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));const el=$(v==='dash'?'dashV':v==='sec'?'secV':v==='inv'?'invV':v==='msg'?'msgV':'adminV');if(el)el.classList.add('active');if(v==='dash')rDash();if(v==='sec')rSec();if(v==='inv')rInv();if(v==='msg')rMsg();if(v==='admin')rAdmin();}
+function openModal(id){$(id+'Modal').classList.add('on')}
+function closeModal(id){$(id+'Modal').classList.remove('on')}
+function connSt(ok,msg){const el=$('connSt');el.style.display='block';el.className='conn-status '+(ok?'conn-ok':'conn-err');el.textContent=msg;if(ok)setTimeout(()=>el.style.display='none',3000);}
+
+/* ===== FIREBASE INIT ===== */
+async function initFirebase(){
+  for(const url of DB_URLS){
+    try{
+      if(fbApp){try{fbApp.delete();}catch(_){}}
+      fbApp=firebase.initializeApp({...FB_CFG,databaseURL:url});
+      auth=firebase.auth();db=firebase.database();
+      // Test connection
+      await db.ref('.info/connected').once('value');
+      connSt(true,'OK Verbunden');
+      setupAuth();
+      return;
+    }catch(e){console.warn('DB URL failed:',url,e);}
+  }
+  connSt(false,'X DB nicht erreichbar - prüfe Firebase Realtime Database');
+  // Still set up auth with last tried
+  auth=firebase.auth();db=firebase.database();
+  setupAuth();
+}
+
+function setupAuth(){
+  auth.onAuthStateChanged(u=>{
+    if(u){
+      fbUser=u;isOwner=true;appUsr=null;
+      $('authOv').style.display='none';
+      $('uChip').textContent=u.displayName||u.email;
+      $('navAdm').style.display='inline-flex';
+      $('navMsg').style.display='inline-flex';
+      $('appBar').style.display='none';
+      connectDB(u.uid);
+    }else{
+      fbUser=null;isOwner=false;appUsr=null;
+      $('authOv').style.display='flex';
+      $('navAdm').style.display='none';$('navMsg').style.display='none';
+      if(unsub){unsub();unsub=null;}
+    }
+  });
+}
+
+/* ===== AUTH ===== */
+function authTab(t){document.querySelectorAll('.auth-tab').forEach((b,i)=>b.classList.toggle('on',t==='login'?i===0:i===1));$('authLogin').style.display=t==='login'?'block':'none';$('authReg').style.display=t==='register'?'block':'none';}
+async function login(){const em=$('liEm').value.trim(),pw=$('liPw').value,err=$('liErr');err.textContent='';if(!em||!pw){err.textContent='E-Mail und Passwort eingeben.';return;}try{$('liBtn').disabled=true;await auth.signInWithEmailAndPassword(em,pw);}catch(e){err.textContent=({'auth/user-not-found':'Kein Konto gefunden.','auth/wrong-password':'Falsches Passwort.','auth/invalid-email':'Ungültige E-Mail.','auth/too-many-requests':'Zu viele Versuche.','auth/invalid-credential':'Ungültige Anmeldedaten.'})[e.code]||'Fehler: '+(e.message||e.code);}finally{$('liBtn').disabled=false;}}
+async function register(){const em=$('rgEm').value.trim(),nm=$('rgNm').value.trim(),pw=$('rgPw').value,pw2=$('rgPw2').value,err=$('rgErr');err.textContent='';if(!em||!pw){err.textContent='Alle Felder ausfüllen.';return;}if(pw!==pw2){err.textContent='Passwörter stimmen nicht überein.';return;}if(pw.length<6){err.textContent='Min. 6 Zeichen.';return;}try{$('rgBtn').disabled=true;const c=await auth.createUserWithEmailAndPassword(em,pw);if(nm)await c.user.updateProfile({displayName:nm});toast('Konto erstellt!','success');}catch(e){err.textContent=({'auth/email-already-in-use':'E-Mail bereits registriert.','auth/weak-password':'Passwort zu schwach.'})[e.code]||'Fehler: '+(e.message||e.code);}finally{$('rgBtn').disabled=false;}}
+async function resetPw(){const em=$('liEm').value.trim();if(!em){toast('Zuerst E-Mail eingeben','warning');return;}try{await auth.sendPasswordResetEmail(em);toast('Reset-Mail gesendet','success');}catch(e){toast('Fehler: '+e.message,'error');}}
+function logout(){appUsr=null;auth.signOut();}
+$('liPw').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+$('rgPw2').addEventListener('keydown',e=>{if(e.key==='Enter')register()});
+$('auP').addEventListener('keydown',e=>{if(e.key==='Enter')appLogin()});
+
+/* ===== PASSWORD CHANGE ===== */
+function openPwModal(){$('pwOld').value='';$('pwNew').value='';$('pwNew2').value='';$('pwErr').textContent='';openModal('pw');}
+async function changePw(){
+  const old=$('pwOld').value,nw=$('pwNew').value,nw2=$('pwNew2').value,err=$('pwErr');
+  err.textContent='';
+  if(!old||!nw){err.textContent='Alle Felder ausfüllen.';return;}
+  if(nw!==nw2){err.textContent='Neue Passwörter stimmen nicht überein.';return;}
+  if(nw.length<6){err.textContent='Min. 6 Zeichen.';return;}
+  // Owner (Firebase Auth) vs App User
+  if(isOwner && fbUser){
+    try{
+      const cred=firebase.auth.EmailAuthProvider.credential(fbUser.email,old);
+      await fbUser.reauthenticateWithCredential(cred);
+      await fbUser.updatePassword(nw);
+      toast('Passwort geändert','success');closeModal('pw');
+    }catch(e){err.textContent=e.code==='auth/wrong-password'?'Aktuelles Passwort falsch.':'Fehler: '+(e.message||e.code);}
+  } else if(appUsr){
+    if(old!==appUsr.pw){err.textContent='Aktuelles Passwort falsch.';return;}
+    const u=S.users.find(x=>x.name===appUsr.name);
+    if(u){u.pw=nw;appUsr.pw=nw;save();toast('Passwort geändert','success');closeModal('pw');}
+  }
+}
+
+/* ===== DB ===== */
+function connectDB(uid){
+  dbRef=db.ref('tracker/'+uid);
+  if(unsub)unsub();
+  const ref=dbRef;
+  const h=ref.on('value',snap=>{
+    const v=snap.val();
+    if(v){
+      S.orgName=v.orgName||'';
+      S.sectors=toA(v.sectors).map(s=>({...s,rows:toA(s.rows),fieldConfig:s.fieldConfig||{}}));
+      S.users=toA(v.users);
+      S.messages=toA(v.messages).filter(Boolean);
+      S.deleteRequests=toA(v.deleteRequests).filter(Boolean);
+    }else{S={orgName:'',sectors:[],users:[],messages:[],deleteRequests:[]};save();}
+    $('orgLbl').textContent=S.orgName||'Organisation';
+    refreshUI();
+  });
+  unsub=()=>ref.off('value',h);
+}
+function save(){if(!dbRef)return;return dbRef.set({orgName:S.orgName,sectors:S.sectors,users:S.users,messages:S.messages||[],deleteRequests:(S.deleteRequests||[]).filter(Boolean)});}
+function refreshUI(){
+  const cur=document.querySelector('.view.active')?.id;
+  if(cur==='dashV')rDash();if(cur==='secV')rSec();if(cur==='invV')rInv();if(cur==='adminV')rAdmin();if(cur==='msgV')rMsg();
+  if(S.users.length>0&&isOwner&&!appUsr)$('appBar').style.display='flex';
+  updMsgBadge();
+}
+
+/* ===== APP USER ===== */
+function appLogin(){const n=$('auN').value.trim(),p=$('auP').value;if(!n){toast('Name eingeben','warning');return;}const u=S.users.find(x=>x.name.toLowerCase()===n.toLowerCase()&&x.pw===p);if(!u){toast('Ungültige Daten','error');return;}appUsr=u;isOwner=false;$('auN').style.display='none';$('auP').style.display='none';$('auLB').style.display='none';$('auLbl').style.display='inline';$('auLbl').textContent=' '+u.name;$('auOB').style.display='inline-flex';$('uChip').textContent=u.name;$('navAdm').style.display=u.isAdmin?'inline-flex':'none';$('navMsg').style.display='inline-flex';toast('Eingeloggt als '+u.name,'success');show('dash');}
+function appLogout(){appUsr=null;isOwner=true;$('auN').style.display='';$('auP').style.display='';$('auLB').style.display='';$('auLbl').style.display='none';$('auOB').style.display='none';$('auN').value='';$('auP').value='';$('uChip').textContent=fbUser?.displayName||fbUser?.email||'';$('navAdm').style.display='inline-flex';toast('Abgemeldet','info');show('dash');}
+
+/* ===== DASHBOARD ===== */
+function rDash(){
+  const g=$('sGrid'),btns=$('dashBtns');
+  btns.innerHTML=canAdm()?'<button class="btn bp" onclick="ST.show(\'admin\')">➕ Neuer Sektor</button>':'';
+  const secs=getSecs();
+  if(!secs.length){g.innerHTML='<div class="empty"><div class="ic"></div><p>Noch keine Sektoren.</p>'+(canAdm()?'<button class="btn bp" onclick="ST.show(\'admin\')">Im Admin erstellen</button>':'')+'</div>';return;}
+  g.innerHTML=secs.map(([s,i])=>{
+    const isInv=s.type==='rechnungen';
+    const rows=s.rows||[];
+    const n=rows.length;
+    const total=isInv?rows.reduce((a,r)=>a+(Number(r.amount)||0),0):0;
+    return `<div class="sc${isInv?' sc-inv':''}" onclick="ST.openSec(${i})"><h3>${esc(s.name)}</h3><span class="stag">${isInv?'Rechnungen':'Standard'}</span><div class="n">${isInv?fmtN(total):n}</div><div class="m">${isInv?'<span>'+n+' Rechnungen</span>':'<span>Einträge</span>'}</div></div>`;
+  }).join('');
+}
+function getSecs(){if(isOwner||!appUsr)return S.sectors.map((s,i)=>[s,i]);const al=(appUsr.allowedSectors||[]).map(x=>x.toLowerCase());if(!al.length)return S.sectors.map((s,i)=>[s,i]);return S.sectors.map((s,i)=>[s,i]).filter(([s])=>al.includes(s.name.toLowerCase()));}
+
+/* ===== SECTOR OPEN ===== */
+function openSec(i){curSec=i;const s=S.sectors[i];if(!s)return;if(s.type==='rechnungen'){curMonth=curMonth||getCurMonthKey();show('inv');}else show('sec');}
+
+/* ===== STANDARD SECTOR ===== */
+function rSec(){
+  const s=S.sectors[curSec];if(!s)return;
+  $('secT').textContent=s.name;
+  const vf=vF(s);
+  $('sTh').innerHTML='<th>#</th><th>Datum</th><th>Ersteller</th>'+vf.map(f=>'<th>'+esc(fL(s,f.key))+'</th>').join('')+'<th style="width:100px">Aktion</th>';
+  const tb=$('sTb');tb.innerHTML='';
+  if(!s.rows?.length){tb.innerHTML=`<tr><td colspan="${vf.length+4}" style="text-align:center;color:var(--tx2);padding:2rem">Keine Einträge</td></tr>`;$('secSm').style.display='none';return;}
+  s.rows.forEach((r,i)=>{
+    const tr=document.createElement('tr');
+    if(r._ed){let ei=0,c=`<td style="color:var(--tx3)">${i+1}</td><td><input type="date" value="${r.datum||''}" data-i="${i}" data-f="datum" data-enter="${++ei}"></td><td><input value="${esc(r.ersteller||'')}" disabled style="min-width:60px"></td>`;vf.forEach(f=>{c+=`<td><input type="${fT(f.key)==='number'?'number':'text'}" value="${esc(r[f.key]??'')}" data-i="${i}" data-f="${f.key}" data-enter="${++ei}" step="any" placeholder="${esc(fL(s,f.key))}"></td>`;});c+=`<td style="white-space:nowrap"><button class="btn bg bs" data-enter="${++ei}" onclick="ST.saveRow(${i})">OK</button> <button class="btn bd bs" onclick="ST.cancelRow(${i})">X</button></td>`;tr.innerHTML=c;tr.style.background='#f0f9ff';}
+    else{let c=`<td style="color:var(--tx3);font-size:.78rem">${i+1}</td><td>${esc(fmtD(r.datum))}</td><td>${esc(r.ersteller||'')}</td>`;vf.forEach(f=>{let v=r[f.key];if(v!=null&&v!==''){if(fT(f.key)==='number')v=Number(v).toLocaleString('de-CH');}else v='';c+=`<td>${esc(String(v))}</td>`;});const mine=r.ersteller===uName()||canAdm();c+=`<td style="white-space:nowrap">${mine?`<button class="btn bs" onclick="ST.editRow(${i})"></button> <button class="btn bd bs" onclick="ST.delRow(${i})"></button>`:''}</td>`;tr.innerHTML=c;}
+    tb.appendChild(tr);
+  });
+  // Summary
+  const sm=$('secSm');sm.style.display='block';
+  const nf=vF(s).filter(f=>fT(f.key)==='number');
+  let h='<h3> Zusammenfassung</h3><div style="display:flex;flex-wrap:wrap;gap:1rem">';
+  nf.forEach(f=>{const sum=s.rows.reduce((a,r)=>a+(Number(r[f.key])||0),0);h+=`<div style="text-align:center;padding:.6rem 1rem;background:#f8fafc;border-radius:10px;border:1px solid var(--brd)"><div style="font-size:.73rem;color:var(--tx2);font-weight:600;text-transform:uppercase">${esc(fL(s,f.key))}</div><div style="font-size:1.3rem;font-weight:800;color:var(--c1)">${sum.toLocaleString('de-CH')}</div></div>`;});
+  h+=`<div style="text-align:center;padding:.6rem 1rem;background:#f8fafc;border-radius:10px;border:1px solid var(--brd)"><div style="font-size:.73rem;color:var(--tx2);font-weight:600;text-transform:uppercase">Einträge</div><div style="font-size:1.3rem;font-weight:800">${s.rows.length}</div></div></div>`;
+  sm.innerHTML=h;
+}
+
+function addRow(){const s=S.sectors[curSec];if(!s)return;if(!s.rows)s.rows=[];const r={id:cid(),datum:today(),ersteller:uName(),_ed:true};FIELDS.forEach(f=>r[f.key]='');s.rows.push(r);save();rSec();setTimeout(()=>{const w=document.querySelector('.tw');if(w)w.scrollTop=w.scrollHeight;},60);}
+function editRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;s.rows[i]._ed=true;rSec();}
+function cancelRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;const r=s.rows[i],has=FIELDS.some(f=>r[f.key]&&String(r[f.key]).trim());if(!has)s.rows.splice(i,1);else delete r._ed;save();rSec();}
+function saveRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;document.querySelectorAll(`#sTb input[data-i="${i}"]`).forEach(inp=>{const f=inp.dataset.f;if(f)s.rows[i][f]=inp.value;});delete s.rows[i]._ed;save();toast('Gespeichert','success');}
+function delRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i]||!confirm('Löschen?'))return;s.rows.splice(i,1);save();toast('Gelöscht','success');}
+
+/* Enter nav */
+document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const el=e.target;if(!el.dataset.enter)return;const tr=el.closest('tr');if(!tr)return;e.preventDefault();const nx=tr.querySelector(`[data-enter="${Number(el.dataset.enter)+1}"]`);if(nx){if(nx.tagName==='BUTTON')nx.click();else{nx.focus();if(nx.select)nx.select();}}});
+
+/* ===== RECHNUNGEN SECTOR ===== */
+function getCurMonthKey(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
+function rInv(){
+  const s=S.sectors[curSec];if(!s)return;
+  $('invT').textContent=s.name;
+  // Total card
+  const allRows=s.rows||[];
+  const totalAll=allRows.reduce((a,r)=>a+(Number(r.amount)||0),0);
+  const tc=$('invTotalCard');tc.style.display='block';
+  tc.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem"><div><div style="font-size:.78rem;color:var(--tx2);font-weight:600;text-transform:uppercase">Gesamttotal</div><div style="font-size:2rem;font-weight:800;color:var(--ok)">CHF ${fmtN(totalAll)}</div></div><div style="font-size:.88rem;color:var(--tx2)">${allRows.length} Rechnungen</div></div>`;
+
+  // Month tabs
+  const months=new Set();allRows.forEach(r=>{if(r.datum)months.add(r.datum.slice(0,7));});
+  if(!months.has(curMonth))months.add(curMonth);
+  const sorted=[...months].sort().reverse();
+  $('invMonthTabs').innerHTML=sorted.map(m=>{
+    const [y,mo]=m.split('-');const label=MONTHS[parseInt(mo)-1]+' '+y;
+    return `<button class="mtab${m===curMonth?' on':''}" onclick="ST.setMonth('${m}')">${label}</button>`;
+  }).join('');
+
+  // Filtered rows
+  const filtered=allRows.filter(r=>(r.datum||'').startsWith(curMonth));
+  const monthTotal=filtered.reduce((a,r)=>a+(Number(r.amount)||0),0);
+
+  $('iTh').innerHTML='<th>#</th><th>Datum</th><th>Beschreibung</th><th>Referenz</th><th style="text-align:right">Betrag</th><th style="width:80px">Aktion</th>';
+  const tb=$('iTb');tb.innerHTML='';
+  if(!filtered.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--tx2);padding:2rem">Keine Rechnungen in diesem Monat</td></tr>';$('invMonthSum').style.display='none';return;}
+
+  filtered.forEach((r,fi)=>{
+    const ri=allRows.indexOf(r);
+    const tr=document.createElement('tr');
+    if(r._ed){
+      tr.innerHTML=`<td>${fi+1}</td><td><input type="date" value="${r.datum||''}" data-ri="${ri}" data-f="datum" data-enter="1"></td><td><input value="${esc(r.desc||'')}" data-ri="${ri}" data-f="desc" data-enter="2" placeholder="Beschreibung"></td><td><input value="${esc(r.ref||'')}" data-ri="${ri}" data-f="ref" data-enter="3" placeholder="Referenz"></td><td><input type="number" step="0.01" value="${r.amount||''}" data-ri="${ri}" data-f="amount" data-enter="4" style="text-align:right"></td><td><button class="btn bg bs" data-enter="5" onclick="ST.saveInvRow(${ri})">OK</button> <button class="btn bd bs" onclick="ST.cancelInvRow(${ri})">X</button></td>`;
+      tr.style.background='#f0fdf4';
+    } else {
+      const mine=r.ersteller===uName()||canAdm();
+      tr.innerHTML=`<td style="color:var(--tx3);font-size:.78rem">${fi+1}</td><td>${esc(fmtD(r.datum))}</td><td>${esc(r.desc||'')}</td><td style="font-size:.8rem;color:var(--tx2)">${esc(r.ref||'')}${r.qrRaw?` <button class="btn bs" onclick="ST.showInvQR(${ri})" title="QR anzeigen">QR</button>`:''}</td><td style="text-align:right;font-weight:700">${fmtN(r.amount)}</td><td style="white-space:nowrap">${mine?`<button class="btn bs" onclick="ST.editInvRow(${ri})"></button> <button class="btn bd bs" onclick="ST.delInvRow(${ri})"></button>`:''}</td>`;
+    }
+    tb.appendChild(tr);
+  });
+
+  const ms=$('invMonthSum');ms.style.display='block';
+  const [y,mo]=curMonth.split('-');
+  ms.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:.78rem;color:var(--tx2);font-weight:600;text-transform:uppercase">${MONTHS[parseInt(mo)-1]} ${y}</div><div style="font-size:1.5rem;font-weight:800;color:var(--ok)">CHF ${fmtN(monthTotal)}</div></div><div style="color:var(--tx2)">${filtered.length} Rechnungen</div></div>`;
+}
+
+function setMonth(m){curMonth=m;rInv();}
+function addInv(){const s=S.sectors[curSec];if(!s)return;if(!s.rows)s.rows=[];s.rows.push({id:cid(),datum:today(),ersteller:uName(),desc:'',ref:'',amount:'',_ed:true});save();rInv();}
+function editInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;s.rows[i]._ed=true;rInv();}
+function cancelInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;const r=s.rows[i];if(!r.desc&&!r.ref&&!r.amount)s.rows.splice(i,1);else delete r._ed;save();rInv();}
+function saveInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i])return;document.querySelectorAll(`#iTb input[data-ri="${i}"]`).forEach(inp=>{const f=inp.dataset.f;if(f)s.rows[i][f]=inp.value;});delete s.rows[i]._ed;save();toast('Gespeichert','success');}
+function delInvRow(i){const s=S.sectors[curSec];if(!s?.rows?.[i]||!confirm('Löschen?'))return;s.rows.splice(i,1);save();toast('Gelöscht','success');}
+
+/* ===== QR SCANNER ===== */
+function openScanner(){
+  openModal('scan');$('qrResult').style.display='none';$('qrAmt').value='';$('qrDesc').value='';
+  setTimeout(()=>{
+    if(qrScanner){try{qrScanner.clear();}catch(_){}}
+    qrScanner=new Html5Qrcode("qrReader");
+    qrScanner.start({facingMode:"environment"},{fps:10,qrbox:{width:280,height:280}},
+      txt=>{onQrScanned(txt);},
+      ()=>{}
+    ).then(()=>{
+      // iOS Safari: keep video inline
+      const v=document.querySelector('#qrReader video');
+      if(v){v.setAttribute('playsinline','true');v.setAttribute('webkit-playsinline','true');v.muted=true;}
+    }).catch(e=>{toast('Kamera nicht verfügbar: '+e,'error');});
+  },300);
+}
+function closeScanner(){if(qrScanner){try{qrScanner.stop();}catch(_){}}closeModal('scan');}
+function onQrScanned(txt){
+  try{qrScanner.stop();}catch(_){}
+  lastQrRaw = txt;
+  lastQrMeta = {kind:'unknown'};
+  // Parse Swiss QR-Rechnung
+  const lines=txt.split('\n');
+  let amt='',desc='';
+  if(lines[0]==='SPC'&&lines.length>20){
+    // Swiss QR bill format
+    amt=lines[18]||'';desc=(lines[24]||'').trim();
+    if(!desc)desc=(lines[9]||'').trim(); // creditor name
+    lastQrMeta = {
+      kind:'swissqr',
+      currency:(lines[19]||'').trim(),
+      iban:(lines[3]||'').trim(),
+      refType:(lines[25]||'').trim(),
+      ref:(lines[26]||'').trim()
+    };
+  } else {
+    lastQrMeta = {kind:'generic'};
+    // Try to find amount pattern
+    const amtMatch=txt.match(/(\d+[\.,]\d{2})/);
+    if(amtMatch)amt=amtMatch[1].replace(',','.');
+    desc=txt.substring(0,60);
+  }
+  $('qrAmt').value=amt;$('qrDesc').value=desc;$('qrResult').style.display='block';
+}
+function addScanned(){
+  const amt=$('qrAmt').value,desc=$('qrDesc').value;
+  if(!amt){toast('Betrag eingeben','warning');return;}
+  const s=S.sectors[curSec];if(!s)return;if(!s.rows)s.rows=[];
+  const ref = (lastQrMeta?.kind==='swissqr' && lastQrMeta?.ref) ? lastQrMeta.ref : 'QR';
+  s.rows.push({
+    id:cid(),
+    datum:today(),
+    ersteller:uName(),
+    desc,
+    ref,
+    amount:amt,
+    qrRaw:lastQrRaw||'',
+    qrMeta:lastQrMeta||{kind:'unknown'}
+  });
+  lastQrRaw=null;lastQrMeta=null;
+  save();closeScanner();toast('Rechnung hinzugefügt','success');
+}
+
+
+async function ensureQrLib(){
+  if(window.QRCode && typeof window.QRCode.toCanvas==='function') return true;
+
+  const sources=[
+    "https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js",
+    "https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"
+  ];
+
+  for(const src of sources){
+    try{
+      await new Promise((resolve,reject)=>{
+        const s=document.createElement('script');
+        s.src=src + (src.includes('?')?'&':'?') + 'v=' + Date.now(); // bust aggressive SW/proxy caching
+        s.async=true;
+        s.onload=()=>resolve();
+        s.onerror=()=>reject(new Error('QR lib load failed: '+src));
+        document.head.appendChild(s);
+      });
+      if(window.QRCode && typeof window.QRCode.toCanvas==='function') return true;
+    }catch(e){
+      console.warn(e);
+    }
+  }
+  return false;
+}
+
+/* ===== QR DISPLAY (for stored invoices) ===== */
+async function showInvQR(i){
+  const s=S.sectors[curSec];
+  const r=s?.rows?.[i];
+  if(!r||!r.qrRaw){toast('Kein QR fuer diese Rechnung gespeichert','warning');return;}
+  $('qrRawTxt').value=r.qrRaw;
+  openModal('qrShow');
+
+  const c=$('qrCanvas');
+  const img=$('qrImg');
+
+  // Ensure visible size in standalone PWA
+  const px = Math.min(320, Math.floor((window.innerWidth||360)*0.78));
+  c.width = px; c.height = px;
+
+  // Try local JS QR lib first; if not available, fall back to remote image.
+  const okLib = await ensureQrLib();
+  if(okLib){
+    img.style.display='none';
+    c.style.display='block';
+    try{
+      await QRCode.toCanvas(c, r.qrRaw, {errorCorrectionLevel:'M', margin:1, width:px});
+      return;
+    }catch(e){
+      console.warn('toCanvas failed, fallback to image', e);
+    }
+  }
+
+  // Fallback: render via remote QR image service (requires internet)
+  try{
+    const data=encodeURIComponent(r.qrRaw);
+    const url='https://api.qrserver.com/v1/create-qr-code/?size='+px+'x'+px+'&margin=10&data='+data;
+    img.src=url;
+    img.style.display='block';
+    c.style.display='none';
+    toast('QR als Bild geladen (Internet erforderlich)','info');
+  }catch(e){
+    console.error(e);
+    toast('QR konnte nicht angezeigt werden','error');
+  }
+}
+
+async function copyQrRaw(){
+  const t=$('qrRawTxt').value||'';
+  if(!t){toast('Nichts zu kopieren','warning');return;}
+  try{
+    await navigator.clipboard.writeText(t);
+    toast('In Zwischenablage kopiert','success');
+  }catch(_){
+    // Fallback
+    const ta=$('qrRawTxt');ta.focus();ta.select();
+    try{document.execCommand('copy');toast('In Zwischenablage kopiert','success');}catch(e){toast('Kopieren nicht möglich','error');}
+  }
+}
+
+
+/* ===== MESSAGES ===== */
+function updMsgBadge(){
+  const cnt=(S.messages||[]).filter(m=>m.to===uName()&&!m.read).length;
+  const b=$('msgBadge');if(cnt>0){b.style.display='flex';b.textContent=cnt;}else b.style.display='none';
+}
+function rMsg(){
+  const name=uName();
+  const msgs=(S.messages||[]).filter(m=>m.to===name||m.from===name).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const el=$('msgList');
+  if(!msgs.length){el.innerHTML='<div class="empty"><div class="ic">MSG</div><p>Keine Nachrichten.</p></div>';return;}
+  // Mark as read
+  let changed=false;
+  msgs.forEach(m=>{if(m.to===name&&!m.read){m.read=true;changed=true;}});
+  if(changed)save();
+  el.innerHTML=msgs.map(m=>`<div class="msg-item${!m.read?' unread':''}"><div style="display:flex;justify-content:space-between"><span class="msg-from">${m.from===name?'An: '+esc(m.to):'Von: '+esc(m.from)}</span><span class="msg-date">${esc(fmtD(m.date?.slice(0,10)))}</span></div><div class="msg-text">${esc(m.text)}</div></div>`).join('');
+}
+function sendMsg(){
+  const to=$('msgTo').value,txt=$('msgTxt').value.trim();
+  if(!to||!txt){toast('Empfänger und Text nötig','warning');return;}
+  if(!S.messages)S.messages=[];
+  S.messages.push({id:cid(),from:uName(),to,text:txt,date:new Date().toISOString(),read:false});
+  $('msgTxt').value='';save();toast('Gesendet','success');
+}
+
+/* ===== ADMIN ===== */
+function rAdmin(){
+  $('aOrg').value=S.orgName||'';
+  rAdmSec();rAdmUsr();
+  // Message recipients
+  const sel=$('msgTo');sel.innerHTML='<option value="">Wählen...</option>';
+  S.users.forEach(u=>sel.innerHTML+=`<option value="${esc(u.name)}">${esc(u.name)}</option>`);
+}
+function saveOrg(){S.orgName=$('aOrg').value.trim()||'';save();$('orgLbl').textContent=S.orgName||'Organisation';toast('Gespeichert','success');}
+
+/* Sectors */
+function rAdmSec(){
+  const l=$('aSecL');
+  if(!S.sectors.length){l.innerHTML='<p style="color:var(--tx2);font-size:.85rem">Keine Sektoren.</p>';return;}
+  l.innerHTML=S.sectors.map((s,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--brd)"><span style="font-weight:600">${esc(s.name)} <span class="pill ${s.type==='rechnungen'?'pw':'pi'}">${s.type==='rechnungen'?'Rechnungen':'Standard'}</span> <span class="pill pi">${(s.rows||[]).length}</span></span><div style="display:flex;gap:4px">${s.type!=='rechnungen'?`<button class="btn bs" onclick="ST.openCfg(${i})" title="Spalten"></button>`:''}<button class="btn bs" onclick="ST.openRen(${i})"></button><button class="btn bd bs" onclick="ST.delSec(${i})"></button></div></div>`).join('');
+}
+function admAddSec(){const n=$('aNS').value.trim(),t=$('aNT').value;if(!n){toast('Name eingeben','warning');return;}S.sectors.push({id:cid(),name:n,type:t,rows:[],fieldConfig:{}});$('aNS').value='';save();toast('Erstellt','success');}
+function openRen(i){renIdx=i;$('mSR').value=S.sectors[i]?.name||'';openModal('ren');}
+function renameSec(){const n=$('mSR').value.trim();if(!n){toast('Name eingeben','warning');return;}const old=S.sectors[renIdx]?.name;S.sectors[renIdx].name=n;S.users.forEach(u=>{if(u.allowedSectors)u.allowedSectors=u.allowedSectors.map(s=>s===old?n:s);});closeModal('ren');save();toast('Umbenannt','success');}
+function delSec(i){const s=S.sectors[i];if(!s||!confirm(`"${s.name}" löschen?`))return;S.sectors.splice(i,1);save();toast('Gelöscht','success');}
+
+/* Sector field config */
+function openCfg(i){
+  curSec=i;const s=S.sectors[i];if(!s)return;
+  $('cfgSecName').textContent=s.name;
+  $('cfgFields').innerHTML=FIELDS.map(f=>`<div><label>${esc(f.def||f.key)} (${f.type})</label><input id="cf_${f.key}" value="${esc(fL(s,f.key))}" placeholder="leer = ausgeblendet"></div>`).join('');
+  openModal('secCfg');
+}
+function saveCfg(){
+  const s=S.sectors[curSec];if(!s)return;
+  if(!s.fieldConfig)s.fieldConfig={};
+  FIELDS.forEach(f=>{const v=$('cf_'+f.key)?.value?.trim();if(v!=null&&v!==f.def)s.fieldConfig[f.key]=v;else if(v==='')s.fieldConfig[f.key]='';else delete s.fieldConfig[f.key];});
+  save();closeModal('secCfg');toast('Spalten gespeichert','success');
+}
+
+/* Users */
+function rAdmUsr(){
+  const l=$('aUsrL'),sc=$('nuS');
+  sc.innerHTML=S.sectors.map(s=>`<label style="display:flex;align-items:center;gap:4px;font-size:.82rem;background:#f8fafc;padding:3px 9px;border-radius:6px;border:1px solid var(--brd)"><input type="checkbox" class="nu-s" value="${esc(s.name)}"> ${esc(s.name)}</label>`).join('')||'<span style="color:var(--tx2);font-size:.82rem">Zuerst Sektoren erstellen</span>';
+  if(!S.users.length){l.innerHTML='<p style="color:var(--tx2);font-size:.85rem">Keine Benutzer.</p>';return;}
+  l.innerHTML='<div class="tw"><table><thead><tr><th>Name</th><th>Admin</th><th>Sektoren</th><th>Aktion</th></tr></thead><tbody>'+S.users.map((u,i)=>{const ss=(u.allowedSectors||[]).join(', ')||'<span style="color:var(--tx3)">Alle</span>';return `<tr><td><strong>${esc(u.name)}</strong></td><td>${u.isAdmin?'<span class="pill pw">Admin</span>':'-'}</td><td style="font-size:.8rem">${ss}</td><td><button class="btn bd bs" onclick="ST.delUsr(${i})"></button></td></tr>`;}).join('')+'</tbody></table></div>';
+}
+function admAddUsr(){const nm=$('nuN').value.trim(),pw=$('nuP').value.trim();if(!nm||!pw){toast('Name + Passwort nötig','warning');return;}if(S.users.some(u=>u.name.toLowerCase()===nm.toLowerCase())){toast('Name existiert','warning');return;}const ss=Array.from(document.querySelectorAll('.nu-s:checked')).map(c=>c.value);S.users.push({name:nm,pw,isAdmin:$('nuA').checked,allowedSectors:ss});$('nuN').value='';$('nuP').value='';$('nuA').checked=false;save();toast('Angelegt','success');}
+function delUsr(i){if(!confirm(`"${S.users[i]?.name}" löschen?`))return;S.users.splice(i,1);save();toast('Gelöscht','success');}
+
+/* ===== CSV ===== */
+function csvSec(){const s=S.sectors[curSec];if(!s)return;const vf=vF(s);const hdr=['#','Datum','Ersteller',...vf.map(f=>fL(s,f.key))];const rows=s.rows.map((r,i)=>[i+1,r.datum||'',r.ersteller||'',...vf.map(f=>r[f.key]??'')]);dlCSV(s.name+'.csv',[hdr,...rows]);}
+function csvInv(){const s=S.sectors[curSec];if(!s)return;const hdr=['#','Datum','Beschreibung','Referenz','Betrag'];const rows=(s.rows||[]).map((r,i)=>[i+1,r.datum||'',r.desc||'',r.ref||'',r.amount||'']);dlCSV(s.name+'_Rechnungen.csv',[hdr,...rows]);}
+function csvAll(){const rows=[['Sektor','Typ','Datum','Ersteller','F1','F2','F3','F4','F5','F6','F7','F8']];S.sectors.forEach(s=>{(s.rows||[]).forEach(r=>{if(s.type==='rechnungen')rows.push([s.name,'Rechnung',r.datum||'',r.ersteller||'',r.desc||'',r.ref||'','','',r.amount||'','','','']);else rows.push([s.name,'Standard',r.datum||'',r.ersteller||'',...FIELDS.map(f=>r[f.key]??'')]);});});dlCSV('SektorTracker_Export.csv',rows);}
+function dlCSV(name,data){const csv=data.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(';')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download=name;a.click();toast('CSV exportiert','success');}
+function jsonExport(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:'application/json'}));a.download='SektorTracker_Backup.json';a.click();toast('JSON exportiert','success');}
+
+/* ===== INIT ===== */
+initFirebase();
+show('dash');
+
+return{authTab,login,register,resetPw,logout,show,openModal,closeModal,
+openPwModal,changePw,
+appLogin,appLogout,openSec,
+addRow,editRow,saveRow,cancelRow,delRow,
+setMonth,addInv,editInvRow,saveInvRow,cancelInvRow,delInvRow,
+openScanner,closeScanner,addScanned,showInvQR,copyQrRaw,
+rMsg,sendMsg,
+saveOrg,admAddSec,openRen,renameSec,delSec,openCfg,saveCfg,
+admAddUsr,delUsr,csvSec,csvInv,csvAll,jsonExport};
+})();
+
+// ===== PWA Service Worker =====
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+</script>
+</body>
+</html>
